@@ -7,110 +7,103 @@
     <!-- Thêm thư viện icon để dùng biểu tượng ngôi nhà -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-        }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+    }
 
-        /* 1. KHỐI LOGO (Nền trắng) */
+    /* 1. KHỐI LOGO (Nền trắng) */
+    .header-top {
+        background-color: white;
+        padding: 15px 5%; /* Giảm padding trên di động */
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Căn giữa logo trên mobile */
+    }
+
+    .header-top img {
+        height: 60px; /* Thu nhỏ logo một chút */
+        width: auto;
+    }
+
+    /* 2. THANH ĐIỀU HƯỚNG (Nền xanh) */
+    .navbar {
+        background-color: #1a4694;
+        padding: 0 5%;
+        display: flex;
+        justify-content: center;
+        min-height: 45px; /* Dùng min-height thay vì height cố định */
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .nav-links {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap; /* Cho phép các mục nhảy dòng nếu thiếu chỗ */
+        margin: 0;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .nav-links li {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-size: 13px; /* Font chuẩn máy tính */
+        font-weight: bold;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+
+    .nav-links a:hover {
+        background-color: #0d3270;
+    }
+
+    /* 3. NỘI DUNG CHÍNH */
+    .content {
+        padding: 50px 20px;
+        text-align: center;
+    }
+
+    .content h1 {
+        font-size: 28px;
+        color: #333;
+        line-height: 1.2;
+    }
+
+    /* --- ĐIỀU CHỈNH RIÊNG CHO ĐIỆN THOẠI (Responsive) --- */
+    @media (max-width: 600px) {
         .header-top {
-            background-color: white;
-            padding: 15px 10%; /* Căn lề vào trong 10% */
-            display: flex;
-            align-items: center;
+            padding: 10px;
         }
-
+        
         .header-top img {
-            height: 70px; /* Điều chỉnh độ cao logo */
-            width: auto;
-            margin-right: 20px;
-        }
-
-        .header-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header-text .main-title {
-            font-size: 28px;
-            font-weight: bold;
-            color: #1a4694; /* Màu xanh EVN */
-            letter-spacing: -1px;
-        }
-
-        .header-text .main-title span {
-            color: #ed1c24; /* Màu đỏ chữ NPT */
-        }
-
-        .header-text .sub-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #1a4694;
-            text-transform: uppercase;
-            margin-top: 5px;
-        }
-
-        /* 2. THANH ĐIỀU HƯỚNG (Nền xanh) */
-        .navbar {
-            background-color: #1a4694; /* Màu xanh đậm của EVNNPT */
-            padding: 0 10%;
-            display: flex;
-            align-items: center;
-            height: 45px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            margin: 0;
-            padding: 0;
-            align-items: center;
-            height: 100%;
-        }
-
-        .nav-links li {
-            height: 100%;
-            display: flex;
-            align-items: center;
+            height: 45px; /* Logo nhỏ hơn trên điện thoại */
         }
 
         .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 0 15px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            transition: background 0.3s;
-        }
-
-        /* Hiệu ứng hover giống trang gốc */
-        .nav-links a:hover {
-            background-color: #0d3270;
-        }
-
-        /* Icon ngôi nhà */
-        .nav-links a i {
-            font-size: 18px;
-        }
-
-        /* 3. NỘI DUNG CHÍNH */
-        .content {
-            padding: 80px 20px;
-            text-align: center;
+            font-size: 10px; /* Chữ menu nhỏ lại để không bị đè lên nhau */
+            padding: 8px 6px;
         }
 
         .content h1 {
-            font-size: 32px;
-            color: #333;
+            font-size: 22px; /* Tiêu đề chính nhỏ lại cho vừa màn hình */
         }
-    </style>
+
+        .content p {
+            font-size: 14px;
+        }
+    }
+</style>
 </head>
 <body>
 
