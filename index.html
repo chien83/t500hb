@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Luyện Trắc Nghiệm A0</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    :root { --primary-blue: #0d6efd; --danger-red: #dc3545; --success-green: #198754; --base-font-size: 18px; }
+    body { background-color: #f0faff; padding: 10px; font-family: -apple-system, system-ui, sans-serif; font-size: var(--base-font-size); overflow-x: hidden; }
+    .main-wrapper { display: flex; max-width: 1400px; margin: auto; gap: 15px; align-items: flex-start; }
+    .quiz-container { flex: 1; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    .nav-panel { width: 140px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 10px; z-index: 1000; }
+    #timer-container { border: 2px solid blue; border-radius: 8px; padding: 8px 2px; text-align: center; margin-bottom: 12px; background: #fff; }
+    #timer { font-size: 1.3rem; font-weight: 800; color: var(--danger-red); font-family: monospace; }
+    .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 400px; overflow-y: auto; padding: 2px; }
+    .nav-box { width: 100%; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; border-radius: 6px; font-size: 0.85rem; cursor: pointer; background: #fff; }
+    .nav-box.answered { background-color: var(--primary-blue) !important; color: white !important; }
+    .nav-box.current { border: 2.5px solid #ffc107; font-weight: bold; }
+    #submit-btn-sidebar, #submit-btn-bottom { background-color: var(--danger-red); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    #submit-btn-sidebar { width: 100%; padding: 10px 2px; font-size: 0.95rem; margin-top: 15px; }
+    #submit-btn-bottom { display: none; width: 100%; padding: 15px; font-size: 1.1rem; margin-top: 20px; }
+    h2 { font-size: 1.5rem; font-weight: bold; color: var(--primary-blue); text-align: center; margin-bottom: 25px; }
+    .question-block { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0; }
+    .question-title { font-size: 1.15rem; font-weight: 600; line-height: 1.6; margin-bottom: 15px; color: #1a1a1a; }
+    .form-check-label { display: block; width: 100%; padding: 12px 15px 12px 55px; cursor: pointer; font-size: 1.05rem; border-radius: 8px; }
+    .form-check-input { position: absolute; left: 20px; top: 16px; transform: scale(1.4); }
+    .option-correct { background-color: #d1e7dd !important; color: #0a58ca; font-weight: bold; }
+    .option-wrong { background-color: #f8d7da !important; color: #842029; text-decoration: line-through; }
+    .pagination-btns { display: flex; gap: 12px; margin-top: 25px; }
+    .pagination-btns .btn { flex: 1; font-size: 1.1rem; padding: 12px; font-weight: bold; }
+    @media (max-width: 768px) { .nav-panel { width: 110px; } .nav-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <div class="main-wrapper">
+    <div class="quiz-container">
+      <h2 id="quiz-header">LUYỆN TRẮC NGHIỆM A0</h2>
+      <div id="result" class="alert text-center py-4" style="display:none;"></div>
+      <div id="quiz-content">Đang tải câu hỏi...</div>
+      <div id="pagination-controls" class="pagination-btns" style="display:none;">
+        <button id="prev-btn" class="btn btn-outline-primary" onclick="changePage(-1)">QUAY LẠI</button>
+        <button id="next-btn" class="btn btn-primary" onclick="changePage(1)">TIẾP THEO</button>
+      </div>
+      <button id="submit-btn-bottom" onclick="checkAnswers()">NỘP BÀI</button>
+      <div id="after-submit-controls" class="mt-4" style="display:none;">
+        <button class="btn btn-info w-100 text-white fw-bold py-3 mb-2" onclick="reviewAllQuestions()">XEM LẠI TOÀN BỘ CÂU HỎI</button>
+        <button class="btn btn-secondary w-100 py-3" onclick="restartQuiz()">LÀM ĐỀ KHÁC</button>
+      </div>
+    </div>
+    <div id="side-nav" class="nav-panel" style="display:none;">
+      <div id="timer-container"><div id="timer">60:00</div></div>
+      <div class="nav-grid" id="nav-grid"></div>
+      <button id="submit-btn-sidebar" onclick="checkAnswers()">NỘP BÀI</button>
+    </div>
+  </div>
+
+<script>
+  // --- THAY LINK CỦA BẠN VÀO ĐÂY ---
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6IQtFXf2j1dTx5RYS-FR6fUfG72jOYxaAbqz7zG95TTkevxn_CGGADeRPbBQBMNpE/exec?type=data";
+
+  let allQuestions = [], userAnswers = {}, currentPage = 0, questionsPerPage = 10, timeLeft, timerId = null;
+  window.onload = loadNewQuiz;
+
+  function loadNewQuiz() {
+    document.getElementById('quiz-content').innerHTML = "<div class='text-center p-5'>Đang tải bộ câu hỏi...</div>";
+    fetch(SCRIPT_URL).then(res => res.json()).then(data => setupQuiz(data)).catch(err => alert("Lỗi tải dữ liệu!"));
+  }
+
+  function setupQuiz(data) {
+    allQuestions = data; userAnswers = {}; currentPage = 0;
+    renderNav(); renderPage(); startTimer(60);
+    document.getElementById('side-nav').style.display = "block";
+    document.getElementById('pagination-controls').style.display = "flex";
+  }
+
+  function renderNav() {
+    let navHtml = "";
+    allQuestions.forEach((_, i) => { navHtml += `<div id="nav-item-${i}" class="nav-box" onclick="goToQuestion(${i})">${i + 1}</div>`; });
+    document.getElementById('nav-grid').innerHTML = navHtml;
+  }
+
+  function renderPage() {
+    let start = currentPage * questionsPerPage, end = Math.min(start + questionsPerPage, allQuestions.length);
+    let html = `<div class="text-center mb-3 text-muted small">Câu ${start + 1} - ${end} / ${allQuestions.length}</div>`;
+    for (let i = start; i < end; i++) {
+      let q = allQuestions[i], options = [q[1], q[2], q[3], q[4]].filter(o => o !== "");
+      html += `<div class="question-block"><div class="question-title">${i + 1}. ${q[0]}</div>`;
+      options.forEach((opt, idx) => {
+        let isChecked = userAnswers[i] === opt ? "checked" : "";
+        html += `<div class="form-check"><input class="form-check-input" type="radio" name="q${i}" id="q${i}_${idx}" value="${opt}" ${isChecked} onchange="saveAnswer(${i}, '${opt}')"><label class="form-check-label" for="q${i}_${idx}">${opt}</label></div>`;
+      });
+      html += `</div>`;
+    }
+    document.getElementById('quiz-content').innerHTML = html;
+    document.getElementById('prev-btn').disabled = (currentPage === 0);
+    document.getElementById('next-btn').style.display = (end === allQuestions.length) ? "none" : "block";
+    document.getElementById('submit-btn-bottom').style.display = (end === allQuestions.length) ? "block" : "none";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function saveAnswer(i, val) { userAnswers[i] = val; document.getElementById(`nav-item-${i}`).classList.add('answered'); }
+  function changePage(step) { currentPage += step; renderPage(); }
+  function goToQuestion(i) { currentPage = Math.floor(i / questionsPerPage); renderPage(); }
+  function startTimer(m) {
+    timeLeft = m * 60;
+    timerId = setInterval(() => {
+      timeLeft--;
+      let min = Math.floor(timeLeft / 60), sec = timeLeft % 60;
+      document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0'+sec : sec}`;
+      if (timeLeft <= 0) { clearInterval(timerId); checkAnswers(); }
+    }, 1000);
+  }
+
+  function checkAnswers() {
+    clearInterval(timerId);
+    document.getElementById('side-nav').style.display = "none";
+    document.getElementById('pagination-controls').style.display = "none";
+    document.getElementById('submit-btn-bottom').style.display = "none";
+    document.getElementById('after-submit-controls').style.display =
