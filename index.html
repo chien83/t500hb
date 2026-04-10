@@ -12,7 +12,7 @@
             background-color: #f4f4f4;
         }
 
-        /* Thanh Navigation (Thanh menu trên cùng) */
+        /* Thanh Navigation (Thanh menu trên cùng - GIỮ NGUYÊN) */
         .navbar {
             background-color: #0020C2; /* Màu xanh đậm giống ảnh */
             color: white;
@@ -54,32 +54,62 @@
             border-bottom: 3px solid white; /* Hiệu ứng gạch chân khi chọn */
         }
 
-        /* Banner chính (Hero Section) */
-        .hero {
-            background-image: url('https://your-image-link.com/background.jpg'); /* Thay link ảnh cánh đồng gió của bạn vào đây */
-            background-size: cover;
-            background-position: center;
-            height: 400px;
+        /* Header mới - THAY THẾ BANNER CŨ */
+        .header-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Dải trắng (Logo và Tên trạm) */
+        .header-white-bar {
+            background-color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: center; /* Căn giữa dải trắng */
+            align-items: center;
+        }
+        .white-bar-content {
             display: flex;
             align-items: center;
-            padding-left: 50px;
-            position: relative;
+            text-align: left; /* Tên trạm căn trái */
+        }
+        .header-logo {
+            max-width: 150px; /* Điều chỉnh kích thước logo */
+            margin-right: 20px;
+        }
+        .header-title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0020C2; /* Màu xanh đậm */
+            font-family: 'Times New Roman', Times, serif; /* Font serif giống ảnh */
+            text-transform: uppercase;
         }
 
-        .logo-container {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        /* Dải xanh đậm (Icon và Giới thiệu) */
+        .header-blue-bar {
+            background-color: #0020C2; /* Cùng màu menu cũ */
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: start; /* Căn trái dải xanh */
+            align-items: center;
+        }
+        .blue-bar-content {
+            display: flex;
+            align-items: center;
+        }
+        .header-intro-icon {
+            font-size: 18px;
+            margin-right: 10px;
+            font-weight: normal; /* Unicode icon có thể không bold */
+        }
+        .header-intro-text {
+            font-size: 16px;
+            font-weight: bold;
         }
 
-        .logo-container img {
-            display: block;
-            max-width: 250px;
-            margin-bottom: 10px;
-        }
-
-        /* Phần nội dung phía dưới (Tùy chọn) */
+        /* Phần nội dung phía dưới (Tùy chọn - GIỮ NGUYÊN) */
         .content {
             padding: 50px;
             text-align: center;
@@ -88,12 +118,10 @@
 </head>
 <body>
 
-    <!-- Menu điều hướng -->
     <nav class="navbar">
         <div class="brand">Học thi chứng chỉ AO</div>
         <ul class="nav-links">
             <li><a href="#" class="active">TRANG CHỦ</a></li>
-            <!-- Thay link các trang trắc nghiệm của bạn vào đây -->
             <li><a href="https://chien83.github.io/hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
             <li><a href="#">VẤN ĐÁP</a></li>
             <li><a href="https://chien83.github.io/A0choMaytinh/">TEST - TRẮC NGHIỆM</a></li>
@@ -101,15 +129,16 @@
         </ul>
     </nav>
 
-    <!-- Khu vực Banner -->
-    <header class="hero">
-        <div class="logo-container">
-            <!-- Bạn cần tải ảnh logo lên cùng thư mục hoặc dùng link trực tiếp -->
-            <img src="logo-evn.png" alt="EVN Logo">
-            <div style="font-weight: bold; color: #0020C2;">
-                EVNNPT <br>
-                PTC1 <br>
-                <small>CHIẾN-0986362234</small>
+    <header class="header-container">
+        <div class="header-white-bar">
+            <div class="white-bar-content">
+                <img src="https://static.wixstatic.com/media/011f06_8b86e08d51194212b4859a8523c94246~mv2.png/v1/fill/w_181,h_81,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/logo-evnpt.png" alt="EVNPT Logo" class="header-logo">
+                <h2 class="header-title">TRẠM 500 KV HOÀ BÌNH</h2>
+            </div>
+        </div>
+        <div class="header-blue-bar">
+            <div class="blue-bar-content">
+                <span class="header-intro-icon">&#8962;</span> <span class="header-intro-text">Giới thiệu</span>
             </div>
         </div>
     </header>
