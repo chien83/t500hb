@@ -4,33 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Ôn Tập Trắc Nghiệm</title>
+    <!-- Thêm thư viện icon để dùng biểu tượng ngôi nhà -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Thiết kế chung */
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #ffffff;
         }
 
-        /* 1. Thanh Điều hướng (Màu xanh đậm) */
-        .navbar {
-            background-color: #0020C2;
-            color: white;
+        /* 1. KHỐI LOGO (Nền trắng) */
+        .header-top {
+            background-color: white;
+            padding: 15px 10%; /* Căn lề vào trong 10% */
             display: flex;
-            justify-content: space-between; /* Đẩy logo sang trái, menu sang phải */
             align-items: center;
-            padding: 5px 40px; /* Padding nhỏ để thanh điều hướng gọn gàng */
+        }
+
+        .header-top img {
+            height: 70px; /* Điều chỉnh độ cao logo */
+            width: auto;
+            margin-right: 20px;
+        }
+
+        .header-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-text .main-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a4694; /* Màu xanh EVN */
+            letter-spacing: -1px;
+        }
+
+        .header-text .main-title span {
+            color: #ed1c24; /* Màu đỏ chữ NPT */
+        }
+
+        .header-text .sub-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1a4694;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* 2. THANH ĐIỀU HƯỚNG (Nền xanh) */
+        .navbar {
+            background-color: #1a4694; /* Màu xanh đậm của EVNNPT */
+            padding: 0 10%;
+            display: flex;
+            align-items: center;
+            height: 45px;
             position: sticky;
             top: 0;
             z-index: 1000;
-            height: 60px; /* Cố định độ cao thanh menu */
-        }
-
-        /* Logo nằm trong thanh điều hướng */
-        .nav-logo {
-            height: 50px; /* Tự động co giãn theo chiều cao thanh menu */
-            width: auto;
-            display: block;
         }
 
         .nav-links {
@@ -38,53 +68,68 @@
             display: flex;
             margin: 0;
             padding: 0;
+            align-items: center;
+            height: 100%;
         }
 
         .nav-links li {
-            margin-left: 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
         }
 
         .nav-links a {
             color: white;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
-            padding: 5px 0;
-            text-transform: uppercase;
+            padding: 0 15px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            transition: background 0.3s;
         }
 
-        .nav-links a:hover, .nav-links a.active {
-            border-bottom: 3px solid white;
+        /* Hiệu ứng hover giống trang gốc */
+        .nav-links a:hover {
+            background-color: #0d3270;
         }
 
-        /* 2. Phần nội dung chính bên dưới */
+        /* Icon ngôi nhà */
+        .nav-links a i {
+            font-size: 18px;
+        }
+
+        /* 3. NỘI DUNG CHÍNH */
         .content {
-            padding: 100px 20px;
+            padding: 80px 20px;
             text-align: center;
         }
 
         .content h1 {
             font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        .content p {
-            color: #555;
-            font-size: 18px;
+            color: #333;
         }
     </style>
 </head>
 <body>
 
-    <!-- Thanh Điều hướng -->
-    <nav class="navbar">
-        <!-- Chèn Logo của bạn vào đây (Thay 'logo-cua-toi.png' bằng tên file của bạn) -->
-        <a href="#">
-            <img src="logo-cua-toi.png" alt="Logo" class="nav-logo">
-        </a>
+    <!-- PHẦN LOGO TRÊN CÙNG -->
+    <header class="header-top">
+        <!-- Thay 'logo-cua-toi.png' bằng file ảnh của bạn -->
+        <img src="logo-cua-toi.png" alt="Logo EVNNPT">
         
+        <div class="header-text">
+            <div class="main-title">EVN<span>NPT</span></div>
+            <div class="sub-title">Tổng công ty truyền tải điện quốc gia</div>
+        </div>
+    </header>
+
+    <!-- THANH MENU XANH -->
+    <nav class="navbar">
         <ul class="nav-links">
-            <li><a href="#" class="active">TRANG CHỦ</a></li>
+            <!-- Icon ngôi nhà cho Trang Chủ -->
+            <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
             <li><a href="https://chien83.github.io/hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
             <li><a href="#">VẤN ĐÁP</a></li>
             <li><a href="https://chien83.github.io/A0choMaytinh/">TEST - TRẮC NGHIỆM</a></li>
@@ -92,7 +137,7 @@
         </ul>
     </nav>
 
-    <!-- Nội dung trang -->
+    <!-- NỘI DUNG TRANG CHỦ -->
     <main class="content">
         <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
         <p>Chọn các mục trên menu để bắt đầu luyện tập.</p>
