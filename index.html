@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Học thi chứng chỉ AO</title>
+    <title>Hệ Thống Ôn Tập Trắc Nghiệm</title>
     <style>
         /* Thiết kế chung */
         body {
@@ -12,22 +12,25 @@
             background-color: #ffffff;
         }
 
-        /* 1. Thanh Menu trên cùng (Màu xanh đậm) */
+        /* 1. Thanh Điều hướng (Màu xanh đậm) */
         .navbar {
             background-color: #0020C2;
             color: white;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Đẩy logo sang trái, menu sang phải */
             align-items: center;
-            padding: 10px 40px;
+            padding: 5px 40px; /* Padding nhỏ để thanh điều hướng gọn gàng */
             position: sticky;
             top: 0;
             z-index: 1000;
+            height: 60px; /* Cố định độ cao thanh menu */
         }
 
-        .brand {
-            font-weight: bold;
-            font-size: 18px;
+        /* Logo nằm trong thanh điều hướng */
+        .nav-logo {
+            height: 50px; /* Tự động co giãn theo chiều cao thanh menu */
+            width: auto;
+            display: block;
         }
 
         .nav-links {
@@ -54,40 +57,9 @@
             border-bottom: 3px solid white;
         }
 
-        /* 2. Khu vực Tiêu đề (Logo và Tên trạm) */
-        .header-white-bar {
-            background-color: white;
-            padding: 30px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-bottom: 1px solid #eee; /* Đường kẻ mờ ngăn cách */
-        }
-
-        .white-bar-content {
-            display: flex;
-            align-items: center;
-            gap: 20px; /* Khoảng cách giữa ảnh và chữ */
-        }
-
-        .header-logo {
-            height: 80px; /* Bạn có thể tăng giảm chiều cao logo ở đây */
-            width: auto;
-        }
-
-        .header-title {
-            margin: 0;
-            font-size: 28px;
-            font-weight: bold;
-            color: #0020C2;
-            font-family: 'Times New Roman', Times, serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* 3. Phần nội dung chính */
+        /* 2. Phần nội dung chính bên dưới */
         .content {
-            padding: 60px 20px;
+            padding: 100px 20px;
             text-align: center;
         }
 
@@ -104,9 +76,13 @@
 </head>
 <body>
 
-    <!-- Thanh Menu -->
+    <!-- Thanh Điều hướng -->
     <nav class="navbar">
-        <div class="brand">Học thi chứng chỉ AO</div>
+        <!-- Chèn Logo của bạn vào đây (Thay 'logo-cua-toi.png' bằng tên file của bạn) -->
+        <a href="#">
+            <img src="logo-cua-toi.png" alt="Logo" class="nav-logo">
+        </a>
+        
         <ul class="nav-links">
             <li><a href="#" class="active">TRANG CHỦ</a></li>
             <li><a href="https://chien83.github.io/hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
@@ -116,17 +92,7 @@
         </ul>
     </nav>
 
-    <!-- Header chứa Logo và Tên trạm -->
-    <header class="header-white-bar">
-        <div class="white-bar-content">
-            <!-- QUAN TRỌNG: Thay 'logo-cua-toi.png' bằng tên file ảnh bạn đã up lên GitHub -->
-            <img src="logo.jpg" alt="EVNPT Logo" class="header-logo">
-            
-            <h2 class="header-title">TRẠM 500 KV HOÀ BÌNH</h2>
-        </div>
-    </header>
-
-    <!-- Nội dung -->
+    <!-- Nội dung trang -->
     <main class="content">
         <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
         <p>Chọn các mục trên menu để bắt đầu luyện tập.</p>
