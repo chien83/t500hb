@@ -9,17 +9,17 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #ffffff;
         }
 
-        /* Thanh Navigation (Thanh menu trên cùng - GIỮ NGUYÊN) */
+        /* 1. Thanh Menu trên cùng (Màu xanh đậm) */
         .navbar {
-            background-color: #0020C2; /* Màu xanh đậm giống ảnh */
+            background-color: #0020C2;
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 10px 40px;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -44,80 +44,67 @@
         .nav-links a {
             color: white;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             padding: 5px 0;
             text-transform: uppercase;
         }
 
         .nav-links a:hover, .nav-links a.active {
-            border-bottom: 3px solid white; /* Hiệu ứng gạch chân khi chọn */
+            border-bottom: 3px solid white;
         }
 
-        /* Header mới - THAY THẾ BANNER CŨ */
-        .header-container {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Dải trắng (Logo và Tên trạm) */
+        /* 2. Khu vực Tiêu đề (Logo và Tên trạm) */
         .header-white-bar {
             background-color: white;
-            padding: 20px;
+            padding: 30px 20px;
             display: flex;
-            justify-content: center; /* Căn giữa dải trắng */
+            justify-content: center;
             align-items: center;
+            border-bottom: 1px solid #eee; /* Đường kẻ mờ ngăn cách */
         }
+
         .white-bar-content {
             display: flex;
             align-items: center;
-            text-align: left; /* Tên trạm căn trái */
+            gap: 20px; /* Khoảng cách giữa ảnh và chữ */
         }
+
         .header-logo {
-            max-width: 150px; /* Điều chỉnh kích thước logo */
-            margin-right: 20px;
+            height: 80px; /* Bạn có thể tăng giảm chiều cao logo ở đây */
+            width: auto;
         }
+
         .header-title {
             margin: 0;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
-            color: #0020C2; /* Màu xanh đậm */
-            font-family: 'Times New Roman', Times, serif; /* Font serif giống ảnh */
+            color: #0020C2;
+            font-family: 'Times New Roman', Times, serif;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Dải xanh đậm (Icon và Giới thiệu) */
-        .header-blue-bar {
-            background-color: #0020C2; /* Cùng màu menu cũ */
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: start; /* Căn trái dải xanh */
-            align-items: center;
-        }
-        .blue-bar-content {
-            display: flex;
-            align-items: center;
-        }
-        .header-intro-icon {
-            font-size: 18px;
-            margin-right: 10px;
-            font-weight: normal; /* Unicode icon có thể không bold */
-        }
-        .header-intro-text {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        /* Phần nội dung phía dưới (Tùy chọn - GIỮ NGUYÊN) */
+        /* 3. Phần nội dung chính */
         .content {
-            padding: 50px;
+            padding: 60px 20px;
             text-align: center;
+        }
+
+        .content h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .content p {
+            color: #555;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
+    <!-- Thanh Menu -->
     <nav class="navbar">
         <div class="brand">Học thi chứng chỉ AO</div>
         <ul class="nav-links">
@@ -125,28 +112,25 @@
             <li><a href="https://chien83.github.io/hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
             <li><a href="#">VẤN ĐÁP</a></li>
             <li><a href="https://chien83.github.io/A0choMaytinh/">TEST - TRẮC NGHIỆM</a></li>
-            <li><a href="https://chien83.github.io/thia0/">TEST - Điện thoại</a></li>
+            <li><a href="https://chien83.github.io/thia0/">TEST - ĐIỆN THOẠI</a></li>
         </ul>
     </nav>
 
-    <header class="header-container">
-        <div class="header-white-bar">
-            <div class="white-bar-content">
-                <img src="https://static.wixstatic.com/media/011f06_8b86e08d51194212b4859a8523c94246~mv2.png/v1/fill/w_181,h_81,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/logo-evnpt.png" alt="EVNPT Logo" class="header-logo">
-                <h2 class="header-title">TRẠM 500 KV HOÀ BÌNH</h2>
-            </div>
-        </div>
-        <div class="header-blue-bar">
-            <div class="blue-bar-content">
-                <span class="header-intro-icon">&#8962;</span> <span class="header-intro-text">Giới thiệu</span>
-            </div>
+    <!-- Header chứa Logo và Tên trạm -->
+    <header class="header-white-bar">
+        <div class="white-bar-content">
+            <!-- QUAN TRỌNG: Thay 'logo-cua-toi.png' bằng tên file ảnh bạn đã up lên GitHub -->
+            <img src="logo-cua-toi.png" alt="EVNPT Logo" class="header-logo">
+            
+            <h2 class="header-title">TRẠM 500 KV HOÀ BÌNH</h2>
         </div>
     </header>
 
-    <div class="content">
+    <!-- Nội dung -->
+    <main class="content">
         <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
         <p>Chọn các mục trên menu để bắt đầu luyện tập.</p>
-    </div>
+    </main>
 
 </body>
 </html>
