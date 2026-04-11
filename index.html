@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Ôn Tập Trắc Nghiệm</title>
-    <!-- Thư viện icon FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Thiết lập chung */
@@ -13,6 +12,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #ffffff;
             line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
         }
 
         /* 1. KHỐI LOGO (Nền trắng) - Co giãn thông minh */
@@ -21,15 +22,15 @@
             padding: 15px 5%;
             display: flex;
             align-items: center;
-            justify-content: center; /* Luôn căn giữa logo */
+            justify-content: center;
         }
 
         .header-top img {
-            max-width: 100%;    /* Không vượt quá chiều ngang màn hình */
-            height: auto;       /* Giữ đúng tỷ lệ ảnh, không bị méo */
+            max-width: 100%;
+            height: auto;
             display: block;
-            width: 450px;       /* Kích thước logo chuẩn trên máy tính */
-            transition: width 0.3s ease; /* Hiệu ứng mượt khi đổi kích thước */
+            width: 450px;
+            transition: width 0.3s ease;
         }
 
         /* 2. THANH ĐIỀU HƯỚNG (Nền xanh) */
@@ -47,7 +48,7 @@
         .nav-links {
             list-style: none;
             display: flex;
-            flex-wrap: wrap; /* Tự động xuống dòng trên mobile nếu menu quá dài */
+            flex-wrap: wrap;
             margin: 0;
             padding: 0;
             justify-content: center;
@@ -75,7 +76,6 @@
             background-color: #0d3270;
         }
 
-        /* Icon ngôi nhà */
         .nav-links a i {
             font-size: 18px;
         }
@@ -100,47 +100,58 @@
             color: #666;
         }
 
+        /* 4. DÒNG BẢN QUYỀN CỐ ĐỊNH GÓC PHẢI DƯỚI */
+        .copyright {
+            position: fixed; /* Cố định vị trí so với màn hình */
+            bottom: 15px;    /* Cách đáy 15px */
+            right: 15px;     /* Cách mép phải 15px */
+            color: red;      /* Chữ màu đỏ */
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.6); /* Nền trắng mờ để dễ đọc */
+            padding: 2px 8px;
+            border-radius: 4px;
+            pointer-events: none; /* Tránh cản trở click chuột vào phần tử bên dưới */
+        }
+
         /* --- ĐIỀU CHỈNH RIÊNG CHO ĐIỆN THOẠI (Responsive) --- */
         @media (max-width: 768px) {
-            .header-top {
-                padding: 10px;
-            }
-
             .header-top img {
-                width: 280px; /* Logo thu nhỏ lại trên điện thoại cho cân đối */
+                width: 280px;
             }
 
             .nav-links a {
-                font-size: 11px; /* Chữ menu nhỏ lại để không bị chồng chéo */
+                font-size: 11px;
                 padding: 10px 8px;
             }
 
-            .content {
-                padding: 40px 15px;
-            }
-
             .content h1 {
-                font-size: 24px; /* Tiêu đề nhỏ lại cho vừa màn hình điện thoại */
+                font-size: 24px;
             }
 
             .content p {
                 font-size: 15px;
+            }
+
+            /* Nhỏ lại một chút trên điện thoại */
+            .copyright {
+                font-size: 11px;
+                bottom: 8px;
+                right: 8px;
+                padding: 1px 5px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- PHẦN LOGO TRÊN CÙNG -->
     <header class="header-top">
-        <!-- Đảm bảo file logo.png nằm cùng thư mục với file index.html này -->
         <img src="logo.png" alt="Logo Truyền tải điện Hòa Bình">
     </header>
 
-    <!-- THANH MENU XANH -->
     <nav class="navbar">
         <ul class="nav-links">
-            <!-- Icon ngôi nhà cho Trang Chủ -->
             <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
             <li><a href="https://chien83.github.io/hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
             <li><a href="#">VẤN ĐÁP</a></li>
@@ -149,11 +160,12 @@
         </ul>
     </nav>
 
-    <!-- NỘI DUNG TRANG CHỦ -->
     <main class="content">
         <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
         <p>Vui lòng chọn các mục trên menu để bắt đầu quá trình luyện tập và ôn thi.</p>
     </main>
-<div class="copyright">Edit: chien500hb</div>
+
+    <div class="copyright">Edit: chien500hb</div>
+
 </body>
 </html>
