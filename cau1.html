@@ -58,12 +58,49 @@
         padding: 20px 15px; /* Trên điện thoại chỉ để lề trái/phải 15px thôi */
     }
     h1 {
-        font-size: 22px; /* Giảm cỡ chữ tiêu đề cho vừa màn hình nhỏ */
+        font-size: 20px; /* Giảm cỡ chữ tiêu đề cho vừa màn hình nhỏ */
     }
     p, .question-link {
         font-size: 16px; /* Cỡ chữ vừa đọc trên điện thoại */
     }
+    /* 1. GIẢM THỤT LỀ CỦA DANH SÁCH */
+    .answer-section ul {
+        padding-left: 20px; /* Mặc định là 40px, giảm xuống 20px cho sát lề hơn */
+        margin-left: 0;
+    }
+
+    /* 2. GIẢM KHOẢNG CÁCH GIỮA CÁC TỪ VÀ TRÁNH DÃN CHỮ */
+    p, li {
+        font-size: 15px;
+        text-align: left; /* Trên mobile nên để left thay vì justify để tránh các lỗ hổng trắng giữa các từ */
+        word-spacing: -1px; /* Giảm nhẹ khoảng cách giữa các từ cho gọn */
+        letter-spacing: -0.2px; /* Giảm nhẹ khoảng cách giữa các chữ cái cho tinh tế */
+    }
+    
+    .answer-section li {
+        margin-bottom: 8px; /* Giảm bớt khoảng cách giữa các dòng liệt kê */
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
         
     </style>
