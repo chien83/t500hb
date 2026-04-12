@@ -17,9 +17,10 @@
             max-width: 900px;
             margin: 0 auto;
             background: #fff;
-            padding: 40px 60px;
+            padding: 40px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             min-height: 100vh;
+            box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng khung */
         }
         h1 {
             color: #00338d;
@@ -62,7 +63,26 @@
             color: #00338d; /* Đổi màu chữ sang xanh khi di chuột */
             text-decoration: underline;
         }
+
+/* 2. THÊM ĐOẠN NÀY VÀO DƯỚI CÙNG PHẦN STYLE ĐỂ TỐI ƯU ĐIỆN THOẠI */
+@media (max-width: 600px) {
+    body {
+        padding: 10px; /* Giảm lề ngoài của body */
+    }
+    .document-container {
+        padding: 20px 15px; /* Trên điện thoại chỉ để lề trái/phải 15px thôi */
+    }
+    h1 {
+        font-size: 22px; /* Giảm cỡ chữ tiêu đề cho vừa màn hình nhỏ */
+    }
+    p, .question-link {
+        font-size: 16px; /* Cỡ chữ vừa đọc trên điện thoại */
+    }
+}
+       
     </style>
+
+    
 </head>
 <body>
 
