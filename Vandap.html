@@ -13,7 +13,6 @@
             margin: 0;
             padding: 20px;
         }
-        /* Tạo khung trang giấy trắng */
         .document-container {
             max-width: 900px;
             margin: 0 auto;
@@ -22,13 +21,20 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             min-height: 100vh;
         }
-        /* Định dạng tiêu đề giống ảnh mẫu */
         h1 {
-            color: #00338d; /* Màu xanh đặc trưng của EVN */
+            color: #00338d;
             font-size: 28px;
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
             margin-bottom: 30px;
+        }
+        /* Style cho các đề mục lớn */
+        h2 {
+            color: #00338d;
+            font-size: 1.2em;
+            margin-top: 30px;
+            border-left: 4px solid #00338d;
+            padding-left: 10px;
         }
         p {
             margin-bottom: 15px;
@@ -41,6 +47,21 @@
             color: #00338d;
             font-weight: bold;
         }
+
+        /* TÙY CHỈNH CHO CÁC CÂU HỎI (LINK) */
+        .question-link {
+            text-decoration: none; /* Bỏ gạch chân */
+            color: #333; /* Màu chữ như văn bản bình thường */
+            display: block; /* Để cả dòng đều có thể click */
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .question-link:hover {
+            background-color: #f0f4f8; /* Hiện nền xám nhẹ khi di chuột */
+            color: #00338d; /* Đổi màu chữ sang xanh khi di chuột */
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -50,42 +71,30 @@
     
     <h1>Tổng quan về Nội dung Vấn đáp</h1>
     
-    <p>I. ĐIỀU ĐỘ</p>
-<p>Câu 1. Trình bày nhiệm vụ của Trưởng kíp trạm điện, trung tâm điều khiển theo thông tư quy định Quy trình điều độ?</p>
-<p>Câu 2. Trong điều độ vận hành thời gian thực, nhân viên vận hành cấp trên của trưởng kíp trạm 500kV là ai? Quan hệ công tác trong điều độ vận hành như thế nào?</p>
-<p>Câu 3. Trình bày quy định về nhận ca trong thông tư quy định Quy trình điều độ, giao nhận ca trong các trường hợp đặc biệt như thế nào?</p>
-<p>Câu 4. Trình bày quy định về giao ca trong thông tư quy định Quy trình điều độ, giao nhận ca trong các trường hợp đặc biệt như thế nào?</p>
-<p>Câu 5. Theo thông tư quy định Quy trình điều độ, quyền điều khiển, quyền kiểm tra, quyền nắm thông tin là gì? Trình bày phân cấp quyền điều khiển, quyền kiểm tra tại trạm?</p>
-<p>Câu 6. Theo thông tư quy định Quy trình điều độ, nguyên tắc phân cấp quyền điều khiển, quyền kiểm tra như thế nào? Trình bày phân cấp quyền điều khiển, quyền kiểm tra tại trạm?</p>
-<p>Câu 7. Trong trường hợp sự cố hoặc đe dọa sự cố, quyền điều khiển và quyền kiểm tra được thực hiện như thế nào theo thông tư quy định Quy trình điều độ?</p>
-<p>Câu 8. Trình bày nội dung và hình thức lệnh điều độ quy định tại thông tư quy định Quy trình điều độ. Yêu cầu khi thực hiện lệnh điều độ như thế nào?</p>
-<p>Câu 9. Theo thông tư quy định Quy trình điều độ, đơn vị quản lý vận hành nhà máy điện, trạm điện, trung tâm điều khiển có quyền điều khiển, quyền nắm thông tin các thiết bị nào?</p>
-<p>Câu 10. Trình bày quy định về biểu đồ điện áp theo thông tư Quy định quy trình điều độ? Thực tế thực hiện điều chỉnh điện áp tại trạm?</p>
-<p>II. XỬ LÝ SỰ CỐ</p>
-<p>Câu 11. Trình bày nguyên tắc xử lý sự cố theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia.</p>
-<p>Câu 12. Trình bày về mức quá áp cho phép đối với máy biến áp theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia. Quy định riêng của trạm (nếu có)?</p>
-<p>Câu 13. Trình bày quy định về báo cáo sự cố theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia.</p>
-<p>Câu 14. Trình bày xử lý của trưởng kíp khi máy biến áp có những hiện tượng khác thường theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia. Trường hợp nào phải tách máy biến áp ra khỏi vận hành?</p>
-<p>Câu 15. Theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia, nhiệm vụ của nhân viên vận hành trong xử lý sự cố như thế nào?</p>
-<p>Câu 16. Trình bày các yêu cầu về rơ le bảo vệ khi đưa các thiết bị vào vận hành theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia</p>
-<p>Câu 17. Trình bày về quy định vận hành quá tải đối với máy biến áp theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia. Quy định riêng của trạm (nếu có)?</p>
-<p>III. THAO TÁC</p>
-<p>Câu 18. Máy cắt cần phải được đưa ra kiểm tra, bảo dưỡng trong các trường hợp nào theo Thông tư quy định quy trình thao tác trong HTĐ?</p>
-<p>Câu 19. Trình bày quy định về Lập và duyệt phiếu thao tác theo Thông tư quy định quy trình thao tác trong HTĐ?</p>
-<p>Câu 20. Trình bày về Thao tác thanh cái theo Thông tư quy định quy trình thao tác trong HTĐ?</p>
-<p>Câu 21. Trình bày quy định về Thực hiện thao tác liên quan đến mạch nhị thứ theo Thông tư quy định quy trình thao tác trong HTĐ?</p>
-<p>Câu 22. Trình bày quy định về Thao tác máy biến áp theo Thông tư quy định quy trình thao tác trong HTĐ?</p>
-<p>Câu 23. Trình bày trình tự, nội dung đăng ký công tác đột xuất MBA AT2 của trạm theo Quy trình lập kế hoạch sửa chữa bảo dưỡng lưới điện và nhà máy điện?</p>
-<p>Câu 24. Trình bày quy định về Thao tác hòa điện, khép vòng theo Thông tư quy định quy trình thao tác trong HTĐ?</p>
-<p>Câu 25. Trình bày quy định về Thao tác dao cách ly theo Thông tư quy định quy trình thao tác trong HTĐ?</p>
-<p>IV. CÂU HỎI TÌNH HUỐNG</p>
-<p>Câu 26. Trình tự xử lý của trưởng kíp khi mất điện toàn trạm.</p>
-<p>Câu 27. Trình tự xử lý của trưởng kíp khi máy biến áp AT1 nhảy sự cố do bảo vệ so lệch tác động.</p>
-<p>Câu 28. Trình tự xử lý của trưởng kíp khi máy biến áp AT1 nhảy sự cố do bảo vệ rơ le nhiệt độ cuộn dây tác động.</p>
-<p>Câu 29. Trình tự xử lý của trưởng kíp khi máy biến áp bị quá áp 6%.</p>
-<p>Câu 30. Trình tự xử lý của trưởng kíp khi thanh cái C51 nhảy sự cố do bảo vệ so lệch tác động</p>
-<p>Câu 31. Trình tự xử lý của trưởng kíp khi đường dây nhảy sự cố do bảo vệ so lệch tác động.</p>
-    
+    <h2>I. ĐIỀU ĐỘ</h2>
+    <p><a href="cau1.html" class="question-link">Câu 1. Trình bày nhiệm vụ của Trưởng kíp trạm điện, trung tâm điều khiển theo thông tư quy định Quy trình điều độ?</a></p>
+    <p><a href="cau2.html" class="question-link">Câu 2. Trong điều độ vận hành thời gian thực, nhân viên vận hành cấp trên của trưởng kíp trạm 500kV là ai? Quan hệ công tác trong điều độ vận hành như thế nào?</a></p>
+    <p><a href="cau3.html" class="question-link">Câu 3. Trình bày quy định về nhận ca trong thông tư quy định Quy trình điều độ, giao nhận ca trong các trường hợp đặc biệt như thế nào?</a></p>
+    <p><a href="cau4.html" class="question-link">Câu 4. Trình bày quy định về giao ca trong thông tư quy định Quy trình điều độ, giao nhận ca trong các trường hợp đặc biệt như thế nào?</a></p>
+    <p><a href="cau5.html" class="question-link">Câu 5. Theo thông tư quy định Quy trình điều độ, quyền điều khiển, quyền kiểm tra, quyền nắm thông tin là gì? Trình bày phân cấp quyền điều khiển, quyền kiểm tra tại trạm?</a></p>
+    <p><a href="cau6.html" class="question-link">Câu 6. Theo thông tư quy định Quy trình điều độ, nguyên tắc phân cấp quyền điều khiển, quyền kiểm tra như thế nào? Trình bày phân cấp quyền điều khiển, quyền kiểm tra tại trạm?</a></p>
+    <p><a href="cau7.html" class="question-link">Câu 7. Trong trường hợp sự cố hoặc đe dọa sự cố, quyền điều khiển và quyền kiểm tra được thực hiện như thế nào theo thông tư quy định Quy trình điều độ?</a></p>
+    <p><a href="cau8.html" class="question-link">Câu 8. Trình bày nội dung và hình thức lệnh điều độ quy định tại thông tư quy định Quy trình điều độ. Yêu cầu khi thực hiện lệnh điều độ như thế nào?</a></p>
+    <p><a href="cau9.html" class="question-link">Câu 9. Theo thông tư quy định Quy trình điều độ, đơn vị quản lý vận hành nhà máy điện, trạm điện, trung tâm điều khiển có quyền điều khiển, quyền nắm thông tin các thiết bị nào?</a></p>
+    <p><a href="cau10.html" class="question-link">Câu 10. Trình bày quy định về biểu đồ điện áp theo thông tư Quy định quy trình điều độ? Thực tế thực hiện điều chỉnh điện áp tại trạm?</a></p>
+
+    <h2>II. XỬ LÝ SỰ CỐ</h2>
+    <p><a href="cau11.html" class="question-link">Câu 11. Trình bày nguyên tắc xử lý sự cố theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia.</a></p>
+    <p><a href="cau12.html" class="question-link">Câu 12. Trình bày về mức quá áp cho phép đối với máy biến áp theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia. Quy định riêng của trạm (nếu có)?</a></p>
+    <p><a href="cau14.html" class="question-link">Câu 14. Trình bày xử lý của trưởng kíp khi máy biến áp có những hiện tượng khác thường theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia...</a></p>
+
+    <h2>III. THAO TÁC</h2>
+    <p><a href="cau18.html" class="question-link">Câu 18. Máy cắt cần phải được đưa ra kiểm tra, bảo dưỡng trong các trường hợp nào theo Thông tư quy định quy trình thao tác trong HTĐ?</a></p>
+    <p><a href="cau19.html" class="question-link">Câu 19. Trình bày quy định về Lập và duyệt phiếu thao tác theo Thông tư quy định quy trình thao tác trong HTĐ?</a></p>
+
+    <h2>IV. CÂU HỎI TÌNH HUỐNG</h2>
+    <p><a href="cau26.html" class="question-link">Câu 26. Trình tự xử lý của trưởng kíp khi mất điện toàn trạm.</a></p>
+    <p><a href="cau27.html" class="question-link">Câu 27. Trình tự xử lý của trưởng kíp khi máy biến áp AT1 nhảy sự cố do bảo vệ so lệch tác động.</a></p>
     
     </div>
 
