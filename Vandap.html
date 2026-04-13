@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <script>
+    // Kiểm tra nếu người dùng chưa nhập pass từ trang chủ (hoặc muốn bắt nhập lại mỗi khi vào trang)
+    var pass = prompt("Trang này được bảo vệ. Vui lòng nhập mật khẩu:");
+    if (pass !== "0986362234") { // Thay YOUR_PASSWORD giống như trên
+        alert("Sai mật khẩu! Bạn sẽ được đưa về trang chủ.");
+        window.location.href = "index.html";
+    }
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tổng quan Vấn đáp - Hệ thống Ôn tập</title>
