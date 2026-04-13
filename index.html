@@ -146,7 +146,18 @@
         <ul class="nav-links">
             <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
             <li><a href="https://chien83.github.io/hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
-            <li><a href="Vandap.html">VẤN ĐÁP</a></li>
+<a href="javascript:void(0)" onclick="checkVandapPass()">VẤN ĐÁP</a>
+
+<script>
+function checkVandapPass() {
+    var pass = prompt("Nhập mật khẩu để vào mục Vấn Đáp:");
+    if (pass === "0986362234") { // Thay YOUR_PASSWORD bằng mật khẩu của bạn
+        window.location.href = "Vandap.html";
+    } else if (pass !== null) {
+        alert("Mật khẩu sai, vui lòng thử lại!");
+    }
+}
+</script>
             <li><a href="https://chien83.github.io/A0choMaytinh/">TEST - TRẮC NGHIỆM</a></li>
             <li><a href="https://chien83.github.io/thia0/">TEST - ĐIỆN THOẠI</a></li>
         </ul>
