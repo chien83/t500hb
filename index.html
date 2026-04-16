@@ -173,6 +173,16 @@
         }
     }
     </script>
-
+<div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:20000; align-items:center; justify-content:center;">
+    <div style="background:white; padding:25px; border-radius:15px; width:90%; max-width:350px; text-align:center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <h3 style="margin-top:0; color:#1a4694; font-size:18px;">XÁC THỰC TRUY CẬP</h3>
+        <p style="font-size:14px; color:#666;">Nhập mật khẩu để vào mục Vấn Đáp:</p>
+        <input type="password" id="passInput" style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box; text-align:center; outline:none;" placeholder="••••••••">
+        <div style="display:flex; gap:10px;">
+            <button onclick="closeModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer; font-weight:bold;">HỦY</button>
+            <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#1a4694; color:white; cursor:pointer; font-weight:bold;">XÁC NHẬN</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
