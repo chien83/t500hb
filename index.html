@@ -163,16 +163,35 @@
         </div>
     </footer>
 
-    <script>
-    function checkVandapPass() {
-        var pass = prompt("Nhập mật khẩu để vào mục Vấn Đáp:");
-        if (pass === "0986362234") { 
-            window.location.href = "Vandap.html";
-        } else if (pass !== null && pass !== "") {
-            alert("Mật khẩu sai, vui lòng thử lại!");
-        }
+<script>
+// Thay đổi hàm cũ của sếp thành hàm này
+function checkVandapPass() {
+    document.getElementById('passwordModal').style.display = 'flex';
+    document.getElementById('passInput').value = ''; // Xóa trắng ô nhập
+    document.getElementById('passInput').focus();    // Tự động trỏ chuột vào ô nhập
+}
+
+function closeModal() {
+    document.getElementById('passwordModal').style.display = 'none';
+}
+
+function validatePass() {
+    var pass = document.getElementById('passInput').value;
+    if (pass === "0986362234") {
+        window.location.href = "Vandap.html";
+    } else {
+        alert("Mật khẩu sai, vui lòng thử lại!");
+        document.getElementById('passInput').value = '';
     }
-    </script>
+}
+
+// Thêm tính năng nhấn Enter để xác nhận cho tiện sếp nhé
+document.getElementById('passInput')?.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        validatePass();
+    }
+});
+</script>
 <div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:20000; align-items:center; justify-content:center;">
     <div style="background:white; padding:25px; border-radius:15px; width:90%; max-width:350px; text-align:center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
         <h3 style="margin-top:0; color:#1a4694; font-size:18px;">XÁC THỰC TRUY CẬP</h3>
