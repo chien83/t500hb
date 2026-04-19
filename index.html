@@ -9,19 +9,22 @@
     <title>VẬN HÀNH TRẠM ĐIỆN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
-    /* 1. RESET & KHUNG GRID */
+    /* 1. RESET TOÀN CỤC - QUAN TRỌNG NHẤT */
     * { box-sizing: border-box; }
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    html, body {
+        margin: 0; padding: 0;
+        width: 100%; height: 100vh;
         background-color: #ffffff;
-        height: 100vh;
-        display: grid;
-        grid-template-rows: auto auto 1fr auto; /* Nav - Tiêu đề - Sơ đồ - Footer */
-        overflow: hidden; /* Khóa cuộn toàn trang để dành quyền cuộn cho vùng ảnh */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden; /* Khóa cuộn trang chính */
     }
 
-    /* 2. NAVBAR: PC (MENU TRÁI - LOGO PHẢI) */
+    body {
+        display: flex;
+        flex-direction: column; /* Xếp theo cột: Nav -> Tiêu đề -> Ảnh -> Footer */
+    }
+
+    /* 2. THANH NAVBAR - CỐ ĐỊNH CHIỀU CAO */
     .navbar {
         background-color: #1a4694;
         display: flex;
@@ -31,59 +34,62 @@
         padding: 0 15%; 
         height: 60px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        flex-shrink: 0; /* Không cho phép co lại */
         z-index: 1000;
-        flex-shrink: 0;
     }
-
     .nav-logo-box img { height: 42px; width: auto; background: white; padding: 2px 5px; border-radius: 4px; }
-    .nav-links { list-style: none; display: flex; margin: 0; padding: 0; }
+    .nav-links { list-style: none; display: flex; margin: 0; padding: 0; height: 100%; }
     .nav-links a {
         color: white; text-decoration: none; font-size: 15px; font-weight: bold;
-        padding: 0 15px; display: flex; align-items: center; text-transform: uppercase; cursor: pointer;
+        padding: 0 18px; display: flex; align-items: center; text-transform: uppercase;
     }
     .nav-links a i { font-size: 22px !important; margin-right: 6px; }
 
-    /* 3. TIÊU ĐỀ */
-    .header-info { padding: 5px 10px; text-align: center; background: #fff; flex-shrink: 0; }
+    /* 3. TIÊU ĐỀ PHỤ */
+    .header-info { 
+        padding: 5px 10px; text-align: center; 
+        background: #fff; flex-shrink: 0; 
+    }
     .header-info h1 { font-size: 20px; margin: 2px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
     .header-info p { font-size: 12px; color: #666; margin: 0; }
 
-    /* 4. VÙNG SƠ ĐỒ (BÍ KÍP ZOOM KHÔNG LỆCH Ở ĐÂY) */
+    /* 4. VÙNG CHỨA SƠ ĐỒ - TỰ ĐỘNG CO GIÃN ĐỂ KHÔNG MẤT NỘI DUNG */
     .image-container {
+        flex-grow: 1; /* Lấy toàn bộ khoảng trống ở giữa */
+        min-height: 0; /* Cho phép co nhỏ hơn kích thước ảnh */
         width: 100%;
-        height: 100%;
-        overflow: auto; /* CHO PHÉP CUỘN KHI PHÓNG TO */
         display: flex;
-        align-items: center; /* Căn giữa ảnh khi nhỏ */
+        align-items: center;
         justify-content: center;
-        background-color: #ffffff;
+        overflow: auto; /* Hiện thanh cuộn nội bộ nếu sếp zoom quá to */
         padding: 10px;
+        background-color: #ffffff;
     }
 
     .image-wrapper {
         position: relative;
-        display: inline-block; /* Quan trọng: Để khung ôm sát vào ảnh */
-        /* Không đặt width 100% ở đây để khi zoom ảnh to ra khung sẽ to theo */
+        display: inline-block; /* Ôm khít lấy ảnh */
     }
     
     .image-wrapper img {
         display: block;
-        max-width: 100%; /* Mặc định vừa màn hình */
+        max-width: 100%; 
+        max-height: calc(100vh - 150px); /* ÉP CHIỀU CAO: 100vh trừ đi Nav và Footer */
+        width: auto;
         height: auto;
         object-fit: contain;
         cursor: crosshair;
     }
 
-    /* HOTSPOTS - TÂM ĐIỂM DÍNH CHẶT VÀO ẢNH */
+    /* HOTSPOTS - CĂN TÂM TUYỆT ĐỐI */
     .hotspot {
         position: absolute;
         cursor: pointer;
         background-color: rgba(255, 255, 0, 0); 
         border: 2px dashed transparent;
         z-index: 10;
-        transform: translate(-50%, -50%); /* CĂN TÂM TUYỆT ĐỐI */
-        width: 40px; /* Kích thước vùng bấm cố định để dễ chạm trên mobile */
-        height: 40px;
+        transform: translate(-50%, -50%); /* Tâm ô khung nằm đúng điểm click */
+        width: 35px; height: 35px; /* Vùng bấm vừa đủ */
     }
     .hotspot:hover { background-color: rgba(0, 123, 255, 0.2); border: 2px solid #007bff; }
 
@@ -94,21 +100,21 @@
         display: flex;
         align-items: center;
         height: 30px;
-        flex-shrink: 0;
+        flex-shrink: 0; /* Cấm mất chân trang */
     }
     .footer-info { display: flex; gap: 20px; font-size: 12px; font-weight: bold; color: white; }
     .footer-info .name { color: #ffeb3b; }
 
     /* 6. MOBILE */
     @media (max-width: 768px) {
-        body { overflow: hidden; } /* Vẫn khóa body, chỉ cho cuộn trong image-container */
         .navbar { flex-direction: column; height: auto; padding: 10px; gap: 5px; }
-        .nav-logo-box { order: 1; } 
+        .nav-logo-box { order: 1; margin-bottom: 5px; } 
         .nav-links { order: 2; flex-wrap: wrap; justify-content: center; width: 100%; }
         .nav-links a { font-size: 11px; padding: 6px 10px; background: rgba(255,255,255,0.1); margin: 2px; border-radius: 4px; }
         .header-info h1 { font-size: 16px; }
-        .footer-bar { height: auto; padding: 10px; justify-content: center; }
-        .footer-info { flex-direction: column; gap: 5px; text-align: center; }
+        .footer-bar { height: auto; padding: 8px; justify-content: center; }
+        .footer-info { flex-direction: column; gap: 4px; text-align: center; }
+        .image-wrapper img { max-height: 50vh; } /* Mobile dành chỗ cho menu dạt ra */
     }
 
     /* MODALS */
@@ -134,7 +140,7 @@
 
 <div class="header-info">
     <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
-    <p>Sơ đồ nhất thứ trạm 500kV Hòa Bình</p>
+    <p>Nhấn vào thiết bị trên sơ đồ để xem thông số kỹ thuật</p>
 </div>
 
 <div class="image-container">
@@ -166,6 +172,7 @@
 </div>
 
 <script>
+// --- DỮ LIỆU ĐÃ CHỈNH TÂM ---
 const hotspotsData = [
     { id: "571", top: "40.05%", left: "68.16%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },    
     { id: "572", top: "39.65%", left: "56.24%", name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },        
@@ -193,7 +200,7 @@ window.addEventListener('DOMContentLoaded', () => {
         container.appendChild(div);
     });
 
-    // VŨ KHÍ LẤY TỌA ĐỘ
+    // CÔNG CỤ LẤY TỌA ĐỘ
     img.onclick = (e) => {
         const r = img.getBoundingClientRect();
         const x = ((e.clientX - r.left) / r.width * 100).toFixed(2);
