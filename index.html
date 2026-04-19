@@ -103,45 +103,57 @@
         }
 
         /* 5. FOOTER - THẲNG HÀNG VỚI THANH NAVI */
-        .footer-bar {
-            width: 100%;
-            background-color: #0000ff;
-            /* Padding 25% để thông tin thẳng hàng với Menu bên trên */
-            padding: 0 25%; 
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            height: 30px;
-            box-sizing: border-box;
-        }
-        
-        .footer-info {
-            display: flex;
-            gap: 20px;
-            font-size: 11px;
-            font-weight: bold;
-        }
+            .footer-bar {
+                height: auto;
+                min-height: 35px;
+                padding: 5px 10px;
+            }
+            .footer-info {
+                flex-wrap: wrap;
+                gap: 5px;
+                font-size: 10px;
+            }
         .footer-info .name { color: #ffeb3b; }
         .footer-info a { color: #ffffff !important; text-decoration: none !important; }
 
         /* --- THIẾT KẾ RIÊNG CHO ĐIỆN THOẠI (MOBILE) --- */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 0 10px; /* Thu hẹp lề trên mobile */
-                height: 50px;
-            }
-            .nav-logo-box img { height: 30px; }
-            .nav-links a {
-                padding: 0 8px;
-                font-size: 10px;
-            }
-            .nav-links a i { font-size: 14px; }
-            
-            .footer-bar { padding: 0 10px; }
-            .footer-info { gap: 10px; font-size: 9px; }
-            
-            .header-info h1 { font-size: 15px; }
-        }
+@media (max-width: 768px) {
+    body {
+        overflow-y: auto; /* Cho phép cuộn dọc trên điện thoại nếu nội dung quá dài */
+    }
+
+    .navbar {
+        height: auto; /* Bỏ chiều cao cố định */
+        flex-direction: column; /* Xếp Logo lên trên, Menu xuống dưới */
+        padding: 10px 0;
+        gap: 10px;
+    }
+
+    .nav-logo-box {
+        order: -1; /* Đảm bảo logo luôn nằm trên cùng */
+        width: 100%;
+        justify-content: center;
+        display: flex;
+    }
+
+    .nav-logo-box img {
+        height: 35px; /* Logo trên mobile nhỏ lại một chút cho cân đối */
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: center; /* Căn giữa các nút menu */
+        flex-wrap: wrap; /* Nếu menu quá dài, tự động xuống hàng thay vì biến mất */
+    }
+
+    .nav-links a {
+        padding: 8px 10px;
+        font-size: 11px; /* Chữ nhỏ lại để vừa màn hình điện thoại */
+    }
+
+    .header-info h1 {
+        font-size: 16px;
+    }
     </style>
 </head>
 <body>
