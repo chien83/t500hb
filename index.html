@@ -2,35 +2,44 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no">
     <link rel="icon" type="image/png" sizes="180x180" href="favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <title>VẬN HÀNH TRẠM ĐIỆN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- 1. THIẾT LẬP CHUNG --- */
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; /* Ngăn cuộn trang trên PC */
+        /* 1. RESET CHUẨN - ÉP MỌI THỨ VÀO KHUÔN KHỔ */
+        * {
+            box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước phần tử */
         }
 
-        /* --- 2. THANH NAVBAR (PC: MENU TRÁI - LOGO PHẢI) --- */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background-color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Khóa cuộn trang hoàn toàn */
+        }
+
+        /* 2. CẤU TRÚC GRID - CHÌA KHÓA GIẢI QUYẾT LỖI ZOOM */
+        body {
+            display: grid;
+            grid-template-rows: 80px auto 1fr 40px; /* Định nghĩa chiều cao từng phần rõ ràng */
+            height: 100vh;
+        }
+
+        /* 3. THANH NAVBAR (PC: TO RÕ, 15% LỀ) */
         .navbar {
             background-color: #1a4694;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 15%; /* Cân đối 15% theo ý sếp */
-            height: 80px;   /* Cao ráo, uy lực */
+            padding: 0 15%; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             z-index: 1000;
-            flex-shrink: 0;
         }
 
         .nav-links {
@@ -40,31 +49,21 @@
             height: 100%;
         }
 
-        .nav-links li { height: 100%; }
-
         .nav-links a {
             color: white;
             text-decoration: none;
-            font-size: 20px; /* Chữ to rõ */
+            font-size: 20px;
             font-weight: bold;
-            padding: 0 20px;
+            padding: 0 25px;
             height: 100%;
             display: flex;
             align-items: center;
             text-transform: uppercase;
-            cursor: pointer;
         }
 
         .nav-links a:hover { background-color: #0d3270; }
+        .nav-links a i { font-size: 32px !important; margin-right: 8px; }
 
-        /* Icon ngôi nhà siêu to */
-        .nav-links a i {
-            font-size: 32px !important;
-            margin-right: 8px;
-        }
-
-        /* Logo bên phải */
-        .nav-logo-box { display: flex; align-items: center; }
         .nav-logo-box img {
             height: 55px;
             width: auto;
@@ -73,50 +72,49 @@
             border-radius: 6px;
         }
 
-        /* --- 3. TIÊU ĐỀ PHỤ --- */
+        /* 4. TIÊU ĐỀ PHỤ */
         .header-info {
-            padding: 10px 20px;
+            padding: 8px 10px;
             text-align: center;
             background: #fff;
-            flex-shrink: 0;
         }
         .header-info h1 {
-            font-size: 26px;
+            font-size: 24px;
             margin: 0;
             color: #1a4694;
             text-transform: uppercase;
             font-weight: 800;
         }
-        .header-info p { font-size: 15px; color: #666; margin: 5px 0 0 0; }
+        .header-info p { font-size: 14px; color: #666; margin: 2px 0 0 0; }
 
-        /* --- 4. KHỐI SƠ ĐỒ TRUNG TÂM --- */
+        /* 5. VÙNG CHỨA SƠ ĐỒ - TỰ ĐỘNG CO GIÃN THÔNG MINH */
         .image-container {
-            flex: 1;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            background-color: #ffffff;
-            overflow: hidden;
-            min-height: 0; /* Quan trọng để không bị mất hình khi zoom */
+            overflow: hidden; /* Cấm tràn */
+            padding: 10px;
         }
 
         .image-wrapper {
             position: relative;
-            display: inline-block;
             max-width: 100%;
             max-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .image-wrapper img {
-            display: block;
             max-width: 100%;
             max-height: 100%;
-            object-fit: contain;
-            cursor: crosshair; /* Biến thành chữ thập để lấy tọa độ */
+            object-fit: contain; /* Ảnh luôn nằm gọn trong khung dù màn hình bé */
+            cursor: crosshair;
         }
 
-        /* Điểm chạm tàng hình */
+        /* HOTSPOTS */
         .hotspot {
             position: absolute;
             cursor: pointer;
@@ -129,29 +127,19 @@
             border: 2px solid #007bff;
         }
 
-        /* --- 5. FOOTER SIÊU MỎNG --- */
+        /* 6. FOOTER */
         .footer-bar {
-            width: 100%;
             background-color: #0000ff !important;
-            padding: 0 15%; /* Thẳng hàng với Menu */
+            padding: 0 15%;
             display: flex;
-            justify-content: flex-start;
             align-items: center;
-            height: 40px;
-            flex-shrink: 0;
-        }
-        
-        .footer-info {
-            display: flex;
-            gap: 30px;
-            font-size: 14px;
-            font-weight: bold;
             color: white;
         }
+        .footer-info { display: flex; gap: 30px; font-size: 14px; font-weight: bold; }
         .footer-info .name { color: #ffeb3b; }
-        .footer-info a { color: #ffffff !important; text-decoration: none !important; }
+        .footer-info a { color: white !important; text-decoration: none !important; }
 
-        /* --- 6. MODALS (THÔNG SỐ & MẬT KHẨU) --- */
+        /* 7. MODALS */
         #info-popup, #passwordModal {
             display: none;
             position: fixed;
@@ -162,35 +150,29 @@
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            width: 90%;
-            max-width: 350px;
+            width: 320px;
             border-top: 6px solid #1a4694;
         }
+        #pop-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        #pop-table td { padding: 8px 5px; border-bottom: 1px solid #eee; }
 
-        #info-popup h3, #passwordModal h3 { margin: 0 0 15px 0; color: #1a4694; font-size: 20px; text-align: center; }
-        #info-popup table { width: 100%; border-collapse: collapse; font-size: 15px; }
-        #info-popup td { padding: 8px 5px; border-bottom: 1px solid #eee; }
-        .btn-blue { background: #1a4694; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
-        .btn-gray { background: #eee; color: #333; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
-
-        /* --- 7. ĐIỀU CHỈNH RIÊNG CHO ĐIỆN THOẠI --- */
+        /* 8. MOBILE OPTIMIZATION */
         @media (max-width: 768px) {
-            body { overflow-y: auto; height: auto; }
+            body { 
+                grid-template-rows: auto auto 1fr auto; 
+                overflow-y: auto; 
+                height: auto; 
+            }
             .navbar { 
                 flex-direction: column; 
                 height: auto; 
                 padding: 10px; 
                 gap: 8px; 
             }
-            .nav-logo-box { order: -1; width: 100%; justify-content: center; }
-            .nav-links { flex-wrap: wrap; justify-content: center; width: 100%; }
-            .nav-links a { font-size: 12px; padding: 10px; background: rgba(255,255,255,0.1); margin: 2px; border-radius: 4px; }
-            .nav-links a i { font-size: 18px !important; }
-            
+            .nav-links a { font-size: 13px; padding: 8px 12px; }
+            .nav-links a i { font-size: 20px !important; }
             .footer-bar { height: auto; padding: 10px; justify-content: center; }
-            .footer-info { flex-direction: column; align-items: center; gap: 5px; font-size: 11px; }
-            
-            .header-info h1 { font-size: 18px; }
+            .footer-info { flex-direction: column; gap: 5px; text-align: center; }
             .image-container { height: 450px; }
         }
     </style>
@@ -202,10 +184,9 @@
             <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
             <li><a href="hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
             <li><a onclick="openPassModal()">VẤN ĐÁP</a></li>
-            <li><a href="A0choMaytinh/">TEST - TRẮC NGHIỆM</a></li>
-            <li><a href="thia0/">TEST - ĐIỆN THOẠI</a></li>
+            <li><a href="A0choMaytinh/">TEST-TRẮC NGHIỆM</a></li>
+            <li><a href="thia0/">TEST-ĐIỆN THOẠI</a></li>
         </ul>
-
         <div class="nav-logo-box">
             <img src="logo.png" alt="EVN NPT">
         </div>
@@ -213,12 +194,12 @@
 
     <div class="header-info">
         <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
-        <p>Nhấn vào thiết bị trên sơ đồ để xem thông số kỹ thuật</p>
+        <p>Nhấn vào thiết bị trên sơ đồ để xem thông số</p>
     </div>
 
     <div class="image-container">
-        <div class="image-wrapper" id="map-container">
-            <img src="image/t500hb.png" alt="Sơ đồ nhất thứ">
+        <div class="image-wrapper" id="sld-container">
+            <img src="image/t500hb.png" id="main-diagram" alt="Sơ đồ nhất thứ">
             </div>
     </div>
 
@@ -230,41 +211,36 @@
     </footer>
 
     <div id="info-popup">
-        <h3 id="pop-title">Thông số thiết bị</h3>
+        <h3 id="pop-title" style="margin-top:0; color:#1a4694;">Thông số</h3>
         <table id="pop-table"></table>
-        <button class="btn-blue" style="margin-top: 15px; background: #dc3545;" onclick="closePopup()">ĐÓNG</button>
+        <button onclick="closePopup()" style="margin-top:15px; width:100%; padding:10px; background:#dc3545; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">ĐÓNG</button>
     </div>
 
     <div id="passwordModal">
-        <h3>XÁC THỰC TRUY CẬP</h3>
-        <p style="text-align:center; font-size:14px; color:#666;">Nhập mật khẩu để vào mục Vấn Đáp:</p>
-        <input type="password" id="passInput" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box; text-align:center;" placeholder="••••••••">
+        <h3>XÁC THỰC</h3>
+        <input type="password" id="passInput" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px; text-align:center;" placeholder="Mật khẩu">
         <div style="display:flex; gap:10px;">
-            <button class="btn-gray" onclick="closePassModal()">HỦY</button>
-            <button class="btn-blue" onclick="validatePass()">VÀO</button>
+            <button onclick="closePassModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer;">HỦY</button>
+            <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
         </div>
     </div>
 
     <script>
-    // 1. DỮ LIỆU THIẾT BỊ (Sếp có thể tự chỉnh tọa độ % bằng công cụ bên dưới)
+    // --- KHÔI PHỤC DỮ LIỆU VÀ VŨ KHÍ LẤY TỌA ĐỘ ---
     const hotspotsData = [
-        { id: "571", top: "36.50%", left: "80.80%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", type: "3AP2 FI", volt: "550kV", cur: "3150A" },
-        { id: "572", top: "36.50%", left: "60.50%", w: "4%", h: "5%", name: "Máy cắt 572", brand: "ABB", type: "LTB 550", volt: "550kV", cur: "4000A" },
-        { id: "573", top: "36.50%", left: "38.50%", w: "4%", h: "5%", name: "Máy cắt 573", brand: "ABB", type: "LTB 550", volt: "550kV", cur: "4000A" },
-        { id: "574", top: "36.50%", left: "18.50%", w: "4%", h: "5%", name: "Máy cắt 574", brand: "Siemens", type: "3AP2 FI", volt: "550kV", cur: "3150A" },
-        { id: "AT1", top: "67.00%", left: "73.50%", w: "7%", h: "8%", name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
-        { id: "AT2", top: "67.00%", left: "42.50%", w: "7%", h: "8%", name: "MBA AT2", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
-        { id: "K504", top: "12.00%", left: "38.50%", w: "4%", h: "5%", name: "Máy cắt 504", brand: "ABB", type: "LTB 550", volt: "550kV", cur: "4000A" },
-        { id: "221", top: "79.00%", left: "81.00%", w: "4%", h: "5%", name: "Máy cắt 221", brand: "Siemens", volt: "245kV", cur: "2500A" },
-        { id: "222", top: "79.00%", left: "38.50%", w: "4%", h: "5%", name: "Máy cắt 222", brand: "Siemens", volt: "245kV", cur: "2500A" },
-        { id: "200", top: "75.00%", left: "57.50%", w: "4%", h: "3%", name: "Máy cắt 200", brand: "ABB", volt: "245kV", cur: "3150A" },
-        { id: "341", top: "67.50%", left: "56.00%", w: "4%", h: "4%", name: "Máy cắt 341", brand: "Nu-Lec", volt: "38kV" },
-        { id: "342", top: "67.50%", left: "21.50%", w: "4%", h: "4%", name: "Máy cắt 342", brand: "Nu-Lec", volt: "38kV" }
+        { id: "571", top: "36.20%", left: "80.80%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },
+        { id: "572", top: "36.20%", left: "60.40%", w: "4%", h: "5%", name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },
+        { id: "573", top: "36.20%", left: "38.20%", w: "4%", h: "5%", name: "Máy cắt 573", brand: "ABB", volt: "550kV", cur: "4000A" },
+        { id: "574", top: "36.20%", left: "18.20%", w: "4%", h: "5%", name: "Máy cắt 574", brand: "Siemens", volt: "550kV", cur: "3150A" },
+        { id: "AT1", top: "65.50%", left: "73.20%", w: "7%", h: "8%", name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
+        { id: "AT2", top: "65.50%", left: "42.20%", w: "7%", h: "8%", name: "MBA AT2", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" }
     ];
 
-    // 2. VẼ ĐIỂM CHẠM
     window.addEventListener('DOMContentLoaded', () => {
-        const container = document.getElementById('map-container');
+        const container = document.getElementById('sld-container');
+        const img = document.getElementById('main-diagram');
+
+        // Vẽ Hotspots
         hotspotsData.forEach(item => {
             const div = document.createElement('div');
             div.className = 'hotspot';
@@ -273,8 +249,7 @@
             container.appendChild(div);
         });
 
-        // CÔNG CỤ LẤY TỌA ĐỘ KHI CLICK ẢNH
-        const img = container.querySelector('img');
+        // VŨ KHÍ LẤY TỌA ĐỘ
         img.onclick = (e) => {
             const r = img.getBoundingClientRect();
             const x = ((e.clientX - r.left) / r.width * 100).toFixed(2);
@@ -285,36 +260,26 @@
         };
     });
 
-    // 3. XỬ LÝ POPUP THÔNG SỐ
     function showDeviceInfo(id) {
         const item = hotspotsData.find(x => x.id === id);
         if(!item) return;
         document.getElementById('pop-title').innerText = item.name;
-        let html = `<tr><td><b>Hãng:</b></td><td>${item.brand || '---'}</td></tr>
-                    <tr><td><b>U định mức:</b></td><td>${item.volt || '---'}</td></tr>`;
-        if(item.cur) html += `<tr><td><b>I định mức:</b></td><td>${item.cur}</td></tr>`;
+        let html = `<tr><td><b>Hãng:</b></td><td>${item.brand}</td></tr>
+                    <tr><td><b>Điện áp:</b></td><td>${item.volt}</td></tr>`;
+        if(item.cur) html += `<tr><td><b>Dòng ĐM:</b></td><td>${item.cur}</td></tr>`;
         if(item.p) html += `<tr><td><b>Công suất:</b></td><td>${item.p}</td></tr>`;
-        html += `<tr><td><b>Trạng thái:</b></td><td><b style="color:green">Vận hành bình thường</b></td></tr>`;
+        html += `<tr><td><b>Trạng thái:</b></td><td><b style="color:green">Bình thường</b></td></tr>`;
         document.getElementById('pop-table').innerHTML = html;
         document.getElementById('info-popup').style.display = 'block';
     }
+    
     function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
-
-    // 4. XỬ LÝ MẬT KHẨU VẤN ĐÁP
-    function openPassModal() { 
-        document.getElementById('passwordModal').style.display = 'block'; 
-        document.getElementById('passInput').value = '';
-        document.getElementById('passInput').focus();
-    }
+    function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
     function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
     function validatePass() {
-        if(document.getElementById('passInput').value === "0986362234") {
-            window.location.href = "Vandap.html";
-        } else {
-            alert("Mật khẩu sai sếp ơi!");
-        }
+        if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
+        else alert("Mật khẩu sai!");
     }
-    document.getElementById('passInput').onkeypress = (e) => { if(e.key === 'Enter') validatePass(); };
     </script>
 </body>
 </html>
