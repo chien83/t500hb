@@ -27,7 +27,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 0 25%; 
-        height: 55px;
+        height: 45px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         z-index: 1000;
     }
@@ -59,7 +59,7 @@
     }
 
     /* TIÊU ĐỀ */
-    .header-info { padding: px 20px; text-align: center; background: #fff; flex-shrink: 0; /* Đảm bảo phần này không bị méo khi ảnh sơ đồ quá to */ }
+    .header-info { padding: 2px 10px; text-align: center; background: #fff; flex-shrink: 0; /* Đảm bảo phần này không bị méo khi ảnh sơ đồ quá to */ }
     .header-info h1 { 
     font-size: clamp(14px, 2vh, 18px); /* Chữ tự nhỏ lại nếu màn hình thấp */
     margin: 2px 0; 
@@ -69,32 +69,28 @@
     .header-info p { font-size: 12px; color: #666; margin: 2px 0; }
 
     /* SƠ ĐỒ & HOTSPOTS */
+    /* ÉP KHUNG ẢNH (Quan trọng nhất) */
     .image-container {
         flex: 1;
+        min-height: 0; /* Cho phép container thu nhỏ nhỏ hơn nội dung */
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        background-color: #ffffff;
         overflow: hidden;
-        /* DÒNG QUAN TRỌNG NHẤT ĐỂ SỬA LỖI ZOOM */
-    min-height: 0;
     }
 
     /* Khung bọc ảnh để định vị các điểm chạm */
     .image-wrapper {
         position: relative;
-        display: inline-block; /* Quan trọng: Để khung chỉ rộng bằng nội dung ảnh */
         max-width: 100%;
-        max-height: 100%;
-        margin: auto; /* Căn giữa */
+        max-height: 100%; /* Không bao giờ cao quá vùng trống còn lại */
+        display: flex;
     }
     
     .image-wrapper img {
-        display: block; /* Bỏ khoảng trống thừa phía dưới ảnh */
         max-width: 100%;
         max-height: 100%;
-        object-fit: contain;
+        object-fit: contain; /* Ảnh tự co lại để vừa khít màn hình 100% zoom */
     }
 
     /* Các ô điểm chạm tàng hình */
@@ -146,7 +142,7 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        height: 35px;
+        height: 25px;
         box-sizing: border-box;
     }
     .footer-info { display: flex; gap: 20px; font-size: 11px; font-weight: bold; color: white; }
@@ -277,16 +273,36 @@ function validatePass() {
 }
 document.getElementById('passInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') validatePass(); });
     
-    // CÔNG CỤ LẤY TỌA ĐỘ: Sếp click vào đâu trên ảnh, nó hiện tọa độ % ở đó
-document.querySelector('#sld-container img').addEventListener('click', function(e) {
-    const rect = e.target.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
-    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
+
+// HÀM LẤY TỌA ĐỘ - click vào đâu trên ảnh, nó hiện tọa độ % ở đó
+window.addEventListener('DOMContentLoaded', () => {
+    // Tìm tấm ảnh trong khung sơ đồ
+    const sldImg = document.querySelector('.image-wrapper img');
     
-    // Hiện ra thông báo để sếp copy
-    const coords = `Tọa độ mới cho thiết bị: top: "${y}%", left: "${x}%"`;
-    console.log(coords);
-    alert(coords);
+    if (sldImg) {
+        console.log("Đã kích hoạt công cụ lấy tọa độ!");
+        
+        sldImg.addEventListener('click', function(e) {
+            // Lấy kích thước thực tế của tấm ảnh tại thời điểm click
+            const rect = this.getBoundingClientRect();
+            
+            // Tính toán % dựa trên vị trí click so với tấm ảnh
+            const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
+            const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
+            
+            const result = `top: "${y}%", left: "${x}%"`;
+            
+            // 1. Hiện thông báo trên màn hình
+            alert("Đã lấy tọa độ cho sếp:\n" + result);
+            
+            // 2. In ra console (F12) để sếp copy cho dễ
+            console.log("-----------------------");
+            console.log("Copy dòng này dán vào hotspotsData:");
+            console.log(result);
+        });
+    } else {
+        console.error("Không tìm thấy tấm ảnh sơ đồ để lấy tọa độ!");
+    }
 });
 </script>
 </body>
