@@ -3,60 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <meta name="format-detection" content="telephone=no">
-    
     <link rel="icon" type="image/png" sizes="180x180" href="favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <title>VẬN HÀNH TRẠM ĐIỆN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* 1. THIẾT LẬP TOÀN TRANG (KHÔNG CUỘN) */
+        /* 1. THIẾT LẬP KHUNG TRANG CHUẨN DASHBOARD */
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
+            background-color: #f4f7f9;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Khóa cuộn trang */
+            overflow: hidden;
         }
 
-        /* 2. LOGO - CĂN THẲNG VỚI ICON HOME (18px) */
-        .header-top {
-            background-color: white;
-            padding: 8px 0;
-            display: flex;
-            justify-content: flex-start;
-            width: 100%;
-        }
-        
-        .header-top img {
-            height: 45px; /* Chiều cao vừa phải để không chiếm chỗ ảnh sơ đồ */
-            width: auto;
-            margin-left: 18px; /* Khớp với padding của icon Home bên dưới */
-        }
-
-        /* 3. MENU NAVBAR */
+        /* 2. THANH NAVBAR MỚI (CHỨA CẢ LOGO VÀ MENU) */
         .navbar {
             background-color: #1a4694;
             display: flex;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            align-items: center;
+            justify-content: space-between; /* Đẩy logo sang trái, menu sang phải */
+            padding: 0 20px;
+            height: 55px; /* Độ cao vừa phải */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .nav-logo-box {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-logo-box img {
+            height: 40px; /* Logo nằm gọn trong thanh nav */
+            width: auto;
+            background: white; /* Tạo nền trắng cho logo nổi bật nếu cần */
+            padding: 2px 5px;
+            border-radius: 4px;
         }
 
         .nav-links {
             list-style: none;
             display: flex;
             margin: 0; padding: 0;
+            height: 100%;
         }
+
+        .nav-links li { height: 100%; }
 
         .nav-links a {
             color: white;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
-            padding: 12px 18px; /* 18px này khớp với margin-left của Logo */
+            padding: 0 15px;
+            height: 100%;
             display: flex;
             align-items: center;
             text-transform: uppercase;
@@ -65,78 +70,80 @@
         }
 
         .nav-links a:hover { background-color: #0d3270; }
-        .nav-links a i { font-size: 18px; }
+        .nav-links a i { font-size: 16px; }
 
-        /* 4. TIÊU ĐỀ NGẮN GỌN */
-        .content {
-            padding: 10px 20px;
+        /* 3. TIÊU ĐỀ PHỤ */
+        .header-info {
+            padding: 8px 20px;
             text-align: center;
+            background: #fff;
         }
-        .content h1 {
+        .header-info h1 {
             font-size: 18px;
-            color: #333;
-            margin: 5px 0;
-            font-weight: 800;
+            margin: 0;
+            color: #1a4694;
+            text-transform: uppercase;
         }
-        .content p { font-size: 13px; color: #666; margin: 0; }
+        .header-info p { font-size: 12px; color: #666; margin: 2px 0 0 0; }
 
-        /* 5. KHỐI CHỨA SƠ ĐỒ - GIÃN 2 BÊN, KHÔNG VỠ HÌNH */
+        /* 4. KHỐI SƠ ĐỒ TRUNG TÂM */
         .image-container {
-            flex: 1; /* Lấy toàn bộ không gian còn lại */
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
+            background-color: #ffffff;
             overflow: hidden;
-            background-color: #fcfcfc;
-        }
-        
-        .image-container img {
-            width: 100%;      /* Giãn hết chiều ngang */
-            height: 100%;     /* Giãn hết chiều dọc của vùng trống */
-            object-fit: contain; /* QUAN TRỌNG: Giãn tối đa nhưng giữ đúng tỷ lệ sơ đồ, không làm vỡ/méo */
-        }
-
-        /* 6. FOOTER - DẠT TRÁI */
-        .footer-bar {
-            width: 100%;
-            background-color: #0000ff;
-            padding: 5px 18px; /* 18px để thẳng hàng với Logo và Home */
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            height: 40px;
+            padding: 5px;
             box-sizing: border-box;
         }
         
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Đảm bảo ảnh giãn rộng tối đa mà không méo */
+        }
+
+        /* 5. FOOTER SIÊU MỎNG (DẠT TRÁI) */
+        .footer-bar {
+            width: 100%;
+            background-color: #0000ff;
+            padding: 0 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 30px; /* Thu nhỏ footer đáng kể */
+        }
+        
         .footer-info {
-            text-align: left;
-            line-height: 1.2;
-            font-size: 13px;
+            display: flex;
+            gap: 15px; /* Khoảng cách giữa tên và số ĐT */
+            font-size: 11px;
             font-weight: bold;
         }
 
-        .footer-info .name { color: #ff0000; }
+        .footer-info .name { color: #ffeb3b; } /* Màu vàng cho nổi bật trên nền xanh */
         .footer-info a {
             color: #ffffff !important;
             text-decoration: none !important;
         }
 
-        /* Responsive cho Mobile */
+        /* Responsive Mobile */
         @media (max-width: 768px) {
-            .header-top img { height: 35px; margin-left: 10px; }
-            .nav-links a { font-size: 11px; padding: 10px 10px; }
-            .footer-bar { padding: 5px 10px; }
+            .navbar { height: auto; flex-direction: column; padding: 5px; }
+            .nav-logo-box { margin-bottom: 5px; }
+            .nav-links a { padding: 8px 5px; font-size: 10px; }
+            .image-container { padding: 0; }
         }
     </style>
 </head>
 <body>
 
-    <header class="header-top">
-        <img src="logo.png" alt="Logo">
-    </header>
-
     <nav class="navbar">
+        <div class="nav-logo-box">
+            <img src="logo.png" alt="EVN NPT">
+        </div>
         <ul class="nav-links">
             <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
             <li><a href="hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
@@ -146,10 +153,10 @@
         </ul>
     </nav>
 
-    <main class="content">
+    <div class="header-info">
         <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
         <p>Vui lòng chọn các mục trên menu để bắt đầu</p>
-    </main>
+    </div>
 
     <div class="image-container">
         <img src="image/t500hb.png" alt="Sơ đồ nhất thứ">
@@ -157,19 +164,18 @@
 
     <footer class="footer-bar">
         <div class="footer-info">
-            <span class="name">Edit: Chien500hb</span><br>
-            <a href="tel:0986362234">0986362234</a>
+            <span class="name">Edit: Chien500hb</span>
+            <a href="tel:0986362234" class="phone">SĐT: 0986362234</a>
         </div>
     </footer>
 
     <div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:20000; align-items:center; justify-content:center;">
-        <div style="background:white; padding:25px; border-radius:15px; width:90%; max-width:350px; text-align:center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-            <h3 style="margin-top:0; color:#1a4694; font-size:18px;">XÁC THỰC TRUY CẬP</h3>
-            <p style="font-size:14px; color:#666;">Nhập mật khẩu để vào mục Vấn Đáp:</p>
-            <input type="password" id="passInput" style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box; text-align:center;" placeholder="••••••••">
+        <div style="background:white; padding:25px; border-radius:15px; width:90%; max-width:350px; text-align:center;">
+            <h3 style="margin-top:0; color:#1a4694; font-size:18px;">XÁC THỰC</h3>
+            <input type="password" id="passInput" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px; text-align:center;" placeholder="Nhập mật khẩu">
             <div style="display:flex; gap:10px;">
-                <button onclick="closeModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer; font-weight:bold;">HỦY</button>
-                <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#1a4694; color:white; cursor:pointer; font-weight:bold;">XÁC NHẬN</button>
+                <button onclick="closeModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer;">HỦY</button>
+                <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#1a4694; color:white; cursor:pointer;">OK</button>
             </div>
         </div>
     </div>
@@ -180,21 +186,12 @@
         document.getElementById('passInput').value = '';
         document.getElementById('passInput').focus();
     }
-
-    function closeModal() {
-        document.getElementById('passwordModal').style.display = 'none';
-    }
-
+    function closeModal() { document.getElementById('passwordModal').style.display = 'none'; }
     function validatePass() {
         var pass = document.getElementById('passInput').value;
-        if (pass === "0986362234") {
-            window.location.href = "Vandap.html";
-        } else {
-            alert("Mật khẩu sai, vui lòng thử lại!");
-            document.getElementById('passInput').value = '';
-        }
+        if (pass === "0986362234") { window.location.href = "Vandap.html"; } 
+        else { alert("Sai mật khẩu!"); document.getElementById('passInput').value = ''; }
     }
-
     document.getElementById('passInput').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') validatePass();
     });
