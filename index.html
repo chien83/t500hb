@@ -4,36 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="icon" type="image/png" href="favicon.png">
-    <title>VẬN HÀNH TRẠM 500KV HÒA BÌNH</title>
+    <title>Hệ thống Trắc nghiệm - Trạm 500kV Hòa Bình</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* 1. RESET & LAYOUT CHUẨN */
         * { box-sizing: border-box; }
         body, html {
-            margin: 0; padding: 0; 
-            width: 100%; 
-            height: 100vh; height: 100dvh; /* FIX 2: Bám đáy mobile chuẩn */
+            margin: 0; padding: 0; width: 100%; 
+            height: 100vh; height: 100dvh; /* Ưu tiên chiều cao thực tế trên mobile */
             background-color: #ffffff; font-family: 'Segoe UI', sans-serif;
             overflow: hidden; display: flex; flex-direction: column;
         }
 
-        /* NAVBAR PC */
+        /* 2. NAVBAR: PC (MENU TRÁI - LOGO PHẢI) */
         .navbar {
             background-color: #1a4694; height: 60px; display: flex;
             flex-direction: row-reverse; align-items: center; justify-content: space-between;
             padding: 0 15%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); flex-shrink: 0; z-index: 1000;
         }
         .nav-logo-box img { height: 42px; width: auto; background: white; padding: 2px 5px; border-radius: 4px; }
-        .nav-links { list-style: none; display: flex; margin: 0; padding: 0; align-items: center; }
+        .nav-links { list-style: none; display: flex; margin: 0; padding: 0; }
         .nav-links a {
             color: white; text-decoration: none; font-size: 15px; font-weight: bold;
             padding: 0 15px; display: flex; align-items: center; text-transform: uppercase; cursor: pointer;
         }
         .nav-links a i { font-size: 22px !important; margin-right: 8px; }
 
-        .header-info { padding: 5px 10px; text-align: center; flex-shrink: 0; }
-        .header-info h1 { font-size: 18px; margin: 5px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
+        /* 3. TIÊU ĐỀ THEO YÊU CẦU MỚI */
+        .header-info { padding: 8px 10px; text-align: center; flex-shrink: 0; }
+        .header-info h1 { 
+            font-size: 22px; margin: 0; color: #1a4694; 
+            text-transform: uppercase; font-weight: 800; 
+        }
+        .header-info p { 
+            font-size: 13px; color: #888; /* Màu mờ */
+            margin: 3px 0 0 0; font-style: italic; 
+        }
 
-        /* VÙNG SƠ ĐỒ SVG */
+        /* 4. VÙNG CHỨA SVG "MỘT KHỐI" - CHỐNG LỆCH TỌA ĐỘ */
         .main-container {
             flex-grow: 1; width: 100%; overflow: auto;
             display: flex; align-items: center; justify-content: center;
@@ -48,45 +56,33 @@
         .hotspot { fill: rgba(255, 255, 0, 0); stroke: none; cursor: pointer; }
         .hotspot:hover { fill: rgba(0, 123, 255, 0.2); stroke: #007bff; stroke-width: 0.2; }
 
-        /* FOOTER CỐ ĐỊNH */
-        .footer-bar { 
-            background-color: #0000ff; height: 30px; display: flex; align-items: center; 
-            padding: 0 15%; flex-shrink: 0; color: white;
-        }
-        .footer-info { width: 100%; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; }
+        /* 5. FOOTER CỐ ĐỊNH */
+        .footer-bar { background-color: #0000ff; height: 30px; display: flex; align-items: center; padding: 0 15%; flex-shrink: 0; }
+        .footer-info { color: white; font-size: 12px; font-weight: bold; width: 100%; display: flex; justify-content: space-between; }
         .footer-info a { color: #ffeb3b; text-decoration: none; }
 
-        /* FIX 3: ĐẶC TRỊ MOBILE SIÊU GỌN */
+        /* 6. TỐI ƯU MOBILE SIÊU GỌN */
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; height: auto; padding: 5px; gap: 4px; }
+            .navbar { flex-direction: column; height: auto; padding: 5px; gap: 5px; }
             .nav-logo-box { order: 1; }
-            .nav-logo-box img { height: 32px; } /* Thu nhỏ logo */
+            .nav-logo-box img { height: 30px; }
             
-            .nav-links { 
-                order: 2; flex-wrap: wrap; justify-content: center; width: 100%; 
-                gap: 2px; /* Sát các nút vào nhau */
-            }
-            .nav-links li { display: flex; }
-            .nav-links a { 
-                font-size: 10px; padding: 6px 8px; 
-                background: rgba(255,255,255,0.1); border-radius: 3px; 
-            }
+            .nav-links { order: 2; flex-wrap: wrap; justify-content: center; width: 100%; gap: 3px; }
+            .nav-links a { font-size: 10px; padding: 6px 8px; background: rgba(255,255,255,0.1); border-radius: 3px; }
             .nav-links a i { font-size: 14px !important; margin-right: 4px; }
 
-            .header-info { padding: 2px; }
-            .header-info h1 { font-size: 14px; margin: 3px 0; }
+            .header-info h1 { font-size: 16px; }
+            .header-info p { font-size: 11px; }
 
             .footer-bar { padding: 0 10px; height: 28px; }
             .footer-info { font-size: 10px; }
-            
-            .main-container { padding: 2px; }
         }
 
-        /* MODALS */
+        /* MODALS (THÔNG SỐ & MẬT KHẨU) */
         #info-popup, #passwordModal {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 30000; background: white; padding: 20px; border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); width: 280px; border-top: 5px solid #1a4694;
+            z-index: 30000; background: white; padding: 25px; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4); width: 300px; border-top: 6px solid #1a4694;
         }
     </style>
 </head>
@@ -104,7 +100,8 @@
 </nav>
 
 <div class="header-info">
-    <h1>TRẠM 500KV HÒA BÌNH</h1>
+    <h1>Hệ thống Trắc nghiệm</h1>
+    <p>nhấn vào thiết bị để xem thông số kỹ thuật</p>
 </div>
 
 <div class="main-container">
@@ -127,21 +124,36 @@
 </footer>
 
 <div id="info-popup">
-    <h3 id="pop-title" style="margin:0; color:#1a4694; font-size:16px;">Thông số</h3>
-    <div id="pop-content" style="margin-top:10px;"></div>
-    <button onclick="closePopup()" style="margin-top:15px; width:100%; padding:8px; background:#dc3545; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">ĐÓNG</button>
+    <h3 id="pop-title" style="margin:0; color:#1a4694; font-size:18px;">Thông số</h3>
+    <div id="pop-content" style="margin-top:12px;"></div>
+    <button onclick="closePopup()" style="margin-top:15px; width:100%; padding:10px; background:#dc3545; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">ĐÓNG</button>
 </div>
 
 <div id="passwordModal">
-    <h3 style="margin:0; font-size:16px;">XÁC THỰC</h3>
-    <input type="password" id="passInput" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:5px; text-align:center;" placeholder="Mật khẩu">
-    <div style="display:flex; gap:5px;">
-        <button onclick="closePassModal()" style="flex:1; padding:8px; border:none; border-radius:5px; background:#eee; cursor:pointer;">HỦY</button>
-        <button onclick="validatePass()" style="flex:1; padding:8px; border:none; border-radius:5px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
+    <h3 style="margin:0; font-size:18px;">XÁC THỰC</h3>
+    <input type="password" id="passInput" style="width:100%; padding:12px; margin:15px 0; border:1px solid #ddd; border-radius:6px; text-align:center;" placeholder="Nhập mật khẩu">
+    <div style="display:flex; gap:10px;">
+        <button onclick="closePassModal()" style="flex:1; padding:10px; border:none; border-radius:6px; background:#eee; cursor:pointer;">HỦY</button>
+        <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:6px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
     </div>
 </div>
 
 <script>
+    // --- 1. HÀM LẤY TỌA ĐỘ SVG (Click vào ảnh là hiện alert) ---
+    const svg = document.getElementById('station-svg');
+    svg.addEventListener('click', function(e) {
+        const pt = svg.createSVGPoint();
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+        const cursorpt = pt.matrixTransform(svg.getScreenCTM().inverse());
+        
+        // Hiện thông báo tọa độ x và y chuẩn cho thẻ <rect>
+        const res = `x="${cursorpt.x.toFixed(2)}" y="${cursorpt.y.toFixed(2)}"`;
+        alert("Sếp copy tọa độ này dán vào code:\n" + res);
+        console.log(res);
+    });
+
+    // --- 2. DỮ LIỆU THIẾT BỊ ---
     const deviceData = {
         "571": { name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },
         "572": { name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },
@@ -155,21 +167,23 @@
         if(!item) return;
         document.getElementById('pop-title').innerText = item.name;
         document.getElementById('pop-content').innerHTML = `
-            <table style="width:100%; font-size:13px; border-collapse:collapse;">
-                <tr><td>Hãng:</td><td><b>${item.brand}</b></td></tr>
-                <tr><td>U định mức:</td><td><b>${item.volt}</b></td></tr>
-                ${item.cur ? `<tr><td>Dòng ĐM:</td><td><b>${item.cur}</b></td></tr>` : ''}
-                ${item.p ? `<tr><td>Công suất:</td><td><b>${item.p}</b></td></tr>` : ''}
+            <table style="width:100%; font-size:14px; border-collapse:collapse;">
+                <tr><td style="padding:5px 0;">Hãng:</td><td><b>${item.brand}</b></td></tr>
+                <tr><td style="padding:5px 0;">U định mức:</td><td><b>${item.volt}</b></td></tr>
+                ${item.cur ? `<tr><td style="padding:5px 0;">Dòng ĐM:</td><td><b>${item.cur}</b></td></tr>` : ''}
+                ${item.p ? `<tr><td style="padding:5px 0;">Công suất:</td><td><b>${item.p}</b></td></tr>` : ''}
             </table>`;
         document.getElementById('info-popup').style.display = 'block';
     }
+
     function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
     function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
     function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
     function validatePass() {
         if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
-        else alert("Sai mật khẩu!");
+        else alert("Mật khẩu không đúng sếp ơi!");
     }
 </script>
+
 </body>
 </html>
