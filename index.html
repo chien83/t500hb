@@ -7,11 +7,11 @@
     <title>Hệ thống Trắc nghiệm - Trạm 500kV Hòa Bình</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* 1. RESET & LAYOUT CHUẨN */
+        /* 1. RESET & LAYOUT CHUẨN GRID */
         * { box-sizing: border-box; }
         body, html {
             margin: 0; padding: 0; width: 100%; 
-            height: 100vh; height: 100dvh; /* Ưu tiên chiều cao thực tế trên mobile */
+            height: 100vh; height: 100dvh;
             background-color: #ffffff; font-family: 'Segoe UI', sans-serif;
             overflow: hidden; display: flex; flex-direction: column;
         }
@@ -30,18 +30,17 @@
         }
         .nav-links a i { font-size: 22px !important; margin-right: 8px; }
 
-        /* 3. TIÊU ĐỀ THEO YÊU CẦU MỚI */
-        .header-info { padding: 8px 10px; text-align: center; flex-shrink: 0; }
+        /* 3. TIÊU ĐỀ: SIÊU GỌN THEO YÊU CẦU (GIẢM 40%) */
+        .header-info { padding: 2px 5px; text-align: center; flex-shrink: 0; background: #fff; }
         .header-info h1 { 
-            font-size: 22px; margin: 0; color: #1a4694; 
+            font-size: 14px; margin: 2px 0; color: #1a4694; 
             text-transform: uppercase; font-weight: 800; 
         }
         .header-info p { 
-            font-size: 13px; color: #888; /* Màu mờ */
-            margin: 3px 0 0 0; font-style: italic; 
+            font-size: 10px; color: #888; margin: 0; font-style: italic; 
         }
 
-        /* 4. VÙNG CHỨA SVG "MỘT KHỐI" - CHỐNG LỆCH TỌA ĐỘ */
+        /* 4. VÙNG CHỨA SƠ ĐỒ SVG "MỘT KHỐI" */
         .main-container {
             flex-grow: 1; width: 100%; overflow: auto;
             display: flex; align-items: center; justify-content: center;
@@ -57,28 +56,31 @@
         .hotspot:hover { fill: rgba(0, 123, 255, 0.2); stroke: #007bff; stroke-width: 0.2; }
 
         /* 5. FOOTER CỐ ĐỊNH */
-        .footer-bar { background-color: #0000ff; height: 30px; display: flex; align-items: center; padding: 0 15%; flex-shrink: 0; }
+        .footer-bar { 
+            background-color: #0000ff; height: 30px; display: flex; align-items: center; 
+            padding: 0 15%; flex-shrink: 0; 
+        }
         .footer-info { color: white; font-size: 12px; font-weight: bold; width: 100%; display: flex; justify-content: space-between; }
         .footer-info a { color: #ffeb3b; text-decoration: none; }
 
         /* 6. TỐI ƯU MOBILE SIÊU GỌN */
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; height: auto; padding: 5px; gap: 5px; }
+            .navbar { flex-direction: column; height: auto; padding: 5px; gap: 4px; }
             .nav-logo-box { order: 1; }
             .nav-logo-box img { height: 30px; }
             
             .nav-links { order: 2; flex-wrap: wrap; justify-content: center; width: 100%; gap: 3px; }
-            .nav-links a { font-size: 10px; padding: 6px 8px; background: rgba(255,255,255,0.1); border-radius: 3px; }
+            .nav-links a { font-size: 10px; padding: 5px 8px; background: rgba(255,255,255,0.1); border-radius: 3px; }
             .nav-links a i { font-size: 14px !important; margin-right: 4px; }
 
-            .header-info h1 { font-size: 16px; }
-            .header-info p { font-size: 11px; }
+            .header-info h1 { font-size: 12px; }
+            .header-info p { font-size: 9px; }
 
             .footer-bar { padding: 0 10px; height: 28px; }
             .footer-info { font-size: 10px; }
         }
 
-        /* MODALS (THÔNG SỐ & MẬT KHẨU) */
+        /* MODALS */
         #info-popup, #passwordModal {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 30000; background: white; padding: 25px; border-radius: 12px;
@@ -113,7 +115,7 @@
         <rect class="hotspot" x="40.99" y="37.28" width="4" height="5" onclick="showDeviceInfo('573')" />
         <rect class="hotspot" x="27.19" y="37.82" width="4" height="5" onclick="showDeviceInfo('574')" />
         <rect class="hotspot" x="64.19" y="61.19" width="7" height="8" onclick="showDeviceInfo('AT1')" />
-    </svg>
+        </svg>
 </div>
 
 <footer class="footer-bar">
@@ -131,7 +133,7 @@
 
 <div id="passwordModal">
     <h3 style="margin:0; font-size:18px;">XÁC THỰC</h3>
-    <input type="password" id="passInput" style="width:100%; padding:12px; margin:15px 0; border:1px solid #ddd; border-radius:6px; text-align:center;" placeholder="Nhập mật khẩu">
+    <input type="password" id="passInput" style="width:100%; padding:12px; margin:15px 0; border:1px solid #ddd; border-radius:6px; text-align:center;" placeholder="Mật khẩu">
     <div style="display:flex; gap:10px;">
         <button onclick="closePassModal()" style="flex:1; padding:10px; border:none; border-radius:6px; background:#eee; cursor:pointer;">HỦY</button>
         <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:6px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
@@ -147,9 +149,9 @@
         pt.y = e.clientY;
         const cursorpt = pt.matrixTransform(svg.getScreenCTM().inverse());
         
-        // Hiện thông báo tọa độ x và y chuẩn cho thẻ <rect>
+        // Tọa độ chuẩn để dán vào x và y của <rect>
         const res = `x="${cursorpt.x.toFixed(2)}" y="${cursorpt.y.toFixed(2)}"`;
-        alert("Sếp copy tọa độ này dán vào code:\n" + res);
+        alert("Sếp copy tọa độ này:\n" + res);
         console.log(res);
     });
 
@@ -181,7 +183,7 @@
     function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
     function validatePass() {
         if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
-        else alert("Mật khẩu không đúng sếp ơi!");
+        else alert("Sai mật khẩu sếp ơi!");
     }
 </script>
 
