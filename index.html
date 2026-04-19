@@ -276,6 +276,18 @@ function validatePass() {
     else { alert("Mật khẩu sai!"); document.getElementById('passInput').value = ''; }
 }
 document.getElementById('passInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') validatePass(); });
+    
+    // CÔNG CỤ LẤY TỌA ĐỘ: Sếp click vào đâu trên ảnh, nó hiện tọa độ % ở đó
+document.querySelector('#sld-container img').addEventListener('click', function(e) {
+    const rect = e.target.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
+    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
+    
+    // Hiện ra thông báo để sếp copy
+    const coords = `Tọa độ mới cho thiết bị: top: "${y}%", left: "${x}%"`;
+    console.log(coords);
+    alert(coords);
+});
 </script>
 </body>
 </html>
