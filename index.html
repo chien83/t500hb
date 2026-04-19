@@ -8,278 +8,243 @@
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <title>VẬN HÀNH TRẠM ĐIỆN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* 1. RESET CHUẨN - ÉP MỌI THỨ VÀO KHUÔN KHỔ */
-        * {
-            box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước phần tử */
-        }
+<style>
+    /* 1. THIẾT LẬP KHUNG TRANG */
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #ffffff;
+        height: 100vh;
+        display: grid;
+        grid-template-rows: auto auto 1fr auto; /* Chia tầng rõ ràng */
+        overflow: hidden;
+    }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            background-color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Khóa cuộn trang hoàn toàn */
-        }
+    /* 2. NAVBAR: PC (MENU TRÁI - LOGO PHẢI) */
+    .navbar {
+        background-color: #1a4694;
+        display: flex;
+        flex-direction: row-reverse; /* Đảo để Menu trái, Logo phải trên PC */
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15%; 
+        height: 60px; /* Hạ độ cao cho vừa mắt */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
 
-        /* 2. CẤU TRÚC GRID - CHÌA KHÓA GIẢI QUYẾT LỖI ZOOM */
-        body {
-            display: grid;
-            grid-template-rows: 80px auto 1fr 40px; /* Định nghĩa chiều cao từng phần rõ ràng */
-            height: 100vh;
-        }
+    .nav-logo-box img {
+        height: 42px;
+        width: auto;
+        background: white;
+        padding: 2px 5px;
+        border-radius: 4px;
+    }
 
-        /* 3. THANH NAVBAR (PC: TO RÕ, 15% LỀ) */
-        .navbar {
-            background-color: #1a4694;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15%; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 1000;
-        }
+    .nav-links {
+        list-style: none;
+        display: flex;
+        margin: 0; padding: 0;
+    }
 
-        .nav-links {
-            list-style: none;
-            display: flex;
-            margin: 0; padding: 0;
-            height: 100%;
-        }
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px; /* Chữ Menu vừa phải */
+        font-weight: bold;
+        padding: 0 18px;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 20px;
-            font-weight: bold;
-            padding: 0 25px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            text-transform: uppercase;
-        }
+    .nav-links a i { font-size: 24px !important; margin-right: 6px; }
 
-        .nav-links a:hover { background-color: #0d3270; }
-        .nav-links a i { font-size: 32px !important; margin-right: 8px; }
+    /* 3. TIÊU ĐỀ */
+    .header-info { padding: 5px 10px; text-align: center; background: #fff; }
+    .header-info h1 { font-size: 22px; margin: 5px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
+    .header-info p { font-size: 13px; color: #666; margin: 0; }
 
-        .nav-logo-box img {
-            height: 55px;
-            width: auto;
-            background: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
+    /* 4. VÙNG SƠ ĐỒ (TRỌNG TÂM) */
+    .image-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 5px;
+    }
 
-        /* 4. TIÊU ĐỀ PHỤ */
-        .header-info {
-            padding: 8px 10px;
-            text-align: center;
-            background: #fff;
-        }
-        .header-info h1 {
-            font-size: 24px;
-            margin: 0;
-            color: #1a4694;
-            text-transform: uppercase;
-            font-weight: 800;
-        }
-        .header-info p { font-size: 14px; color: #666; margin: 2px 0 0 0; }
+    .image-wrapper {
+        position: relative;
+        max-width: 100%;
+        max-height: 100%;
+        display: flex;
+    }
+    
+    .image-wrapper img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        cursor: crosshair;
+    }
 
-        /* 5. VÙNG CHỨA SƠ ĐỒ - TỰ ĐỘNG CO GIÃN THÔNG MINH */
-        .image-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden; /* Cấm tràn */
-            padding: 10px;
-        }
+    /* HOTSPOTS */
+    .hotspot {
+        position: absolute;
+        cursor: pointer;
+        background-color: rgba(255, 255, 0, 0); 
+        border: 2px dashed transparent;
+        z-index: 5;
+    }
+    .hotspot:hover { background-color: rgba(0, 123, 255, 0.2); border: 2px solid #007bff; }
 
-        .image-wrapper {
-            position: relative;
-            max-width: 100%;
-            max-height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    /* 5. FOOTER */
+    .footer-bar {
+        background-color: #0000ff !important;
+        padding: 0 15%;
+        display: flex;
+        align-items: center;
+        height: 30px;
+    }
+    .footer-info { display: flex; gap: 20px; font-size: 12px; font-weight: bold; color: white; }
+    .footer-info .name { color: #ffeb3b; }
+    .footer-info a { color: white !important; text-decoration: none !important; }
 
-        .image-wrapper img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* Ảnh luôn nằm gọn trong khung dù màn hình bé */
-            cursor: crosshair;
+    /* --- 6. MOBILE: LOGO TRÊN - MENU DƯỚI --- */
+    @media (max-width: 768px) {
+        body { grid-template-rows: auto auto 1fr auto; overflow-y: auto; height: auto; }
+        
+        .navbar { 
+            flex-direction: column; /* Logo trên, Menu dưới */
+            height: auto; 
+            padding: 10px; 
+            gap: 10px;
         }
+        
+        .nav-logo-box { order: 1; } /* Logo số 1 */
+        .nav-links { order: 2; flex-wrap: wrap; justify-content: center; width: 100%; }
+        
+        .nav-links a { font-size: 11px; padding: 8px 12px; background: rgba(255,255,255,0.1); margin: 2px; border-radius: 4px; }
+        .nav-links a i { font-size: 18px !important; }
+        
+        .header-info h1 { font-size: 18px; } /* Thu nhỏ chữ tiêu đề mobile */
+        .image-container { height: 450px; }
+        .footer-bar { height: auto; padding: 10px; justify-content: center; }
+        .footer-info { flex-direction: column; gap: 5px; text-align: center; }
+    }
 
-        /* HOTSPOTS */
-        .hotspot {
-            position: absolute;
-            cursor: pointer;
-            background-color: rgba(255, 255, 0, 0); 
-            border: 2px dashed transparent;
-            z-index: 5;
-        }
-        .hotspot:hover {
-            background-color: rgba(0, 123, 255, 0.2);
-            border: 2px solid #007bff;
-        }
-
-        /* 6. FOOTER */
-        .footer-bar {
-            background-color: #0000ff !important;
-            padding: 0 15%;
-            display: flex;
-            align-items: center;
-            color: white;
-        }
-        .footer-info { display: flex; gap: 30px; font-size: 14px; font-weight: bold; }
-        .footer-info .name { color: #ffeb3b; }
-        .footer-info a { color: white !important; text-decoration: none !important; }
-
-        /* 7. MODALS */
-        #info-popup, #passwordModal {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 30000;
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            width: 320px;
-            border-top: 6px solid #1a4694;
-        }
-        #pop-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        #pop-table td { padding: 8px 5px; border-bottom: 1px solid #eee; }
-
-        /* 8. MOBILE OPTIMIZATION */
-        @media (max-width: 768px) {
-            body { 
-                grid-template-rows: auto auto 1fr auto; 
-                overflow-y: auto; 
-                height: auto; 
-            }
-            .navbar { 
-                flex-direction: column; 
-                height: auto; 
-                padding: 10px; 
-                gap: 8px; 
-            }
-            .nav-links a { font-size: 13px; padding: 8px 12px; }
-            .nav-links a i { font-size: 20px !important; }
-            .footer-bar { height: auto; padding: 10px; justify-content: center; }
-            .footer-info { flex-direction: column; gap: 5px; text-align: center; }
-            .image-container { height: 450px; }
-        }
-    </style>
+    /* POPUP & MODAL */
+    #info-popup, #passwordModal {
+        display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        z-index: 30000; background: white; padding: 25px; border-radius: 15px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4); width: 320px; border-top: 6px solid #1a4694;
+    }
+</style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <ul class="nav-links">
-            <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
-            <li><a href="hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
-            <li><a onclick="openPassModal()">VẤN ĐÁP</a></li>
-            <li><a href="A0choMaytinh/">TEST-TRẮC NGHIỆM</a></li>
-            <li><a href="thia0/">TEST-ĐIỆN THOẠI</a></li>
-        </ul>
-        <div class="nav-logo-box">
-            <img src="logo.png" alt="EVN NPT">
-        </div>
-    </nav>
-
-    <div class="header-info">
-        <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
-        <p>Nhấn vào thiết bị trên sơ đồ để xem thông số</p>
+<nav class="navbar">
+    <div class="nav-logo-box">
+        <img src="logo.png" alt="EVN NPT">
     </div>
+    <ul class="nav-links">
+        <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
+        <li><a href="hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
+        <li><a onclick="openPassModal()">VẤN ĐÁP</a></li>
+        <li><a href="A0choMaytinh/">TEST-TRẮC NGHIỆM</a></li>
+        <li><a href="thia0/">TEST-ĐIỆN THOẠI</a></li>
+    </ul>
+</nav>
 
-    <div class="image-container">
-        <div class="image-wrapper" id="sld-container">
-            <img src="image/t500hb.png" id="main-diagram" alt="Sơ đồ nhất thứ">
-            </div>
+<div class="header-info">
+    <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
+    <p>Nhấn vào thiết bị trên sơ đồ để xem thông số kỹ thuật</p>
+</div>
+
+<div class="image-container">
+    <div class="image-wrapper" id="sld-container">
+        <img src="image/t500hb.png" alt="Sơ đồ nhất thứ">
     </div>
+</div>
 
-    <footer class="footer-bar">
-        <div class="footer-info">
-            <span class="name">Edit: Chien500hb</span>
-            <a href="tel:0986362234">SĐT: 0986362234</a>
-        </div>
-    </footer>
-
-    <div id="info-popup">
-        <h3 id="pop-title" style="margin-top:0; color:#1a4694;">Thông số</h3>
-        <table id="pop-table"></table>
-        <button onclick="closePopup()" style="margin-top:15px; width:100%; padding:10px; background:#dc3545; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">ĐÓNG</button>
+<footer class="footer-bar">
+    <div class="footer-info">
+        <span class="name">Edit: Chien500hb</span>
+        <a href="tel:0986362234">SĐT: 0986362234</a>
     </div>
+</footer>
 
-    <div id="passwordModal">
-        <h3>XÁC THỰC</h3>
-        <input type="password" id="passInput" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px; text-align:center;" placeholder="Mật khẩu">
-        <div style="display:flex; gap:10px;">
-            <button onclick="closePassModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer;">HỦY</button>
-            <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
-        </div>
+<div id="info-popup">
+    <h3 id="pop-title" style="margin-top:0; color:#1a4694;">Thông số</h3>
+    <table id="pop-table" style="width:100%; border-collapse:collapse; font-size:14px;"></table>
+    <button onclick="closePopup()" style="margin-top:15px; width:100%; padding:10px; background:#dc3545; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">ĐÓNG</button>
+</div>
+
+<div id="passwordModal">
+    <h3>XÁC THỰC</h3>
+    <input type="password" id="passInput" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px; text-align:center;" placeholder="Mật khẩu">
+    <div style="display:flex; gap:10px;">
+        <button onclick="closePassModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer;">HỦY</button>
+        <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
     </div>
+</div>
 
-    <script>
-    // --- KHÔI PHỤC DỮ LIỆU VÀ VŨ KHÍ LẤY TỌA ĐỘ ---
-    const hotspotsData = [
-        { id: "571", top: "36.20%", left: "80.80%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },
-        { id: "572", top: "36.20%", left: "60.40%", w: "4%", h: "5%", name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },
-        { id: "573", top: "36.20%", left: "38.20%", w: "4%", h: "5%", name: "Máy cắt 573", brand: "ABB", volt: "550kV", cur: "4000A" },
-        { id: "574", top: "36.20%", left: "18.20%", w: "4%", h: "5%", name: "Máy cắt 574", brand: "Siemens", volt: "550kV", cur: "3150A" },
-        { id: "AT1", top: "65.50%", left: "73.20%", w: "7%", h: "8%", name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
-        { id: "AT2", top: "65.50%", left: "42.20%", w: "7%", h: "8%", name: "MBA AT2", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" }
-    ];
+<script>
+const hotspotsData = [
+    { id: "571", top: "36.20%", left: "80.80%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },
+    { id: "572", top: "36.20%", left: "60.40%", w: "4%", h: "5%", name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },
+    { id: "573", top: "36.20%", left: "38.20%", w: "4%", h: "5%", name: "Máy cắt 573", brand: "ABB", volt: "550kV", cur: "4000A" },
+    { id: "574", top: "36.20%", left: "18.20%", w: "4%", h: "5%", name: "Máy cắt 574", brand: "Siemens", volt: "550kV", cur: "3150A" },
+    { id: "AT1", top: "65.50%", left: "73.20%", w: "7%", h: "8%", name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
+    { id: "AT2", top: "65.50%", left: "42.20%", w: "7%", h: "8%", name: "MBA AT2", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" }
+];
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const container = document.getElementById('sld-container');
-        const img = document.getElementById('main-diagram');
+window.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('sld-container');
+    const img = container.querySelector('img');
 
-        // Vẽ Hotspots
-        hotspotsData.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'hotspot';
-            div.style.cssText = `top:${item.top}; left:${item.left}; width:${item.w}; height:${item.h};`;
-            div.onclick = () => showDeviceInfo(item.id);
-            container.appendChild(div);
-        });
-
-        // VŨ KHÍ LẤY TỌA ĐỘ
-        img.onclick = (e) => {
-            const r = img.getBoundingClientRect();
-            const x = ((e.clientX - r.left) / r.width * 100).toFixed(2);
-            const y = ((e.clientY - r.top) / r.height * 100).toFixed(2);
-            const res = `top: "${y}%", left: "${x}%"`;
-            alert("Tọa độ thiết bị:\n" + res);
-            console.log(res);
-        };
+    // Vẽ Hotspots
+    hotspotsData.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'hotspot';
+        div.style.cssText = `top:${item.top}; left:${item.left}; width:${item.w}; height:${item.h};`;
+        div.onclick = () => showDeviceInfo(item.id);
+        container.appendChild(div);
     });
 
-    function showDeviceInfo(id) {
-        const item = hotspotsData.find(x => x.id === id);
-        if(!item) return;
-        document.getElementById('pop-title').innerText = item.name;
-        let html = `<tr><td><b>Hãng:</b></td><td>${item.brand}</td></tr>
-                    <tr><td><b>Điện áp:</b></td><td>${item.volt}</td></tr>`;
-        if(item.cur) html += `<tr><td><b>Dòng ĐM:</b></td><td>${item.cur}</td></tr>`;
-        if(item.p) html += `<tr><td><b>Công suất:</b></td><td>${item.p}</td></tr>`;
-        html += `<tr><td><b>Trạng thái:</b></td><td><b style="color:green">Bình thường</b></td></tr>`;
-        document.getElementById('pop-table').innerHTML = html;
-        document.getElementById('info-popup').style.display = 'block';
-    }
-    
-    function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
-    function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
-    function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
-    function validatePass() {
-        if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
-        else alert("Mật khẩu sai!");
-    }
-    </script>
+    // CÔNG CỤ LẤY TỌA ĐỘ
+    img.onclick = (e) => {
+        const r = img.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width * 100).toFixed(2);
+        const y = ((e.clientY - r.top) / r.height * 100).toFixed(2);
+        alert(`top: "${y}%", left: "${x}%"`);
+    };
+});
+
+function showDeviceInfo(id) {
+    const item = hotspotsData.find(x => x.id === id);
+    if(!item) return;
+    document.getElementById('pop-title').innerText = item.name;
+    let html = `<tr><td><b>Hãng:</b></td><td>${item.brand}</td></tr>
+                <tr><td><b>Điện áp:</b></td><td>${item.volt}</td></tr>`;
+    if(item.cur) html += `<tr><td><b>Dòng ĐM:</b></td><td>${item.cur}</td></tr>`;
+    if(item.p) html += `<tr><td><b>Công suất:</b></td><td>${item.p}</td></tr>`;
+    html += `<tr><td><b>Trạng thái:</b></td><td><b style="color:green">Bình thường</b></td></tr>`;
+    document.getElementById('pop-table').innerHTML = html;
+    document.getElementById('info-popup').style.display = 'block';
+}
+
+function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
+function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
+function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
+function validatePass() {
+    if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
+    else alert("Sai mật khẩu!");
+}
+</script>
 </body>
 </html>
