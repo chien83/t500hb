@@ -80,12 +80,13 @@
 
     .image-wrapper {
         position: relative;
+        display: inline-block; /* Đổi từ flex sang inline-block để khung = ảnh */
         max-width: 100%;
         max-height: 100%;
-        display: flex;
     }
     
-    .image-wrapper img {
+.image-wrapper img {
+        display: block; /* Xóa bỏ khoảng trống thừa dưới ảnh */
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
@@ -93,12 +94,15 @@
     }
 
     /* HOTSPOTS */
+/* Thêm dòng transform để đưa tâm ô khung vào đúng điểm click */
     .hotspot {
         position: absolute;
         cursor: pointer;
         background-color: rgba(255, 255, 0, 0); 
         border: 2px dashed transparent;
-        z-index: 5;
+        z-index: 10;
+        /* DÒNG NÀY GIÚP Ô KHUNG CĂN VÀO GIỮA TÂM */
+        transform: translate(-50%, -50%); 
     }
     .hotspot:hover { background-color: rgba(0, 123, 255, 0.2); border: 2px solid #007bff; }
 
