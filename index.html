@@ -24,23 +24,28 @@
             overflow: hidden; /* Ngăn toàn bộ trang bị cuộn */
         }
 
-        /* 1. KHỐI LOGO - Thu hẹp lại */
-            .header-top {
-                background-color: white;
-                padding: 5px 5%; /* Giảm từ 15px xuống 5px */
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .header-top img {
-                height: 40px; /* Ép chiều cao logo cố định để tiết kiệm diện tích */
-                width: auto;
-            }
+        /* 1. KHỐI LOGO - Căn trái để thẳng hàng với icon Home */
+        .header-top {
+            background-color: white;
+            padding: 10px 0; /* Thu hẹp padding dọc */
+            display: flex;
+            justify-content: flex-start; /* Đẩy logo sang trái */
+            width: 100%;
+            max-width: 1200px; /* Hoặc độ rộng sếp muốn, nên khớp với navbar */
+            margin: 0 auto;
+        }
+        
+        .header-top img {
+            height: 50px; /* Chỉnh chiều cao logo cho vừa mắt */
+            width: auto;
+            margin-left: 18px; /* Căn lề trái bằng với padding của nút Home trong navbar */
+        }
 
-        /* 2. THANH ĐIỀU HƯỚNG - Giữ nguyên hoặc thu hẹp nhẹ */
+        /* 2. THANH ĐIỀU HƯỚNG - Giữ nguyên nhưng đảm bảo căn trái nút đầu tiên */
         .navbar {
             background-color: #1a4694;
-            min-height: 40px; /* Giảm từ 50px */
+            display: flex;
+            justify-content: center; /* Menu vẫn ở giữa, hoặc đổi thành flex-start nếu muốn menu dạt trái */
         }
 
         .nav-links {
@@ -85,42 +90,40 @@
 
         /* 4. KHỐI CHỨA ẢNH - Phần quan trọng nhất để không bị cuộn */
         .image-container {
-            flex: 1; /* Tự động lấy toàn bộ phần diện tích còn lại */
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px;
-            box-sizing: border-box;
+            width: 100%; /* Chiếm hết chiều ngang */
+            padding: 0; /* Bỏ padding để ảnh sát lề */
             overflow: hidden;
         }
         
         .image-container img {
-            max-width: 100%;
-            max-height: 100%; /* Ép ảnh không được cao hơn phần diện tích còn lại */
-            object-fit: contain; /* Giữ nguyên tỷ lệ ảnh mà vẫn vừa khung */
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%; /* Ép ảnh giãn rộng 100% chiều ngang */
+            height: auto;
+            max-height: 100%; /* Vẫn đảm bảo không vượt quá chiều cao màn hình */
+            object-fit: fill; /* Hoặc 'stretch' để ép giãn, nhưng 'contain' hoặc 'fill' sẽ rõ hơn */
         }
 
         
         /* 5. FOOTER - Thu gọn diện tích */
         .footer-bar {
-            position: relative; /* Đổi về relative để không đè lên ảnh */
+            position: relative;
             width: 100%;
             background-color: #0000ff;
-            padding: 2px 20px;
-            height: 40px; /* Giảm chiều cao */
+            padding: 5px 20px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start; /* DỊCH SANG TRÁI thay vì flex-end */
             align-items: center;
+            height: 45px;
+            box-sizing: border-box;
         }
-
+        
         .footer-info {
-            text-align: right;
-            line-height: 1.3;
-            font-weight: bold;
-            font-size: 15px;
+            text-align: left; /* Căn chữ bên trái */
+            line-height: 1.2;
         }
 
         .footer-info .name { color: #ff0000; }
