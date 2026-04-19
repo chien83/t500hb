@@ -194,31 +194,37 @@
 </div>
 
 <script>
+<script>
+// --- DỮ LIỆU ĐÃ ĐƯỢC SỬA LỖI CÚ PHÁP ---
 const hotspotsData = [
     { id: "571", top: "40.19%", left: "68.08%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },    
     { id: "572", top: "39.92%", left: "56.39%", w: "4%", h: "5%", name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },        
-    { id: "573", top: "40.05%", left: "42.%", w: "4%", h: "5%", name: "Máy cắt 573", brand: "ABB", volt: "550kV", cur: "4000A" },      
+    { id: "573", top: "40.05%", left: "42.00%", w: "4%", h: "5%", name: "Máy cắt 573", brand: "ABB", volt: "550kV", cur: "4000A" },      
     { id: "574", top: "40.05%", left: "29.27%", w: "4%", h: "5%", name: "Máy cắt 574", brand: "Siemens", volt: "550kV", cur: "3150A" },    
     { id: "AT1", top: "65.46%", left: "67.93%", w: "7%", h: "8%", name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },    
-    { id: "AT2", top: "65.32%", left: "42.99%", w: "7%", h: "8%", name: "MBA AT2", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" }  
-    { id: "221", top: "84.81%", left: "68.00%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },    
-    { id: "222", top: "84.95%", left: "42.91%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },    
-    { id: "200", top: "77.42%", left: "55.77%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },    
-    { id: "341", top: "65.46%", left: "54.83%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },    
-    { id: "342", top: "65.59%", left: "29.66%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },    
-    
+    { id: "AT2", top: "65.32%", left: "42.99%", w: "7%", h: "8%", name: "MBA AT2", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" }, // Thêm dấu phẩy ở đây
+    { id: "221", top: "84.81%", left: "68.00%", w: "4%", h: "5%", name: "Máy cắt 221", brand: "Siemens", volt: "245kV", cur: "2500A" },    
+    { id: "222", top: "84.95%", left: "42.91%", w: "4%", h: "5%", name: "Máy cắt 222", brand: "Siemens", volt: "245kV", cur: "2500A" },    
+    { id: "200", top: "77.42%", left: "55.77%", w: "4%", h: "5%", name: "Máy cắt 200", brand: "ABB", volt: "245kV", cur: "3150A" },    
+    { id: "341", top: "65.46%", left: "54.83%", w: "4%", h: "5%", name: "Máy cắt 341", brand: "Nu-Lec", volt: "38kV", cur: "800A" },    
+    { id: "342", top: "65.59%", left: "29.66%", w: "4%", h: "5%", name: "Máy cắt 342", brand: "Nu-Lec", volt: "38kV", cur: "800A" } // Bỏ dấu phẩy thừa ở đây
 ];
 
 window.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('sld-container');
     const img = container.querySelector('img');
 
+    if (!container || !img) return;
+
     // Vẽ Hotspots
     hotspotsData.forEach(item => {
         const div = document.createElement('div');
         div.className = 'hotspot';
         div.style.cssText = `top:${item.top}; left:${item.left}; width:${item.w}; height:${item.h};`;
-        div.onclick = () => showDeviceInfo(item.id);
+        div.onclick = (e) => {
+            e.stopPropagation(); // Ngăn chặn sự kiện click lan ra tấm ảnh (tránh hiện alert tọa độ khi bấm vào hotspot)
+            showDeviceInfo(item.id);
+        };
         container.appendChild(div);
     });
 
@@ -228,6 +234,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const x = ((e.clientX - r.left) / r.width * 100).toFixed(2);
         const y = ((e.clientY - r.top) / r.height * 100).toFixed(2);
         alert(`top: "${y}%", left: "${x}%"`);
+        console.log(`top: "${y}%", left: "${x}%"`);
     };
 });
 
