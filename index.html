@@ -9,7 +9,7 @@
     <title>VẬN HÀNH TRẠM ĐIỆN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
-    /* THIẾT LẬP CHUNG */
+    /* 1. THIẾT LẬP CHUNG - KHÔNG CUỘN TRÊN PC */
     body {
         margin: 0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -20,7 +20,7 @@
         overflow: hidden;
     }
 
-    /* --- GIAO DIỆN MÁY TÍNH (DESKTOP) --- */
+    /* 2. NAVBAR MÁY TÍNH - TO RÕ, CÂN ĐỐI 25% */
     .navbar {
         background-color: #1a4694;
         display: flex;
@@ -30,6 +30,7 @@
         height: 60px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         z-index: 1000;
+        flex-shrink: 0; /* Không cho phép bị bóp méo */
     }
 
     .nav-links {
@@ -41,10 +42,9 @@
     .nav-links a {
         color: white;
         text-decoration: none;
-        font-size: 22px;
+        font-size: 16px; /* Chữ to rõ cho PC */
         font-weight: bold;
-        padding: 0px px;
-        margin: 1px;       /* Giảm lề ngoài nút */
+        padding: 0 15px;
         display: flex;
         align-items: center;
         text-transform: uppercase;
@@ -52,34 +52,37 @@
     }
 
     .nav-links a i {
-    font-size: 22px !important; /* Cỡ to rõ ràng cho PC */
-    margin-right: 5px;          /* Khoảng cách nhỏ với chữ nếu sếp để chung dòng */
-    vertical-align: middle;
-}
+        font-size: 24px !important; /* Biểu tượng nhà to rõ */
+        margin-right: 5px;
+    }
 
     .nav-logo-box img {
-        height: px;
+        height: 45px; /* Sửa lỗi mất kích thước */
         width: auto;
         background: white;
         padding: 3px 8px;
         border-radius: 4px;
     }
 
-    /* TIÊU ĐỀ */
-    .header-info { padding: 2px 10px; text-align: center; background: #fff; flex-shrink: 0; /* Đảm bảo phần này không bị méo khi ảnh sơ đồ quá to */ }
+    /* 3. TIÊU ĐỀ PHỤ */
+    .header-info { 
+        padding: 5px 10px; 
+        text-align: center; 
+        background: #fff; 
+        flex-shrink: 0; 
+    }
     .header-info h1 { 
-    font-size: clamp(14px, 2vh, 18px); /* Chữ tự nhỏ lại nếu màn hình thấp */
-    margin: 2px 0; 
-    color: #1a4694; 
-    text-transform: uppercase; 
+        font-size: clamp(14px, 2vh, 18px); 
+        margin: 2px 0; 
+        color: #1a4694; 
+        text-transform: uppercase; 
     }
     .header-info p { font-size: 12px; color: #666; margin: 2px 0; }
 
-    /* SƠ ĐỒ & HOTSPOTS */
-    /* ÉP KHUNG ẢNH (Quan trọng nhất) */
+    /* 4. KHỐI SƠ ĐỒ - SỬA LỖI VANISHING KHI ZOOM */
     .image-container {
         flex: 1;
-        min-height: 0; /* Cho phép container thu nhỏ nhỏ hơn nội dung */
+        min-height: 0; /* Ép khung ảnh co giãn được */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -87,62 +90,49 @@
         background-color: #ffffff;
     }
 
-    /* Khung bọc ảnh để định vị các điểm chạm */
     .image-wrapper {
         position: relative;
         max-width: 100%;
-        max-height: 100%; /* Không bao giờ cao quá vùng trống còn lại */
-        display: flex;
+        max-height: 100%;
+        display: inline-block; /* Ôm khít lấy tấm ảnh để tọa độ chuẩn */
     }
     
     .image-wrapper img {
+        display: block;
         max-width: 100%;
         max-height: 100%;
-        object-fit: contain; /* Ảnh tự co lại để vừa khít màn hình 100% zoom */
+        object-fit: contain;
     }
 
-    /* Các ô điểm chạm tàng hình */
+    /* HOTSPOTS */
     .hotspot {
         position: absolute;
         cursor: pointer;
-        background-color: rgba(255, 255, 0, 0); /* Tàng hình */
+        background-color: rgba(255, 255, 0, 0); 
         border: 1.5px dashed transparent;
-        transition: all 0.2s;
         z-index: 5;
     }
-    /* Hiện khung mờ khi di chuột vào thiết bị */
     .hotspot:hover {
         background-color: rgba(0, 123, 255, 0.15);
         border: 1.5px solid #007bff;
     }
 
-    /* BẢNG THÔNG SỐ (POPUP) */
+    /* POPUP THÔNG SỐ */
     #info-popup {
         display: none;
         position: fixed;
-        top: 50%;
-        left: 50%;
+        top: 50%; left: 50%;
         transform: translate(-50%, -50%);
         z-index: 30000;
         background: white;
         padding: 20px;
         border-radius: 15px;
         box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-        width: 320px;
+        width: 300px;
         border-top: 6px solid #1a4694;
-        animation: fadeIn 0.3s ease;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -45%); } to { opacity: 1; transform: translate(-50%, -50%); } }
-
-    #info-popup h3 { margin: 0 0 15px 0; color: #1a4694; font-size: 18px; text-align: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
-    #info-popup table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    #info-popup td { padding: 8px 5px; border-bottom: 1px solid #eee; }
-    #info-popup .close-btn { 
-        margin-top: 15px; width: 100%; padding: 10px; 
-        background: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;
     }
 
-    /* FOOTER CHUẨN */
+    /* 5. FOOTER - THẲNG HÀNG 25% */
     .footer-bar {
         width: 100%;
         background-color: #0000ff !important;
@@ -150,24 +140,38 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        height: 25px;
+        height: 30px;
+        flex-shrink: 0;
         box-sizing: border-box;
     }
     .footer-info { display: flex; gap: 20px; font-size: 11px; font-weight: bold; color: white; }
     .footer-info .name { color: #ffeb3b; }
     .footer-info a { color: #ffffff !important; text-decoration: none !important; }
 
-    /* MOBILE */
+    /* --- 6. MOBILE OPTIMIZATION --- */
     @media (max-width: 768px) {
         body { overflow-y: auto; height: auto; }
-        .navbar { flex-direction: column; height: auto; padding: 5px 10px; gap: 2px; }
+        .navbar { 
+            flex-direction: column; 
+            height: auto; 
+            padding: 5px 10px; 
+            gap: 5px; /* Giảm gap để bớt khoảng trống */
+        }
         .nav-logo-box { order: -1; }
         .nav-links { flex-wrap: wrap; justify-content: center; width: 100%; }
-        .nav-links a { font-size: 10px; padding: 8px 10px; background: rgba(255,255,255,0.1); margin: 2px; border-radius: 4px; }
-        .nav-links a i { font-size: 16px !important; /* Thu nhỏ icon lại cho vừa màn hình điện thoại */ }
+        .nav-links a { 
+            font-size: 11px; 
+            padding: 6px 10px; 
+            background: rgba(255,255,255,0.1); 
+            margin: 2px; 
+            border-radius: 4px; 
+        }
+        .nav-links a i { font-size: 16px !important; }
+        
         .footer-bar { height: auto; padding: 10px; justify-content: center; }
         .footer-info { flex-direction: column; align-items: center; gap: 5px; }
-        .image-container { height: 500px; }
+        
+        .image-container { height: 450px; overflow: visible; }
     }
 </style>
 </head>
@@ -178,8 +182,8 @@
         <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
         <li><a href="hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
         <li><a onclick="checkVandapPass()">VẤN ĐÁP</a></li> 
-        <li><a href="A0choMaytinh/">TEST - TRẮC NGHIỆM</a></li>
-        <li><a href="thia0/">TEST - ĐIỆN THOẠI</a></li>
+        <li><a href="A0choMaytinh/">TEST-TRẮC NGHIỆM</a></li>
+        <li><a href="thia0/">TEST-ĐIỆN THOẠI</a></li>
     </ul>
     <div class="nav-logo-box">
         <img src="logo.png" alt="EVN NPT">
@@ -207,7 +211,7 @@
 <div id="info-popup">
     <h3 id="pop-title">Thông số thiết bị</h3>
     <table id="pop-table"></table>
-    <button class="close-btn" onclick="closePopup()">ĐÓNG</button>
+    <button class="close-btn" onclick="closePopup()" style="width:100%; padding:10px; background:#dc3545; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px;">ĐÓNG</button>
 </div>
 
 <div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:20000; align-items:center; justify-content:center;">
@@ -222,24 +226,21 @@
 </div>
 
 <script>
-// --- PHẦN DỮ LIỆU 12 THIẾT BỊ ---
-// Sếp chỉnh lại top/left % cho chuẩn vị trí trên ảnh của sếp
 const hotspotsData = [
-    { id: "571", top: "36%", left: "69%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", type: "3AP2 FI", volt: "550kV", current: "3150A" },
-    { id: "572", top: "35.6%", left: "55.%", w: "4%", h: "5%", name: "Máy cắt 572", brand: "ABB", type: "LTB 550", volt: "550kV", current: "4000A" },
-    { id: "573", top: "35.6%", left: "39.%", w: "4%", h: "5%", name: "Máy cắt 573", brand: "ABB", type: "LTB 550", volt: "550kV", current: "4000A" },
-    { id: "574", top: "36.%", left: "23.%", w: "4%", h: "5%", name: "Máy cắt 574", brand: "Siemens", type: "3AP2 FI", volt: "550kV", current: "3150A" },
-    { id: "AT1", top: "58%", left: "68%", w: "6%", h: "7%", name: "MBA AT1", brand: "Đông Anh", type: "TBA 500", volt: "500/225/35kV", p: "450MVA" },
-    { id: "AT2", top: "58%", left: "39%", w: "6%", h: "7%", name: "MBA AT2", brand: "Đông Anh", type: "TBA 500", volt: "500/225/35kV", p: "450MVA" },
-    { id: "K504", top: "20%", left: "39.%", w: "4%", h: "5%", name: "Máy cắt 504", brand: "ABB", type: "LTB 550", volt: "550kV", current: "4000A" },
-    { id: "221", top: "76.5%", left: "69%", w: "4%", h: "5%", name: "Máy cắt 221", brand: "Siemens", type: "3AP1", volt: "245kV", current: "2500A" },
-    { id: "222", top: "76.8%", left: "39.5%", w: "4%", h: "5%", name: "Máy cắt 222", brand: "Siemens", type: "3AP1", volt: "245kV", current: "2500A" },
-    { id: "200", top: "71%", left: "54.5%", w: "4%", h: "3%", name: "Máy cắt Liên lạc 200", brand: "ABB", type: "HPL 245", volt: "245kV", current: "3150A" },
-    { id: "341", top: "60%", left: "53.5%", w: "4%", h: "3%", name: "Máy cắt 341", brand: "Nu-Lec", type: "N-Series", volt: "38kV", current: "800A" },
-    { id: "342", top: "60%", left: "24%", w: "4%", h: "4%", name: "Máy cắt 342", brand: "Nu-Lec", type: "N-Series", volt: "38kV", current: "800A" }
+    { id: "571", top: "36.2%", left: "80.5%", w: "4%", h: "5%", name: "Máy cắt 571", brand: "Siemens", type: "3AP2 FI", volt: "550kV", current: "3150A" },
+    { id: "572", top: "36.2%", left: "60.4%", w: "4%", h: "5%", name: "Máy cắt 572", brand: "ABB", type: "LTB 550", volt: "550kV", current: "4000A" },
+    { id: "573", top: "36.2%", left: "38.2%", w: "4%", h: "5%", name: "Máy cắt 573", brand: "ABB", type: "LTB 550", volt: "550kV", current: "4000A" },
+    { id: "574", top: "36.2%", left: "18.2%", w: "4%", h: "5%", name: "Máy cắt 574", brand: "Siemens", type: "3AP2 FI", volt: "550kV", current: "3150A" },
+    { id: "AT1", top: "65.5%", left: "73.2%", w: "7%", h: "8%", name: "MBA AT1", brand: "Đông Anh", type: "TBA 500", volt: "500/225/35kV", p: "450MVA" },
+    { id: "AT2", top: "65.5%", left: "42.2%", w: "7%", h: "8%", name: "MBA AT2", brand: "Đông Anh", type: "TBA 500", volt: "500/225/35kV", p: "450MVA" },
+    { id: "K504", top: "12.5%", left: "38.2%", w: "4%", h: "5%", name: "Máy cắt 504", brand: "ABB", type: "LTB 550", volt: "550kV", current: "4000A" },
+    { id: "221", top: "79.2%", left: "80.6%", w: "4%", h: "5%", name: "Máy cắt 221", brand: "Siemens", type: "3AP1", volt: "245kV", current: "2500A" },
+    { id: "222", top: "79.2%", left: "38.2%", w: "4%", h: "5%", name: "Máy cắt 222", brand: "Siemens", type: "3AP1", volt: "245kV", current: "2500A" },
+    { id: "200", top: "75.2%", left: "57.4%", w: "4%", h: "3%", name: "Máy cắt Liên lạc 200", brand: "ABB", type: "HPL 245", volt: "245kV", current: "3150A" },
+    { id: "341", top: "65.2%", left: "56.2%", w: "4%", h: "4%", name: "Máy cắt 341", brand: "Nu-Lec", type: "N-Series", volt: "38kV", current: "800A" },
+    { id: "342", top: "65.2%", left: "21.2%", w: "4%", h: "4%", name: "Máy cắt 342", brand: "Nu-Lec", type: "N-Series", volt: "38kV", current: "800A" }
 ];
 
-// Vẽ các hotspot khi tải trang
 window.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('sld-container');
     let hotspotsHtml = "";
@@ -247,16 +248,26 @@ window.addEventListener('DOMContentLoaded', () => {
         hotspotsHtml += `<div class="hotspot" style="top:${item.top}; left:${item.left}; width:${item.w}; height:${item.h};" onclick="showDeviceInfo('${item.id}')"></div>`;
     });
     container.innerHTML += hotspotsHtml;
+
+    // Lấy tọa độ thực tế của ảnh để click chính xác
+    const sldImg = document.querySelector('.image-wrapper img');
+    if (sldImg) {
+        sldImg.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
+            const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
+            console.log(`Tọa độ click: top: "${y}%", left: "${x}%"`);
+        });
+    }
 });
 
 function showDeviceInfo(id) {
     const item = hotspotsData.find(x => x.id === id);
     if (!item) return;
-
     document.getElementById('pop-title').innerText = item.name;
     let tableHtml = `
-        <tr><td><b>Hãng sản xuất:</b></td><td>${item.brand}</td></tr>
-        <tr><td><b>Kiểu (Type):</b></td><td>${item.type}</td></tr>
+        <tr><td><b>Hãng:</b></td><td>${item.brand}</td></tr>
+        <tr><td><b>Kiểu:</b></td><td>${item.type}</td></tr>
         <tr><td><b>U định mức:</b></td><td>${item.volt}</td></tr>
         ${item.current ? `<tr><td><b>I định mức:</b></td><td>${item.current}</td></tr>` : ''}
         ${item.p ? `<tr><td><b>Công suất:</b></td><td>${item.p}</td></tr>` : ''}
@@ -268,7 +279,6 @@ function showDeviceInfo(id) {
 
 function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
 
-// HÀM MẬT KHẨU
 function checkVandapPass() {
     document.getElementById('passwordModal').style.display = 'flex';
     document.getElementById('passInput').value = '';
@@ -281,38 +291,6 @@ function validatePass() {
     else { alert("Mật khẩu sai!"); document.getElementById('passInput').value = ''; }
 }
 document.getElementById('passInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') validatePass(); });
-    
-
-// HÀM LẤY TỌA ĐỘ - click vào đâu trên ảnh, nó hiện tọa độ % ở đó
-window.addEventListener('DOMContentLoaded', () => {
-    // Tìm tấm ảnh trong khung sơ đồ
-    const sldImg = document.querySelector('.image-wrapper img');
-    
-    if (sldImg) {
-        console.log("Đã kích hoạt công cụ lấy tọa độ!");
-        
-        sldImg.addEventListener('click', function(e) {
-            // Lấy kích thước thực tế của tấm ảnh tại thời điểm click
-            const rect = this.getBoundingClientRect();
-            
-            // Tính toán % dựa trên vị trí click so với tấm ảnh
-            const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
-            const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
-            
-            const result = `top: "${y}%", left: "${x}%"`;
-            
-            // 1. Hiện thông báo trên màn hình
-            alert("Đã lấy tọa độ cho sếp:\n" + result);
-            
-            // 2. In ra console (F12) để sếp copy cho dễ
-            console.log("-----------------------");
-            console.log("Copy dòng này dán vào hotspotsData:");
-            console.log(result);
-        });
-    } else {
-        console.error("Không tìm thấy tấm ảnh sơ đồ để lấy tọa độ!");
-    }
-});
 </script>
 </body>
 </html>
