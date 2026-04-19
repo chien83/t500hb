@@ -12,42 +12,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Thiết lập chung */
+        /* Thu nhỏ đệm của Body */
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #ffffff;
-            line-height: 1.6;
-            min-height: 100vh;
-            padding-bottom: 70px; 
-        }
-
-        /* 1. KHỐI LOGO */
-        .header-top {
-            background-color: white;
-            padding: 15px 5%;
+            line-height: 1.4; /* Giảm khoảng cách dòng */
+            height: 100vh; /* Ép chiều cao toàn bộ trang bằng đúng màn hình */
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            overflow: hidden; /* Ngăn toàn bộ trang bị cuộn */
         }
 
-        .header-top img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            width: 450px;
-            transition: width 0.3s ease;
-        }
+        /* 1. KHỐI LOGO - Thu hẹp lại */
+            .header-top {
+                background-color: white;
+                padding: 5px 5%; /* Giảm từ 15px xuống 5px */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .header-top img {
+                height: 40px; /* Ép chiều cao logo cố định để tiết kiệm diện tích */
+                width: auto;
+            }
 
-        /* 2. THANH ĐIỀU HƯỚNG */
+        /* 2. THANH ĐIỀU HƯỚNG - Giữ nguyên hoặc thu hẹp nhẹ */
         .navbar {
             background-color: #1a4694;
-            min-height: 50px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-height: 40px; /* Giảm từ 50px */
         }
 
         .nav-links {
@@ -77,37 +70,50 @@
         .nav-links a:hover { background-color: #0d3270; }
         .nav-links a i { font-size: 18px; }
 
-        /* 3. NỘI DUNG CHÍNH */
+        /* 3. NỘI DUNG CHÍNH - Thu gọn cực hạn */
         .content {
-            padding: 60px 20px;
+            padding: 10px 20px; /* Giảm từ 60px xuống 10px */
             text-align: center;
             max-width: 800px;
             margin: 0 auto;
         }
-
         .content h1 {
-            font-size: 32px;
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: 800;
+            font-size: 20px; /* Thu nhỏ tiêu đề */
+            margin-bottom: 5px;
+        }
+        .content p { font-size: 14px; margin: 0; }
+
+        /* 4. KHỐI CHỨA ẢNH - Phần quan trọng nhất để không bị cuộn */
+        .image-container {
+            flex: 1; /* Tự động lấy toàn bộ phần diện tích còn lại */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%; /* Ép ảnh không được cao hơn phần diện tích còn lại */
+            object-fit: contain; /* Giữ nguyên tỷ lệ ảnh mà vẫn vừa khung */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        .content p { font-size: 18px; color: #666; }
-
-        /* 4. THANH CHÂN TRANG */
+        
+        /* 5. FOOTER - Thu gọn diện tích */
         .footer-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
+            position: relative; /* Đổi về relative để không đè lên ảnh */
             width: 100%;
             background-color: #0000ff;
-            padding: 5px 20px;
+            padding: 2px 20px;
+            height: 40px; /* Giảm chiều cao */
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            z-index: 10000;
-            box-sizing: border-box;
-            height: 55px;
         }
 
         .footer-info {
@@ -157,9 +163,9 @@
         <p>Vui lòng chọn các mục trên menu để bắt đầu quá trình luyện tập và ôn thi.</p>
     </main>
 
-    <div style="text-align: center; margin-bottom: 25px;">
-        <img src="image/t500hb.png" alt="Sơ đồ minh họa" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-        <p style="font-size: 13px; color: #666; font-style: italic;"> Sơ đồ nhất thứ</p>
+    <div class="image-container">
+        <img src="image/t500hb.png" >
+        <p style="font-size: 11px; color: #666; margin-top: 5px;">Sơ đồ nhất thứ trạm 500kV Hòa Bình</p>
     </div>
 
     
