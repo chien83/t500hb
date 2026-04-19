@@ -2,133 +2,83 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
-    <meta name="format-detection" content="telephone=no">
-    <link rel="icon" type="image/png" sizes="180x180" href="favicon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
-    <title>VẬN HÀNH TRẠM ĐIỆN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>VẬN HÀNH TRẠM 500KV HÒA BÌNH</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<style>
-    /* 1. THIẾT LẬP NỀN TẢNG */
-    * { box-sizing: border-box; }
-    html, body {
-        margin: 0; padding: 0;
-        width: 100%; height: 100vh;
-        background-color: #ffffff;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        overflow: hidden; /* PC không cho cuộn trang chính */
-    }
+    <style>
+        /* 1. RESET CHUẨN */
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100vh;
+            background-color: #ffffff; font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; display: flex; flex-direction: column;
+        }
 
-    body {
-        display: flex;
-        flex-direction: column; /* Xếp dọc: Nav -> Tiêu đề -> Sơ đồ -> Footer */
-    }
+        /* 2. GIAO DIỆN KHUNG NGOÀI (Vẫn cần Responsive một chút cho đẹp) */
+        .navbar {
+            background-color: #1a4694; height: 60px; display: flex;
+            flex-direction: row-reverse; align-items: center; justify-content: space-between;
+            padding: 0 15%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); flex-shrink: 0; z-index: 1000;
+        }
+        .nav-logo-box img { height: 42px; width: auto; background: white; padding: 2px 5px; border-radius: 4px; }
+        .nav-links { list-style: none; display: flex; margin: 0; padding: 0; }
+        .nav-links a {
+            color: white; text-decoration: none; font-size: 15px; font-weight: bold;
+            padding: 0 15px; display: flex; align-items: center; text-transform: uppercase;
+        }
+        .nav-links a i { font-size: 22px !important; margin-right: 8px; }
 
-    /* 2. NAVBAR: PC (MENU TRÁI - LOGO PHẢI) */
-    .navbar {
-        background-color: #1a4694;
-        display: flex;
-        flex-direction: row-reverse; /* Đảo để Menu bên trái, Logo bên phải trên PC */
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 15%; 
-        height: 60px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        flex-shrink: 0;
-        z-index: 1000;
-    }
+        .header-info { padding: 5px 10px; text-align: center; flex-shrink: 0; }
+        .header-info h1 { font-size: 20px; margin: 5px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
 
-    .nav-logo-box img { height: 42px; width: auto; background: white; padding: 2px 5px; border-radius: 4px; }
-    .nav-links { list-style: none; display: flex; margin: 0; padding: 0; }
-    .nav-links a {
-        color: white; text-decoration: none; font-size: 15px; font-weight: bold;
-        padding: 0 18px; display: flex; align-items: center; text-transform: uppercase; cursor: pointer;
-    }
-    .nav-links a i { font-size: 24px !important; margin-right: 6px; }
+        /* 3. VÙNG CHỨA SVG - "TRÁI TIM" CỦA HỆ THỐNG */
+        .main-container {
+            flex-grow: 1; width: 100%; overflow: auto; /* Hiện thanh cuộn khi zoom to */
+            display: flex; align-items: center; justify-content: center;
+            background-color: #f4f7f9; padding: 10px;
+        }
 
-    /* 3. TIÊU ĐỀ PHỤ */
-    .header-info { padding: 5px 10px; text-align: center; background: #fff; flex-shrink: 0; }
-    .header-info h1 { font-size: 20px; margin: 5px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
-    .header-info p { font-size: 12px; color: #666; margin: 0; }
+        #station-svg {
+            display: block; background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            max-width: 100%; max-height: 100%; /* Đảm bảo luôn vừa màn hình khi load */
+            width: auto; height: auto;
+        }
 
-    /* 4. VÙNG CHỨA SƠ ĐỒ (ĐẶC TRỊ LỖI ZOOM & MẤT HÌNH) */
-    .image-container {
-        flex-grow: 1; /* Lấy toàn bộ khoảng trống còn lại */
-        min-height: 0; 
-        width: 100%;
-        display: flex;
-        overflow: auto; /* Hiện thanh cuộn khi ảnh to hơn khung */
-        padding: 10px;
-        background-color: #ffffff;
-    }
+        /* Ô máy cắt tàng hình bên trong SVG */
+        .hotspot {
+            fill: rgba(255, 255, 0, 0); /* Tàng hình */
+            stroke: none; cursor: pointer; transition: 0.2s;
+        }
+        .hotspot:hover {
+            fill: rgba(0, 123, 255, 0.2); stroke: #007bff; stroke-width: 0.2;
+        }
 
-    .image-wrapper {
-        position: relative;
-        display: inline-block; /* Ôm khít lấy ảnh */
-        margin: auto; /* Tự động căn giữa khi nhỏ, dạt góc khi to (không bị mất hình) */
-    }
-    
-    .image-wrapper img {
-        display: block;
-        max-width: 100%; 
-        /* Ép ảnh không cao quá phần trống ở giữa tại zoom 100% */
-        max-height: calc(100vh - 160px); 
-        width: auto;
-        height: auto;
-        object-fit: contain;
-        cursor: crosshair;
-    }
+        .footer-bar { background-color: #0000ff; height: 30px; display: flex; align-items: center; padding: 0 15%; flex-shrink: 0; }
+        .footer-info { color: white; font-size: 12px; font-weight: bold; }
 
-    /* ĐIỂM CHẠM (HOTSPOTS) - LUÔN DÍNH TÂM */
-    .hotspot {
-        position: absolute;
-        cursor: pointer;
-        background-color: rgba(255, 255, 0, 0); 
-        border: 2px dashed transparent;
-        z-index: 10;
-        transform: translate(-50%, -50%); /* Căn tâm tuyệt đối vào điểm click */
-        width: 40px; height: 40px; /* Vùng bấm tối ưu cho mobile */
-    }
-    .hotspot:hover { background-color: rgba(0, 123, 255, 0.2); border: 2px solid #007bff; }
+        /* 4. MOBILE: CHỈ CHỈNH LẠI THỨ TỰ NAVBAR */
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; height: auto; padding: 10px; gap: 8px; }
+            .nav-logo-box { order: 1; } .nav-links { order: 2; flex-wrap: wrap; justify-content: center; }
+            .nav-links a { font-size: 11px; padding: 8px 10px; background: rgba(255,255,255,0.1); margin: 2px; border-radius: 4px; }
+            .header-info h1 { font-size: 16px; }
+            .footer-bar { padding: 0 10px; justify-content: center; }
+        }
 
-    /* 5. FOOTER */
-    .footer-bar {
-        background-color: #0000ff !important;
-        padding: 0 15%;
-        display: flex;
-        align-items: center;
-        height: 30px;
-        flex-shrink: 0;
-    }
-    .footer-info { display: flex; gap: 20px; font-size: 12px; font-weight: bold; color: white; }
-    .footer-info .name { color: #ffeb3b; }
-
-    /* 6. MOBILE: LOGO TRÊN - MENU DƯỚI */
-    @media (max-width: 768px) {
-        body { overflow-y: auto; height: auto; } /* Cho phép cuộn trang trên mobile */
-        .navbar { flex-direction: column; height: auto; padding: 10px; gap: 8px; }
-        .nav-logo-box { order: 1; margin-bottom: 5px; } /* Logo lên đầu */
-        .nav-links { order: 2; flex-wrap: wrap; justify-content: center; width: 100%; }
-        .nav-links a { font-size: 11px; padding: 8px 12px; background: rgba(255,255,255,0.1); margin: 2px; border-radius: 4px; }
-        .header-info h1 { font-size: 16px; } /* Thu nhỏ tiêu đề mobile */
-        .image-container { height: auto; min-height: 400px; padding: 5px; }
-        .image-wrapper img { max-height: none; } /* Mobile cho phép ảnh dài ra */
-    }
-
-    /* MODALS */
-    #info-popup, #passwordModal {
-        display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        z-index: 30000; background: white; padding: 25px; border-radius: 15px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.4); width: 320px; border-top: 6px solid #1a4694;
-    }
-</style>
+        /* MODALS (GIỮ NGUYÊN) */
+        #info-popup, #passwordModal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 30000; background: white; padding: 25px; border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4); width: 320px; border-top: 6px solid #1a4694;
+        }
+    </style>
 </head>
 <body>
 
 <nav class="navbar">
-    <div class="nav-logo-box">
-        <img src="logo.png" alt="EVN NPT">
-    </div>
+    <div class="nav-logo-box"><img src="logo.png" alt="EVN NPT"></div>
     <ul class="nav-links">
         <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
         <li><a href="hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
@@ -139,32 +89,35 @@
 </nav>
 
 <div class="header-info">
-    <h1>Hệ Thống Ôn Tập Trắc Nghiệm</h1>
-    <p>Nhấn vào thiết bị trên sơ đồ để xem thông số kỹ thuật</p>
+    <h1>Hệ Thống Ôn Tập Trắc Nghiệm - Trạm 500kV Hòa Bình</h1>
 </div>
 
-<div class="image-container">
-    <div class="image-wrapper" id="sld-container">
-        <img src="image/t500hb.png" alt="Sơ đồ nhất thứ">
-    </div>
+<div class="main-container">
+    <svg id="station-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+        <image href="image/t500hb.png" x="0" y="0" width="100" height="100" />
+        
+        <rect class="hotspot" x="66.16" y="37.55" width="4" height="5" onclick="showDeviceInfo('571')" />
+        <rect class="hotspot" x="54.24" y="37.15" width="4" height="5" onclick="showDeviceInfo('572')" />
+        <rect class="hotspot" x="40.99" y="37.28" width="4" height="5" onclick="showDeviceInfo('573')" />
+        <rect class="hotspot" x="27.19" y="37.82" width="4" height="5" onclick="showDeviceInfo('574')" />
+        
+        <rect class="hotspot" x="64.19" y="61.19" width="7" height="8" onclick="showDeviceInfo('AT1')" />
+    </svg>
 </div>
 
 <footer class="footer-bar">
-    <div class="footer-info">
-        <span class="name">Edit: Chien500hb</span>
-        <a href="tel:0986362234" style="color:white; text-decoration:none;">SĐT: 0986362234</a>
-    </div>
+    <div class="footer-info">Edit: Chien500hb - SĐT: 0986362234</div>
 </footer>
 
 <div id="info-popup">
     <h3 id="pop-title" style="margin-top:0; color:#1a4694;">Thông số</h3>
-    <table id="pop-table" style="width:100%; border-collapse:collapse; font-size:14px;"></table>
+    <div id="pop-content"></div>
     <button onclick="closePopup()" style="margin-top:15px; width:100%; padding:10px; background:#dc3545; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">ĐÓNG</button>
 </div>
 
 <div id="passwordModal">
     <h3>XÁC THỰC TRUY CẬP</h3>
-    <input type="password" id="passInput" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px; text-align:center;" placeholder="Mật khẩu">
+    <input type="password" id="passInput" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px; text-align:center;" placeholder="Nhập mật khẩu">
     <div style="display:flex; gap:10px;">
         <button onclick="closePassModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer;">HỦY</button>
         <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
@@ -172,68 +125,52 @@
 </div>
 
 <script>
-// --- DỮ LIỆU ĐÃ LÀM SẠCH VÀ CHỈNH TÂM ---
-const hotspotsData = [
-    { id: "571", top: "40.05%", left: "68.16%", name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },    
-    { id: "572", top: "39.65%", left: "56.24%", name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },        
-    { id: "573", top: "39.78%", left: "42.99%", name: "Máy cắt 573", brand: "ABB", volt: "550kV", cur: "4000A" },      
-    { id: "574", top: "40.32%", left: "29.19%", name: "Máy cắt 574", brand: "Siemens", volt: "550kV", cur: "3150A" },    
-    { id: "AT1", top: "65.19%", left: "67.69%", name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },    
-    { id: "AT2", top: "65.46%", left: "42.83%", name: "MBA AT2", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
-    { id: "221", top: "84.54%", left: "67.93%", name: "Máy cắt 221", brand: "Siemens", volt: "245kV" },    
-    { id: "222", top: "84.54%", left: "42.91%", name: "Máy cắt 222", brand: "Siemens", volt: "245kV" },    
-    { id: "200", top: "77.28%", left: "55.77%", name: "Máy cắt 200", brand: "ABB", volt: "245kV" },    
-    { id: "341", top: "65.46%", left: "54.68%", name: "Máy cắt 341", brand: "Nu-Lec", volt: "38kV" },    
-    { id: "342", top: "65.59%", left: "29.58%", name: "Máy cắt 342", brand: "Nu-Lec", volt: "38kV" }
-];
+    // --- DỮ LIỆU THIẾT BỊ ---
+    const deviceData = {
+        "571": { name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },
+        "572": { name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },
+        "573": { name: "Máy cắt 573", brand: "ABB", volt: "550kV", cur: "4000A" },
+        "574": { name: "Máy cắt 574", brand: "Siemens", volt: "550kV", cur: "3150A" },
+        "AT1": { name: "Máy biến áp AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" }
+    };
 
-window.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('sld-container');
-    const img = container ? container.querySelector('img') : null;
-
-    if (!container || !img) return;
-
-    // Vẽ Hotspots
-    hotspotsData.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'hotspot';
-        div.style.cssText = `top:${item.top}; left:${item.left};`;
-        div.onclick = (e) => {
-            e.stopPropagation(); 
-            showDeviceInfo(item.id);
-        };
-        container.appendChild(div);
+    // --- CÔNG CỤ LẤY TỌA ĐỘ SVG CHUẨN ---
+    const svg = document.getElementById('station-svg');
+    svg.addEventListener('click', function(e) {
+        const pt = svg.createSVGPoint();
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+        // Chuyển đổi tọa độ click chuột sang tọa độ bên trong SVG (0-100)
+        const cursorpt = pt.matrixTransform(svg.getScreenCTM().inverse());
+        
+        const result = `x="${cursorpt.x.toFixed(2)}" y="${cursorpt.y.toFixed(2)}"`;
+        console.log("Tọa độ sếp cần dán vào thẻ <rect>:", result);
+        // alert("Tọa độ click:\n" + result);
     });
 
-    // CÔNG CỤ LẤY TỌA ĐỘ
-    img.onclick = (e) => {
-        const r = img.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width * 100).toFixed(2);
-        const y = ((e.clientY - r.top) / r.height * 100).toFixed(2);
-        alert(`top: "${y}%", left: "${x}%"`);
-    };
-});
+    function showDeviceInfo(id) {
+        const item = deviceData[id];
+        if(!item) return;
+        document.getElementById('pop-title').innerText = item.name;
+        document.getElementById('pop-content').innerHTML = `
+            <table style="width:100%; font-size:14px; border-collapse:collapse;">
+                <tr><td><b>Hãng:</b></td><td>${item.brand}</td></tr>
+                <tr><td><b>Điện áp:</b></td><td>${item.volt}</td></tr>
+                ${item.cur ? `<tr><td><b>Dòng ĐM:</b></td><td>${item.cur}</td></tr>` : ''}
+                ${item.p ? `<tr><td><b>Công suất:</b></td><td>${item.p}</td></tr>` : ''}
+            </table>
+        `;
+        document.getElementById('info-popup').style.display = 'block';
+    }
 
-function showDeviceInfo(id) {
-    const item = hotspotsData.find(x => x.id === id);
-    if(!item) return;
-    document.getElementById('pop-title').innerText = item.name;
-    let html = `<tr><td><b>Hãng:</b></td><td>${item.brand || '---'}</td></tr>
-                <tr><td><b>Điện áp:</b></td><td>${item.volt || '---'}</td></tr>`;
-    if(item.cur) html += `<tr><td><b>Dòng ĐM:</b></td><td>${item.cur}</td></tr>`;
-    if(item.p) html += `<tr><td><b>Công suất:</b></td><td>${item.p}</td></tr>`;
-    html += `<tr><td><b>Trạng thái:</b></td><td><b style="color:green">Bình thường</b></td></tr>`;
-    document.getElementById('pop-table').innerHTML = html;
-    document.getElementById('info-popup').style.display = 'block';
-}
-
-function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
-function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
-function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
-function validatePass() {
-    if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
-    else alert("Sai mật khẩu sếp ơi!");
-}
+    function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
+    function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
+    function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
+    function validatePass() {
+        if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
+        else alert("Sai mật khẩu sếp ơi!");
+    }
 </script>
+
 </body>
 </html>
