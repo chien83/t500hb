@@ -2,36 +2,38 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="icon" type="image/png" href="favicon.png">
     <title>VẬN HÀNH TRẠM 500KV HÒA BÌNH</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* 1. THIẾT LẬP NỀN TẢNG */
         * { box-sizing: border-box; }
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100vh;
+            margin: 0; padding: 0; 
+            width: 100%; 
+            height: 100vh; height: 100dvh; /* FIX 2: Bám đáy mobile chuẩn */
             background-color: #ffffff; font-family: 'Segoe UI', sans-serif;
             overflow: hidden; display: flex; flex-direction: column;
         }
 
-        /* 2. NAVBAR PC (60px) */
+        /* NAVBAR PC */
         .navbar {
             background-color: #1a4694; height: 60px; display: flex;
             flex-direction: row-reverse; align-items: center; justify-content: space-between;
             padding: 0 15%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); flex-shrink: 0; z-index: 1000;
         }
         .nav-logo-box img { height: 42px; width: auto; background: white; padding: 2px 5px; border-radius: 4px; }
-        .nav-links { list-style: none; display: flex; margin: 0; padding: 0; }
+        .nav-links { list-style: none; display: flex; margin: 0; padding: 0; align-items: center; }
         .nav-links a {
             color: white; text-decoration: none; font-size: 15px; font-weight: bold;
-            padding: 0 15px; display: flex; align-items: center; text-transform: uppercase;
+            padding: 0 15px; display: flex; align-items: center; text-transform: uppercase; cursor: pointer;
         }
         .nav-links a i { font-size: 22px !important; margin-right: 8px; }
 
         .header-info { padding: 5px 10px; text-align: center; flex-shrink: 0; }
-        .header-info h1 { font-size: 20px; margin: 5px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
+        .header-info h1 { font-size: 18px; margin: 5px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
 
-        /* 3. VÙNG CHỨA SƠ ĐỒ SVG */
+        /* VÙNG SƠ ĐỒ SVG */
         .main-container {
             flex-grow: 1; width: 100%; overflow: auto;
             display: flex; align-items: center; justify-content: center;
@@ -46,32 +48,35 @@
         .hotspot { fill: rgba(255, 255, 0, 0); stroke: none; cursor: pointer; }
         .hotspot:hover { fill: rgba(0, 123, 255, 0.2); stroke: #007bff; stroke-width: 0.2; }
 
-        /* 4. FOOTER */
-        .footer-bar { background-color: #0000ff; height: 30px; display: flex; align-items: center; padding: 0 15%; flex-shrink: 0; }
-        .footer-info { color: white; font-size: 12px; font-weight: bold; width: 100%; display: flex; justify-content: space-between; }
+        /* FOOTER CỐ ĐỊNH */
+        .footer-bar { 
+            background-color: #0000ff; height: 30px; display: flex; align-items: center; 
+            padding: 0 15%; flex-shrink: 0; color: white;
+        }
+        .footer-info { width: 100%; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; }
         .footer-info a { color: #ffeb3b; text-decoration: none; }
 
-        /* 5. ĐẶC TRỊ MOBILE (ÉP CÂN SIÊU MỎNG) */
+        /* FIX 3: ĐẶC TRỊ MOBILE SIÊU GỌN */
         @media (max-width: 768px) {
-            .navbar { 
-                flex-direction: column; height: auto; padding: 5px; gap: 5px; 
-            }
+            .navbar { flex-direction: column; height: auto; padding: 5px; gap: 4px; }
             .nav-logo-box { order: 1; }
-            .nav-logo-box img { height: 30px; } /* Logo cực nhỏ */
+            .nav-logo-box img { height: 32px; } /* Thu nhỏ logo */
             
             .nav-links { 
-                order: 2; flex-wrap: wrap; justify-content: center; width: 100%; gap: 3px;
+                order: 2; flex-wrap: wrap; justify-content: center; width: 100%; 
+                gap: 2px; /* Sát các nút vào nhau */
             }
+            .nav-links li { display: flex; }
             .nav-links a { 
-                font-size: 10px; padding: 5px 8px; /* Chữ menu tí hon */
+                font-size: 10px; padding: 6px 8px; 
                 background: rgba(255,255,255,0.1); border-radius: 3px; 
             }
             .nav-links a i { font-size: 14px !important; margin-right: 4px; }
 
             .header-info { padding: 2px; }
-            .header-info h1 { font-size: 13px; margin: 2px 0; } /* Tiêu đề mỏng */
+            .header-info h1 { font-size: 14px; margin: 3px 0; }
 
-            .footer-bar { padding: 0 10px; height: 25px; }
+            .footer-bar { padding: 0 10px; height: 28px; }
             .footer-info { font-size: 10px; }
             
             .main-container { padding: 2px; }
