@@ -8,153 +8,129 @@
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <title>VẬN HÀNH TRẠM ĐIỆN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* 1. THIẾT LẬP CHUNG */
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f9;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* 2. THANH NAVBAR - ĐẢO VỊ TRÍ (MENU TRÁI, LOGO PHẢI) */
-        .navbar {
-            background-color: #1a4694;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            /* Padding 25% giúp menu cách lề trái cân đối như ảnh 2 */
-            padding: 0 25%; 
-            height: 55px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 1000;
-        }
-
-        /* Menu dạt trái */
-        .nav-links {
-            list-style: none;
-            display: flex;
-            margin: 0; padding: 0;
-            height: 100%;
-        }
-
-        .nav-links li { height: 100%; }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-            padding: 0 15px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            text-transform: uppercase;
-            transition: background 0.3s;
-            cursor: pointer;
-        }
-        .nav-links a:hover { background-color: #0d3270; }
-
-        /* Logo dạt phải */
-        .nav-logo-box {
-            display: flex;
-            align-items: center;
-            height: 100%;
-        }
-        .nav-logo-box img {
-            height: 38px;
-            width: auto;
-            background: white;
-            padding: 2px 5px;
-            border-radius: 4px;
-        }
-
-        /* 3. TIÊU ĐỀ PHỤ */
-        .header-info {
-            padding: 10px 20px;
-            text-align: center;
-            background: #fff;
-        }
-        .header-info h1 {
-            font-size: 18px;
-            margin: 0;
-            color: #1a4694;
-            text-transform: uppercase;
-        }
-        .header-info p { font-size: 12px; color: #666; margin: 2px 0 0 0; }
-
-        /* 4. KHỐI SƠ ĐỒ */
-        .image-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            background-color: #ffffff;
-            overflow: hidden;
-        }
-        .image-container img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        /* 5. FOOTER - THẲNG HÀNG VỚI THANH NAVI */
-            .footer-bar {
-                height: auto;
-                min-height: 35px;
-                padding: 5px 10px;
-            }
-            .footer-info {
-                flex-wrap: wrap;
-                gap: 5px;
-                font-size: 10px;
-            }
-        .footer-info .name { color: #ffeb3b; }
-        .footer-info a { color: #ffffff !important; text-decoration: none !important; }
-
-        /* --- THIẾT KẾ RIÊNG CHO ĐIỆN THOẠI (MOBILE) --- */
-@media (max-width: 768px) {
+<style>
+    /* THIẾT LẬP CHUNG */
     body {
-        overflow-y: auto; /* Cho phép cuộn dọc trên điện thoại nếu nội dung quá dài */
-    }
-
-    .navbar {
-        height: auto; /* Bỏ chiều cao cố định */
-        flex-direction: column; /* Xếp Logo lên trên, Menu xuống dưới */
-        padding: 10px 0;
-        gap: 10px;
-    }
-
-    .nav-logo-box {
-        order: -1; /* Đảm bảo logo luôn nằm trên cùng */
-        width: 100%;
-        justify-content: center;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7f9;
+        height: 100vh;
         display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 
-    .nav-logo-box img {
-        height: 35px; /* Logo trên mobile nhỏ lại một chút cho cân đối */
+    /* --- GIAO DIỆN MÁY TÍNH (DESKTOP) --- */
+    .navbar {
+        background-color: #1a4694;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5%; /* Căn lề 5% như Ảnh 2 */
+        height: 55px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        z-index: 1000;
     }
 
     .nav-links {
-        width: 100%;
-        justify-content: center; /* Căn giữa các nút menu */
-        flex-wrap: wrap; /* Nếu menu quá dài, tự động xuống hàng thay vì biến mất */
+        list-style: none;
+        display: flex;
+        margin: 0; padding: 0;
     }
 
     .nav-links a {
-        padding: 8px 10px;
-        font-size: 11px; /* Chữ nhỏ lại để vừa màn hình điện thoại */
+        color: white;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        cursor: pointer;
     }
 
-    .header-info h1 {
-        font-size: 16px;
+    .nav-logo-box img {
+        height: 38px;
+        width: auto;
+        background: white;
+        padding: 2px 5px;
+        border-radius: 4px;
     }
-    </style>
+
+    /* TIÊU ĐỀ */
+    .header-info { padding: 10px 20px; text-align: center; background: #fff; }
+    .header-info h1 { font-size: 18px; margin: 0; color: #1a4694; text-transform: uppercase; }
+    .header-info p { font-size: 12px; color: #666; margin: 2px 0; }
+
+    /* SƠ ĐỒ */
+    .image-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+    .image-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+    /* FOOTER CHUẨN (MÀU XANH) */
+    .footer-bar {
+        width: 100%;
+        background-color: #0000ff !important; /* Ép màu xanh */
+        padding: 0 5%; /* Thẳng hàng với thanh navi */
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        height: 35px;
+        box-sizing: border-box;
+    }
+    .footer-info { display: flex; gap: 20px; font-size: 11px; font-weight: bold; color: white; }
+    .footer-info .name { color: #ffeb3b; }
+    .footer-info a { color: #ffffff !important; text-decoration: none !important; }
+
+    /* --- ĐIỀU CHỈNH RIÊNG CHO ĐIỆN THOẠI (MOBILE) --- */
+    @media (max-width: 768px) {
+        body { overflow-y: auto; height: auto; } /* Cho phép cuộn dọc trên mobile */
+        
+        .navbar {
+            flex-direction: column; /* Xếp chồng Logo và Menu */
+            height: auto;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .nav-logo-box { order: -1; } /* Logo lên đầu */
+        
+        .nav-links {
+            flex-wrap: wrap; /* Cho phép các nút xuống dòng */
+            justify-content: center;
+            width: 100%;
+        }
+
+        .nav-links a {
+            font-size: 10px;
+            padding: 8px 10px;
+            background: rgba(255,255,255,0.1); /* Tạo khung nhẹ cho dễ bấm */
+            margin: 2px;
+            border-radius: 4px;
+        }
+
+        .footer-bar {
+            height: auto;
+            padding: 10px;
+            justify-content: center;
+        }
+        .footer-info {
+            flex-direction: column; /* Tên một dòng, SĐT một dòng cho đỡ chật */
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .image-container { height: 400px; } /* Giới hạn chiều cao ảnh trên mobile */
+    }
+</style>
 </head>
 <body>
 
