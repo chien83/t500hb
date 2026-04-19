@@ -115,6 +115,13 @@
         <rect class="hotspot" x="36.11" y="37.84" width="4" height="5" onclick="showDeviceInfo('573')" />
         <rect class="hotspot" x="12.21" y="38.24" width="4" height="5" onclick="showDeviceInfo('574')" />
         <rect class="hotspot" x="77.74" y="61.21" width="7" height="8" onclick="showDeviceInfo('AT1')" />
+        <rect class="hotspot" x="76.74" y="61.21" width="7" height="8" onclick="showDeviceInfo('AT2')" />
+        <rect class="hotspot" x="75.74" y="61.21" width="7" height="8" onclick="showDeviceInfo('200')" />
+        <rect class="hotspot" x="74.74" y="61.21" width="7" height="8" onclick="showDeviceInfo('221')" />
+        <rect class="hotspot" x="73.74" y="61.21" width="7" height="8" onclick="showDeviceInfo('222')" />
+        <rect class="hotspot" x="72.74" y="61.21" width="7" height="8" onclick="showDeviceInfo('341')" />
+        <rect class="hotspot" x="71.74" y="61.21" width="7" height="8" onclick="showDeviceInfo('342')" />
+        <rect class="hotspot" x="70.74" y="61.21" width="7" height="8" onclick="showDeviceInfo('KH504')" />
         </svg>
 </div>
 
@@ -142,7 +149,7 @@
 
 <script>
     // --- 1. HÀM LẤY TỌA ĐỘ SVG (Click vào ảnh là hiện alert) ---
-    /* // TẠM KHÓA HÀM LẤY TỌA ĐỘ
+  
     const svg = document.getElementById('station-svg');
     svg.addEventListener('click', function(e) {
         const pt = svg.createSVGPoint();
@@ -155,7 +162,7 @@
         alert("Sếp copy tọa độ này:\n" + res);
         console.log(res);
     }); 
-    */
+    /* // TẠM KHÓA HÀM LẤY TỌA ĐỘ  */
 
     // --- 2. DỮ LIỆU THIẾT BỊ ---
     const deviceData = {
@@ -185,7 +192,7 @@
     function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
     function validatePass() {
         if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
-        else alert("Sai mật khẩu sếp ơi!");
+        else alert("Sai mật khẩu!");
     }
 </script>
 
