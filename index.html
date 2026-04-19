@@ -2,12 +2,11 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VẬN HÀNH TRẠM 500KV HÒA BÌNH</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* 1. RESET CHUẨN */
+        /* 1. THIẾT LẬP NỀN TẢNG */
         * { box-sizing: border-box; }
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100vh;
@@ -15,7 +14,7 @@
             overflow: hidden; display: flex; flex-direction: column;
         }
 
-        /* 2. GIAO DIỆN KHUNG NGOÀI (Vẫn cần Responsive một chút cho đẹp) */
+        /* 2. NAVBAR PC (60px) */
         .navbar {
             background-color: #1a4694; height: 60px; display: flex;
             flex-direction: row-reverse; align-items: center; justify-content: space-between;
@@ -32,46 +31,57 @@
         .header-info { padding: 5px 10px; text-align: center; flex-shrink: 0; }
         .header-info h1 { font-size: 20px; margin: 5px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
 
-        /* 3. VÙNG CHỨA SVG - "TRÁI TIM" CỦA HỆ THỐNG */
+        /* 3. VÙNG CHỨA SƠ ĐỒ SVG */
         .main-container {
-            flex-grow: 1; width: 100%; overflow: auto; /* Hiện thanh cuộn khi zoom to */
+            flex-grow: 1; width: 100%; overflow: auto;
             display: flex; align-items: center; justify-content: center;
-            background-color: #f4f7f9; padding: 10px;
+            background-color: #f4f7f9; padding: 5px;
         }
-
         #station-svg {
             display: block; background-color: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            max-width: 100%; max-height: 100%; /* Đảm bảo luôn vừa màn hình khi load */
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            max-width: 100%; max-height: 100%;
             width: auto; height: auto;
         }
+        .hotspot { fill: rgba(255, 255, 0, 0); stroke: none; cursor: pointer; }
+        .hotspot:hover { fill: rgba(0, 123, 255, 0.2); stroke: #007bff; stroke-width: 0.2; }
 
-        /* Ô máy cắt tàng hình bên trong SVG */
-        .hotspot {
-            fill: rgba(255, 255, 0, 0); /* Tàng hình */
-            stroke: none; cursor: pointer; transition: 0.2s;
-        }
-        .hotspot:hover {
-            fill: rgba(0, 123, 255, 0.2); stroke: #007bff; stroke-width: 0.2;
-        }
-
+        /* 4. FOOTER */
         .footer-bar { background-color: #0000ff; height: 30px; display: flex; align-items: center; padding: 0 15%; flex-shrink: 0; }
-        .footer-info { color: white; font-size: 12px; font-weight: bold; }
+        .footer-info { color: white; font-size: 12px; font-weight: bold; width: 100%; display: flex; justify-content: space-between; }
+        .footer-info a { color: #ffeb3b; text-decoration: none; }
 
-        /* 4. MOBILE: CHỈ CHỈNH LẠI THỨ TỰ NAVBAR */
+        /* 5. ĐẶC TRỊ MOBILE (ÉP CÂN SIÊU MỎNG) */
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; height: auto; padding: 10px; gap: 8px; }
-            .nav-logo-box { order: 1; } .nav-links { order: 2; flex-wrap: wrap; justify-content: center; }
-            .nav-links a { font-size: 11px; padding: 8px 10px; background: rgba(255,255,255,0.1); margin: 2px; border-radius: 4px; }
-            .header-info h1 { font-size: 16px; }
-            .footer-bar { padding: 0 10px; justify-content: center; }
+            .navbar { 
+                flex-direction: column; height: auto; padding: 5px; gap: 5px; 
+            }
+            .nav-logo-box { order: 1; }
+            .nav-logo-box img { height: 30px; } /* Logo cực nhỏ */
+            
+            .nav-links { 
+                order: 2; flex-wrap: wrap; justify-content: center; width: 100%; gap: 3px;
+            }
+            .nav-links a { 
+                font-size: 10px; padding: 5px 8px; /* Chữ menu tí hon */
+                background: rgba(255,255,255,0.1); border-radius: 3px; 
+            }
+            .nav-links a i { font-size: 14px !important; margin-right: 4px; }
+
+            .header-info { padding: 2px; }
+            .header-info h1 { font-size: 13px; margin: 2px 0; } /* Tiêu đề mỏng */
+
+            .footer-bar { padding: 0 10px; height: 25px; }
+            .footer-info { font-size: 10px; }
+            
+            .main-container { padding: 2px; }
         }
 
-        /* MODALS (GIỮ NGUYÊN) */
+        /* MODALS */
         #info-popup, #passwordModal {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 30000; background: white; padding: 25px; border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4); width: 320px; border-top: 6px solid #1a4694;
+            z-index: 30000; background: white; padding: 20px; border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); width: 280px; border-top: 5px solid #1a4694;
         }
     </style>
 </head>
@@ -83,13 +93,13 @@
         <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
         <li><a href="hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
         <li><a onclick="openPassModal()">VẤN ĐÁP</a></li>
-        <li><a href="A0choMaytinh/">TEST-TRẮC NGHIỆM</a></li>
-        <li><a href="thia0/">TEST-ĐIỆN THOẠI</a></li>
+        <li><a href="A0choMaytinh/">TEST-PC</a></li>
+        <li><a href="thia0/">TEST-MB</a></li>
     </ul>
 </nav>
 
 <div class="header-info">
-    <h1>Hệ Thống Ôn Tập Trắc Nghiệm - Trạm 500kV Hòa Bình</h1>
+    <h1>TRẠM 500KV HÒA BÌNH</h1>
 </div>
 
 <div class="main-container">
@@ -100,77 +110,61 @@
         <rect class="hotspot" x="54.24" y="37.15" width="4" height="5" onclick="showDeviceInfo('572')" />
         <rect class="hotspot" x="40.99" y="37.28" width="4" height="5" onclick="showDeviceInfo('573')" />
         <rect class="hotspot" x="27.19" y="37.82" width="4" height="5" onclick="showDeviceInfo('574')" />
-        
         <rect class="hotspot" x="64.19" y="61.19" width="7" height="8" onclick="showDeviceInfo('AT1')" />
     </svg>
 </div>
 
 <footer class="footer-bar">
-    <div class="footer-info">Edit: Chien500hb - SĐT: 0986362234</div>
+    <div class="footer-info">
+        <span>Edit: Chien500hb</span>
+        <a href="tel:0986362234">SĐT: 0986362234</a>
+    </div>
 </footer>
 
 <div id="info-popup">
-    <h3 id="pop-title" style="margin-top:0; color:#1a4694;">Thông số</h3>
-    <div id="pop-content"></div>
-    <button onclick="closePopup()" style="margin-top:15px; width:100%; padding:10px; background:#dc3545; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">ĐÓNG</button>
+    <h3 id="pop-title" style="margin:0; color:#1a4694; font-size:16px;">Thông số</h3>
+    <div id="pop-content" style="margin-top:10px;"></div>
+    <button onclick="closePopup()" style="margin-top:15px; width:100%; padding:8px; background:#dc3545; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">ĐÓNG</button>
 </div>
 
 <div id="passwordModal">
-    <h3>XÁC THỰC TRUY CẬP</h3>
-    <input type="password" id="passInput" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px; text-align:center;" placeholder="Nhập mật khẩu">
-    <div style="display:flex; gap:10px;">
-        <button onclick="closePassModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer;">HỦY</button>
-        <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
+    <h3 style="margin:0; font-size:16px;">XÁC THỰC</h3>
+    <input type="password" id="passInput" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:5px; text-align:center;" placeholder="Mật khẩu">
+    <div style="display:flex; gap:5px;">
+        <button onclick="closePassModal()" style="flex:1; padding:8px; border:none; border-radius:5px; background:#eee; cursor:pointer;">HỦY</button>
+        <button onclick="validatePass()" style="flex:1; padding:8px; border:none; border-radius:5px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
     </div>
 </div>
 
 <script>
-    // --- DỮ LIỆU THIẾT BỊ ---
     const deviceData = {
         "571": { name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },
         "572": { name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },
         "573": { name: "Máy cắt 573", brand: "ABB", volt: "550kV", cur: "4000A" },
         "574": { name: "Máy cắt 574", brand: "Siemens", volt: "550kV", cur: "3150A" },
-        "AT1": { name: "Máy biến áp AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" }
+        "AT1": { name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" }
     };
-
-    // --- CÔNG CỤ LẤY TỌA ĐỘ SVG CHUẨN ---
-    const svg = document.getElementById('station-svg');
-    svg.addEventListener('click', function(e) {
-        const pt = svg.createSVGPoint();
-        pt.x = e.clientX;
-        pt.y = e.clientY;
-        // Chuyển đổi tọa độ click chuột sang tọa độ bên trong SVG (0-100)
-        const cursorpt = pt.matrixTransform(svg.getScreenCTM().inverse());
-        
-        const result = `x="${cursorpt.x.toFixed(2)}" y="${cursorpt.y.toFixed(2)}"`;
-        console.log("Tọa độ sếp cần dán vào thẻ <rect>:", result);
-        // alert("Tọa độ click:\n" + result);
-    });
 
     function showDeviceInfo(id) {
         const item = deviceData[id];
         if(!item) return;
         document.getElementById('pop-title').innerText = item.name;
         document.getElementById('pop-content').innerHTML = `
-            <table style="width:100%; font-size:14px; border-collapse:collapse;">
-                <tr><td><b>Hãng:</b></td><td>${item.brand}</td></tr>
-                <tr><td><b>Điện áp:</b></td><td>${item.volt}</td></tr>
-                ${item.cur ? `<tr><td><b>Dòng ĐM:</b></td><td>${item.cur}</td></tr>` : ''}
-                ${item.p ? `<tr><td><b>Công suất:</b></td><td>${item.p}</td></tr>` : ''}
-            </table>
-        `;
+            <table style="width:100%; font-size:13px; border-collapse:collapse;">
+                <tr><td>Hãng:</td><td><b>${item.brand}</b></td></tr>
+                <tr><td>U định mức:</td><td><b>${item.volt}</b></td></tr>
+                ${item.cur ? `<tr><td>Dòng ĐM:</td><td><b>${item.cur}</b></td></tr>` : ''}
+                ${item.p ? `<tr><td>Công suất:</td><td><b>${item.p}</b></td></tr>` : ''}
+            </table>`;
         document.getElementById('info-popup').style.display = 'block';
     }
-
     function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
     function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
     function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
     function validatePass() {
         if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
-        else alert("Sai mật khẩu sếp ơi!");
+        else alert("Sai mật khẩu!");
     }
 </script>
-
 </body>
 </html>
