@@ -284,9 +284,33 @@
                 opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
             },
         
-        "341": { name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },
-        "342": { name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },
-    };
+        "341": { 
+            name: "Máy cắt 341", 
+            type: "3AP1 FG",
+            brand: "Siemens Energy", 
+            volt: "40.5kV", 
+            cur: "1250A",
+            lightningVolt: "170kV", 
+            shortCircuitCur: "31.5kA",  
+            opSequence: "O-0.3s-CO-3min-CO",
+            sf6Press: "0.6 MPa (6.0 bar)",
+            controlVolt: "DC 220V" // Thông số điện áp điều khiển
+        },
+
+        "342": { 
+            name: "Máy cắt 342", 
+            type: "3AP1 FG",
+            brand: "Siemens Energy", 
+            volt: "40.5kV", 
+            cur: "1250A",
+            lightningVolt: "170kV", 
+            shortCircuitCur: "31.5kA",  
+            opSequence: "O-0.3s-CO-3min-CO",
+            sf6Press: "0.6 MPa (6.0 bar)",
+            controlVolt: "DC 220V" // Thông số điện áp điều khiển
+        },
+
+     };
 
         function showDeviceInfo(id) {
             const item = deviceData[id];
@@ -309,6 +333,7 @@
                     ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp suất SF6 ĐM:</td><td><b style="color: #d32f2f;">${item.sf6Press}</b></td></tr>` : ''}
                     
                     ${item.opSequence ? `<tr><td style="padding:4px 0; color:#666;">Chu trình ĐC:</td><td><b style="font-size:12px;">${item.opSequence}</b></td></tr>` : ''}
+                    ${item.controlVolt ? `<tr><td style="padding:4px 0; color:#666;">U điều khiển:</td><td><b>${item.controlVolt}</b></td></tr>` : ''}
                 </table>`;
                 
             document.getElementById('info-popup').style.display = 'block';
