@@ -352,7 +352,7 @@
             name: "Dao cách ly 574-7", 
             type: "3DN5550-1",
             brand: "Siemens Energy", 
-            year: "1993",
+            year: "2025",
             volt: "550kV", 
             cur: "3150A",
             lightningVolt: "1550kV", 
@@ -397,6 +397,7 @@
                     ${item.opSequence ? `<tr><td style="padding:4px 0; color:#666;">Chu trình ĐC:</td><td><b style="font-size:12px;">${item.opSequence}</b></td></tr>` : ''}
                     ${item.controlVolt ? `<tr><td style="padding:4px 0; color:#666;">U điều khiển:</td><td><b>${item.controlVolt}</b></td></tr>` : ''}
                     ${item.cap ? `<tr><td style="padding:4px 0; color:#666;">Công suất:</td><td><b>${item.cap}</b></td></tr>` : ''}
+                    ${item.year ? `<tr><td style="padding:4px 0; color:#666;">Năm SX:</td><td><b>${item.year}</b></td></tr>` : ''}
                 </table>`;
                 
             document.getElementById('info-popup').style.display = 'block';
