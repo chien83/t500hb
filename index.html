@@ -268,14 +268,13 @@
             document.getElementById('pop-content').innerHTML = `
                 <table style="width:100%; font-size:14px; border-collapse:collapse; line-height: 1.6;">
                     <tr><td style="padding:4px 0; color:#666;">Hãng:</td><td><b>${item.brand || '-'}</b></td></tr>
-                    
                     ${item.type ? `<tr><td style="padding:4px 0; color:#666;">Kiểu máy:</td><td><b>${item.type}</b></td></tr>` : ''}
-                    
                     <tr><td style="padding:4px 0; color:#666;">U định mức:</td><td><b>${item.volt}</b></td></tr>
-                    
                     ${item.cur ? `<tr><td style="padding:4px 0; color:#666;">Dòng ĐM:</td><td><b>${item.cur}</b></td></tr>` : ''}
                     
                     ${item.lightningVolt ? `<tr><td style="padding:4px 0; color:#666;">U chịu xung sét:</td><td><b>${item.lightningVolt}</b></td></tr>` : ''}
+                    
+                    ${item.switchingVolt ? `<tr><td style="padding:4px 0; color:#666;">U xung đóng cắt:</td><td><b>${item.switchingVolt}</b></td></tr>` : ''}
                     
                     ${item.shortCircuitCur ? `<tr><td style="padding:4px 0; color:#666;">Dòng cắt NM:</td><td><b>${item.shortCircuitCur}</b></td></tr>` : ''}
                     
@@ -286,6 +285,7 @@
                 
             document.getElementById('info-popup').style.display = 'block';
         }
+
 
     function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
     function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
