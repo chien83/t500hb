@@ -38,7 +38,7 @@
             </div>
             <div class="image-group">
                 <label>🖼 Cấu hình ảnh (Nếu có):</label>
-                <input type="text" id="imgSrc" placeholder="Ví dụ: image/1.png" style="margin-bottom: 10px;">
+                <input type="text" id="imgSrc" placeholder="Ví dụ: ../image/1.png" style="margin-bottom: 10px;">
                 <input type="text" id="imgCaption" placeholder="Chú thích ảnh...">
                 <small style="color: #666;">Mẹo: Để trống nếu câu này không có ảnh.</small>
             </div>
@@ -100,7 +100,7 @@ function generateHTML() {
 
     // Ráp thành cấu trúc hoàn chỉnh theo yêu cầu
     const finalHTML = `<div class="document-container">
-    <a href="../Vandap.html" class="back-link">← Quay lại danh mục câu hỏi</a>
+    <a href="Vandap.html" class="back-link">← Quay lại danh mục câu hỏi</a>
 
     <h1>CÂU HỎI ${num}</h1>
 
