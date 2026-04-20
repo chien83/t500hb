@@ -243,10 +243,31 @@
 
         },
 
-                
-        "AT1": { name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
-        "AT2": { name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
-        "KH504": { name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
+      "AT1": { 
+        name: "Máy biến áp AT1", 
+        brand: "Toshiba/Japan", 
+        p: "3x(300/300/60) MVA", 
+        volt: "500 ± 8x1.25% / 225 / 35 kV" 
+        }, 
+
+        "AT2": { 
+        name: "Máy biến áp AT2", 
+        brand: "EEMC/VIETNAM", 
+        p: "3x(300/300/60) MVA", 
+        volt: "500 ± 8x1.25% / 225 / 35 kV" 
+        },    
+
+
+
+        "KH504": { 
+                name: "Kháng điện KH504", 
+                brand: "ABB/Brazil", 
+                volt: "500kV (Max 550kV)", 
+                cur: "75A", 
+                cap: "65 MVAr" // Dùng 'cap' cho chuẩn Q
+            },
+
+
         
         "200": { 
                 name: "Máy cắt 200", 
@@ -334,6 +355,7 @@
                     
                     ${item.opSequence ? `<tr><td style="padding:4px 0; color:#666;">Chu trình ĐC:</td><td><b style="font-size:12px;">${item.opSequence}</b></td></tr>` : ''}
                     ${item.controlVolt ? `<tr><td style="padding:4px 0; color:#666;">U điều khiển:</td><td><b>${item.controlVolt}</b></td></tr>` : ''}
+                    ${item.cap ? `<tr><td style="padding:4px 0; color:#666;">Công suất:</td><td><b>${item.cap}</b></td></tr>` : ''}
                 </table>`;
                 
             document.getElementById('info-popup').style.display = 'block';
