@@ -148,21 +148,27 @@
 </div>
 
 <script>
-    // --- 1. HÀM LẤY TỌA ĐỘ SVG (Click vào ảnh là hiện alert) ---
-  
+// --- HÀM LẤY TỌA ĐỘ NÂNG CẤP: CLICK LÀ TỰ COPY ---
     const svg = document.getElementById('station-svg');
     svg.addEventListener('click', function(e) {
         const pt = svg.createSVGPoint();
         pt.x = e.clientX;
         pt.y = e.clientY;
+        // Chuyển đổi tọa độ sang hệ 0-100 của SVG
         const cursorpt = pt.matrixTransform(svg.getScreenCTM().inverse());
         
-        // Tọa độ chuẩn để dán vào x và y của <rect>
         const res = `x="${cursorpt.x.toFixed(2)}" y="${cursorpt.y.toFixed(2)}"`;
-        alert("Sếp copy tọa độ này:\n" + res);
-        console.log(res);
-    }); 
 
+        // Lệnh tự động chép vào bộ nhớ đệm
+        navigator.clipboard.writeText(res).then(() => {
+            // Hiện thông báo nhẹ để sếp biết là đã copy thành công
+            console.log("Đã copy: " + res);
+            alert("Đã COPY tọa độ: " + res + "\nSếp chỉ cần sang code nhấn Ctrl+V là xong!");
+        }).catch(err => {
+            // Nếu trình duyệt chặn tự động copy, dùng hàm prompt để sếp bôi đen
+            prompt("Sếp bôi đen đoạn này để copy nhé:", res);
+        });
+    });
     // --- 2. DỮ LIỆU THIẾT BỊ ---
     const deviceData = {
         "571": { name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },
