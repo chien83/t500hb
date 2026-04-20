@@ -186,8 +186,34 @@
     
     // --- 2. DỮ LIỆU THIẾT BỊ ---
     const deviceData = {
-        "571": { name: "Máy cắt 571", brand: "Siemens", volt: "550kV", cur: "3150A" },
-        "572": { name: "Máy cắt 572", brand: "ABB", volt: "550kV", cur: "4000A" },
+        "571": { 
+                name: "Máy cắt 571", 
+                type: "3AP3FI",
+                brand: "Siemens", 
+                volt: "550kV", 
+                cur: "4000A",
+                lightningVolt: "1550kV", // Điện áp chịu đựng xung sét
+                shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
+                sf6Press: "6,0 bar"
+                opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
+            },
+
+        
+        "572": { 
+            name: "Máy cắt 572", 
+            type: "3AP3FI",
+            brand: "Siemens", 
+            volt: "550kV", 
+            cur: "4000A",
+            lightningVolt: "1550 (+315) kV", 
+            switchingVolt: "1325kV", // Thông số xung đóng cắt bổ sung
+            shortCircuitCur: "63kA",  
+            sf6Press: "6,0 bar" 
+            opSequence: "O-0.3s-CO-3min-CO",
+        },
+
+
+    
         "573": { name: "Máy cắt 573", brand: "ABB", volt: "550kV", cur: "4000A" },
         "574": { name: "Máy cắt 574", brand: "Siemens", volt: "550kV", cur: "3150A" },
         "AT1": { name: "MBA AT1", brand: "Đông Anh", volt: "500/225/35kV", p: "450MVA" },
@@ -202,6 +228,7 @@
                 cur: "4000A",
                 lightningVolt: "1050kV", // Điện áp chịu đựng xung sét
                 shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
+                sf6Press: "6,0 bar"
                 opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
             },
         
@@ -213,6 +240,7 @@
                 cur: "4000A",
                 lightningVolt: "1050kV", // Điện áp chịu đựng xung sét
                 shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
+                sf6Press: "6,0 bar"
                 opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
             },
         
@@ -224,6 +252,7 @@
                 cur: "4000A",
                 lightningVolt: "1050kV", // Điện áp chịu đựng xung sét
                 shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
+                sf6Press: "6,0 bar"
                 opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
             },
         
@@ -250,9 +279,9 @@
                     
                     ${item.shortCircuitCur ? `<tr><td style="padding:4px 0; color:#666;">Dòng cắt NM:</td><td><b>${item.shortCircuitCur}</b></td></tr>` : ''}
                     
-                    ${item.opSequence ? `<tr><td style="padding:4px 0; color:#666;">Chu trình ĐC:</td><td><b style="font-size:12px;">${item.opSequence}</b></td></tr>` : ''}
+                    ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp suất SF6 ĐM:</td><td><b style="color: #d32f2f;">${item.sf6Press}</b></td></tr>` : ''}
                     
-                    ${item.p ? `<tr><td style="padding:4px 0; color:#666;">Công suất:</td><td><b>${item.p}</b></td></tr>` : ''}
+                    ${item.opSequence ? `<tr><td style="padding:4px 0; color:#666;">Chu trình ĐC:</td><td><b style="font-size:12px;">${item.opSequence}</b></td></tr>` : ''}
                 </table>`;
                 
             document.getElementById('info-popup').style.display = 'block';
