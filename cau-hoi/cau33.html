@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Câu 32 - Chi tiết Vấn đáp</title>
+    <style>
+        /* Giữ nguyên CSS từ file Vandap.html để đồng bộ giao diện */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .document-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            min-height: 100vh;
+            box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng khung */
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #00338d;
+            font-weight: bold;
+        }
+        h1 {
+            color: #00338d;
+            font-size: 24px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .answer-section {
+            margin-top: 30px;
+            text-align: justify;
+        }
+        .question-text {
+            font-style: italic;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 5px solid #00338d;
+            margin-bottom: 25px;
+        }
+        strong { color: #00338d; }
+        
+/* 2. THÊM ĐOẠN NÀY VÀO DƯỚI CÙNG PHẦN STYLE ĐỂ TỐI ƯU ĐIỆN THOẠI */
+@media (max-width: 600px) {
+    body {
+        padding: 10px; /* Giảm lề ngoài của body */
+    }
+    .document-container {
+        padding: 20px 15px; /* Trên điện thoại chỉ để lề trái/phải 15px thôi */
+    }
+    h1 {
+        font-size: 20px; /* Giảm cỡ chữ tiêu đề cho vừa màn hình nhỏ */
+    }
+    p, .question-link {
+        font-size: 16px; /* Cỡ chữ vừa đọc trên điện thoại */
+    }
+    /* 1. GIẢM THỤT LỀ CỦA DANH SÁCH */
+    .answer-section ul {
+        padding-left: 20px; /* Mặc định là 40px, giảm xuống 20px cho sát lề hơn */
+        margin-left: 0;
+    }
+
+    /* 2. GIẢM KHOẢNG CÁCH GIỮA CÁC TỪ VÀ TRÁNH DÃN CHỮ */
+    p, li {
+        font-size: 15px;
+        text-align: left; /* Trên mobile nên để left thay vì justify để tránh các lỗ hổng trắng giữa các từ */
+        word-spacing: -1px; /* Giảm nhẹ khoảng cách giữa các từ cho gọn */
+        letter-spacing: -0.2px; /* Giảm nhẹ khoảng cách giữa các chữ cái cho tinh tế */
+    }
+    
+    .answer-section li {
+        margin-bottom: 8px; /* Giảm bớt khoảng cách giữa các dòng liệt kê */
+    }
+    
+}
+
+ 
+        
+    </style>
+</head>
+<body>
+
+<div class="document-container">
+    <a href="../Vandap.html" class="back-link">← Quay lại danh mục câu hỏi</a>
+
+    <h1>CÂU HỎI 33</h1>
+
+    <div class="question-text">
+        Câu 33: Các điều kiện khôi phục đường dây 500kV sau sự cố
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 25px;">
+        <img src="../image/33.png" alt="Sơ đồ minh họa" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <p style="font-size: 13px; color: #666; font-style: italic;">Hình 33: Sơ đồ minh họa (nếu có)</p>
+    </div>
+    
+    <div class="answer-section">
+        <p><strong>Trả lời:</strong></p>
+        <p>Các điều kiện khôi phục đường dây 500kV sau sự cố:</p>
+        
+        <ol>
+        <li>Khi sự cố 01 (một) pha đường dây, cho phép đóng lại đường dây 01 (một)  lần, kể cả lần tự động đóng lại (F79) không thành công (F79 đóng lại rồi  nhưng có sự cộ lại cắt đường dây ra).</li>
+        <li>Trường hợp rơle bảo vệ tự động đóng lại (F79) không làm việc</li>
+        <p>a) Không được phép đóng lại đường dây khi đường dây đang có công tác sửa chữa nóng;</p>
+        <p>b) Được phép đóng lại đường dây 01 (một) lần ngay sau khi kiểm tra sơ bộ  các thiết bị và các bảo vệ tác động xác định điểm sự cố một pha nằm trên đường dây được bảo vệ và không có thông tin báo thêm về việc phát hiện có sự cố hư hỏng trên đường dây từ Đơn vị quản lý vận hành.</p>
+        <li>Trường hợp rơ le tự động đóng lại 01 (một) pha không thành công, cho phép đóng lại đường dây 01 (một) lần sau khi đã xác định được các thông tin sau:</li>
+        <p>a) Tự động đóng lại 01 (một) pha không thành công là do kênh truyền, mạch nhị thứ hoặc rơ le bảo vệ làm việc không tin cậy dẫn đến thực tế đường dây chưa được đóng lại;</p>
+        <p>b) Tự động đóng lại 01 (một) pha đã đóng tốt ở một đầu nhưng lại bị cắt do liên động từ đầu kia.</p>
+        <li>Không được phép đóng lại đoạn đường dây nếu xác định có ngắn mạch 02 (hai) pha trở lên khi cả hai mạch bảo vệ tác động, có chỉ thị rõ ràng của các thiết bị xác định vị trí sự cố trên cùng các pha giống nhau và khoảng cách gần nhau, chức năng của tự động đóng lại 01 (một) pha đã khoá tất cả các máy cắt liên quan. Trong trường hợp này, Điều độ viên phải tách đoạn đường dây ra làm biện pháp an toàn, giao cho Đơn vị quản lý vận hành kiểm tra sửa chữa và lưu ý điểm có nghi ngờ sự cố.</li>
+        <li>Được phép đóng lại đường dây lần thứ 2 trong trường hợp mất liên kết đường dây 500 kV có ảnh hưởng lớn đến việc cung cấp điện ổn định, liên tục, khi xác định tự đóng lại 01 (một) pha không thành công hoặc đã đóng lại lần thứ nhất bằng lệnh điều độ. Trước khi đóng lại đường dây, Điều độ viên phải xem xét kỹ mọi điều kiện về thiết bị và thời tiết các trạm biến áp 500 kV, lựa chọn đầu phóng điện lại để bảo đảm vận hành an toàn cho các hệ thống điện miền.</li>
+        <li>Không được phép đóng lại đường dây khi có bão đi qua với gió giật từ cấp 10 trở lên, lũ lụt gây sạt lở đất đá đe dọa mất an toàn đường dây, hỏa hoạn ở những vùng đường dây đi qua hoặc các thiết bị không đủ tiêu chuẩn vận hành.</li>
+        <li>Được phép đóng lại đường dây trong trường hợp đường dây này bị cắt do liên động từ nơi khác sau khi đã xác định và loại trừ được nguyên nhân gây sự cố.</li>
+        <li>Sau khi Đơn vị quản lý vận hành sửa chữa xong các phần tử bị sự cố trên đường dây 500 kV, xác nhận bảo đảm đủ tiêu chuẩn vận hành và trả lại cho Cấp điều độ có quyền điều khiển để khôi phục, Điều độ viên phải căn cứ vào chế độ vận hành thực tế để chỉ huy thao tác đưa thiết bị, đường dây vào vận hành.</li>
+        </ol>
+    </div>
+</div>
+
+</body>
+</html>
