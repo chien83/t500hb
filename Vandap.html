@@ -1,96 +1,100 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <script>
-   /* // Kiểm tra nếu người dùng chưa nhập pass từ trang chủ (hoặc muốn bắt nhập lại mỗi khi vào trang)
-    var pass = prompt("Trang này được bảo vệ. Vui lòng nhập mật khẩu:");
-    if (pass !== "0986362234") { // Thay YOUR_PASSWORD giống như trên
-        alert("Sai mật khẩu! Bạn sẽ được đưa về trang chủ.");
-        window.loction.href = "index.html";
-    }  */
- </script> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tổng quan Vấn đáp - Hệ thống Ôn tập</title>
     <style>
+        /* PHẦN ĐỊNH DẠNG GIỐNG WORD */
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f4f4f4;
+            font-family: "Times New Roman", Times, serif; /* Font chuẩn văn bản */
+            line-height: 1.5; /* Độ giãn dòng chuẩn Word */
+            color: #000;
+            background-color: #e9ecef; /* Màu nền phía sau trang giấy */
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
         }
+
         .document-container {
-            max-width: 900px;
+            max-width: 850px; /* Khổ giấy A4 tương đối */
             margin: 0 auto;
             background: #fff;
-            padding: 40px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 60px 80px; /* Lề giấy rộng */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             min-height: 100vh;
-            box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng khung */
+            box-sizing: border-box;
         }
+
+        /* TIÊU ĐỀ */
         h1 {
             color: #00338d;
-            font-size: 28px;
-            border-bottom: 2px solid #eee;
+            font-size: 22pt;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 40px;
             padding-bottom: 10px;
-            margin-bottom: 30px;
+            border-bottom: 1px solid #333;
         }
-        /* Style cho các đề mục lớn */
+
         h2 {
             color: #00338d;
-            font-size: 1.2em;
-            margin-top: 30px;
-            border-left: 4px solid #00338d;
-            padding-left: 10px;
-        }
-        p {
+            font-size: 16pt;
+            margin-top: 35px;
             margin-bottom: 15px;
+            font-weight: bold;
+            text-decoration: underline; /* Gạch chân tiêu đề mục */
+        }
+
+        /* ĐỊNH DẠNG CÂU HỎI */
+        .question-item {
+            margin-bottom: 12px;
             text-align: justify;
         }
+
+        .question-link {
+            text-decoration: none;
+            color: #000;
+            display: block;
+            font-size: 14pt; /* Cỡ chữ văn bản chuẩn */
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .question-link:hover {
+            background-color: #f0f4f8;
+            color: #00338d;
+            text-decoration: underline;
+        }
+
+        /* Làm đậm số thứ tự câu */
+        .question-link b {
+            font-weight: bold;
+        }
+
+        /* NÚT QUAY LẠI */
         .back-home {
             display: inline-block;
             margin-bottom: 20px;
             text-decoration: none;
-            color: #00338d;
-            font-weight: bold;
+            color: #666;
+            font-size: 12pt;
+            font-style: italic;
         }
+        .back-home:hover { color: #00338d; }
 
-        /* TÙY CHỈNH CHO CÁC CÂU HỎI (LINK) */
-        .question-link {
-            text-decoration: none; /* Bỏ gạch chân */
-            color: #333; /* Màu chữ như văn bản bình thường */
-            display: block; /* Để cả dòng đều có thể click */
-            padding: 5px;
-            border-radius: 4px;
-            transition: background 0.3s;
+        /* TỐI ƯU CHO ĐIỆN THOẠI */
+        @media (max-width: 600px) {
+            body { padding: 0; }
+            .document-container {
+                padding: 30px 15px;
+                box-shadow: none;
+            }
+            h1 { font-size: 18pt; }
+            h2 { font-size: 14pt; }
+            .question-link { font-size: 13pt; }
         }
-        .question-link:hover {
-            background-color: #f0f4f8; /* Hiện nền xám nhẹ khi di chuột */
-            color: #00338d; /* Đổi màu chữ sang xanh khi di chuột */
-            text-decoration: underline;
-        }
-
-/* 2. THÊM ĐOẠN NÀY VÀO DƯỚI CÙNG PHẦN STYLE ĐỂ TỐI ƯU ĐIỆN THOẠI */
-@media (max-width: 600px) {
-    body {
-        padding: 10px; /* Giảm lề ngoài của body */
-    }
-    .document-container {
-        padding: 20px 15px; /* Trên điện thoại chỉ để lề trái/phải 15px thôi */
-    }
-    h1 {
-        font-size: 22px; /* Giảm cỡ chữ tiêu đề cho vừa màn hình nhỏ */
-    }
-    p, .question-link {
-        font-size: 16px; /* Cỡ chữ vừa đọc trên điện thoại */
-    }
-}
-       
     </style>
-
-    
 </head>
 <body>
 
@@ -100,67 +104,149 @@
     <h1>Tổng quan về Nội dung Vấn đáp</h1>
     
     <h2>I. ĐIỀU ĐỘ</h2>
-    <p><a href="cau-hoi/cau1.html" class="question-link">Câu 1. Trình bày nhiệm vụ của Trưởng kíp trạm điện, trung tâm điều khiển theo thông tư quy định Quy trình điều độ?</a></p>
-    <p><a href="cau-hoi/cau2.html" class="question-link">Câu 2. Trong điều độ vận hành thời gian thực, nhân viên vận hành cấp trên của trưởng kíp trạm 500kV là ai? Quan hệ công tác trong điều độ vận hành như thế nào?</a></p>
-    <p><a href="cau-hoi/cau3.html" class="question-link">Câu 3. Trình bày quy định về nhận ca trong thông tư quy định Quy trình điều độ, giao nhận ca trong các trường hợp đặc biệt như thế nào?</a></p>
-    <p><a href="cau-hoi/cau4.html" class="question-link">Câu 4. Trình bày quy định về giao ca trong thông tư quy định Quy trình điều độ, giao nhận ca trong các trường hợp đặc biệt như thế nào?</a></p>
-    <p><a href="cau-hoi/cau5.html" class="question-link">Câu 5. Theo thông tư quy định Quy trình điều độ, quyền điều khiển, quyền kiểm tra, quyền nắm thông tin là gì? Trình bày phân cấp quyền điều khiển, quyền kiểm tra tại trạm?</a></p>
-    <p><a href="cau-hoi/cau6.html" class="question-link">Câu 6. Theo thông tư quy định Quy trình điều độ, nguyên tắc phân cấp quyền điều khiển, quyền kiểm tra như thế nào? Trình bày phân cấp quyền điều khiển, quyền kiểm tra tại trạm?</a></p>
-    <p><a href="cau-hoi/cau7.html" class="question-link">Câu 7. Trong trường hợp sự cố hoặc đe dọa sự cố, quyền điều khiển và quyền kiểm tra được thực hiện như thế nào theo thông tư quy định Quy trình điều độ?</a></p>
-    <p><a href="cau-hoi/cau8.html" class="question-link">Câu 8. Trình bày nội dung và hình thức lệnh điều độ quy định tại thông tư quy định Quy trình điều độ. Yêu cầu khi thực hiện lệnh điều độ như thế nào?</a></p>
-    <p><a href="cau-hoi/cau9.html" class="question-link">Câu 9. Theo thông tư quy định Quy trình điều độ, đơn vị quản lý vận hành nhà máy điện, trạm điện, trung tâm điều khiển có quyền điều khiển, quyền nắm thông tin các thiết bị nào?</a></p>
-    <p><a href="cau-hoi/cau10.html" class="question-link">Câu 10. Trình bày quy định về biểu đồ điện áp theo thông tư Quy định quy trình điều độ? Thực tế thực hiện điều chỉnh điện áp tại trạm?</a></p>
+    <div class="question-item">
+        <a href="cau-hoi/cau1.html" class="question-link"><b>Câu 1.</b> Trình bày nhiệm vụ của Trưởng kíp trạm điện, trung tâm điều khiển theo thông tư quy định Quy trình điều độ?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau2.html" class="question-link"><b>Câu 2.</b> Trong điều độ vận hành thời gian thực, nhân viên vận hành cấp trên của trưởng kíp trạm 500kV là ai? Quan hệ công tác trong điều độ vận hành như thế nào?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau3.html" class="question-link"><b>Câu 3.</b> Trình bày quy định về nhận ca trong thông tư quy định Quy trình điều độ, giao nhận ca trong các trường hợp đặc biệt như thế nào?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau4.html" class="question-link"><b>Câu 4.</b> Trình bày quy định về giao ca trong thông tư quy định Quy trình điều độ, giao nhận ca trong các trường hợp đặc biệt như thế nào?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau5.html" class="question-link"><b>Câu 5.</b> Theo thông tư quy định Quy trình điều độ, quyền điều khiển, quyền kiểm tra, quyền nắm thông tin là gì? Trình bày phân cấp quyền điều khiển, quyền kiểm tra tại trạm?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau6.html" class="question-link"><b>Câu 6.</b> Theo thông tư quy định Quy trình điều độ, nguyên tắc phân cấp quyền điều khiển, quyền kiểm tra như thế nào? Trình bày phân cấp quyền điều khiển, quyền kiểm tra tại trạm?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau7.html" class="question-link"><b>Câu 7.</b> Trong trường hợp sự cố hoặc đe dọa sự cố, quyền điều khiển và quyền kiểm tra được thực hiện như thế nào theo thông tư quy định Quy trình điều độ?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau8.html" class="question-link"><b>Câu 8.</b> Trình bày nội dung và hình thức lệnh điều độ quy định tại thông tư quy định Quy trình điều độ. Yêu cầu khi thực hiện lệnh điều độ như thế nào?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau9.html" class="question-link"><b>Câu 9.</b> Theo thông tư quy định Quy trình điều độ, đơn vị quản lý vận hành nhà máy điện, trạm điện, trung tâm điều khiển có quyền điều khiển, quyền nắm thông tin các thiết bị nào?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau10.html" class="question-link"><b>Câu 10.</b> Trình bày quy định về biểu đồ điện áp theo thông tư Quy định quy trình điều độ? Thực tế thực hiện điều chỉnh điện áp tại trạm?</a>
+    </div>
 
     <h2>II. XỬ LÝ SỰ CỐ</h2>
-    <p><a href="cau-hoi/cau11.html" class="question-link">Câu 11. Trình bày nguyên tắc xử lý sự cố theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia.</a></p>
-    <p><a href="cau-hoi/cau12.html" class="question-link">Câu 12. Trình bày về mức quá áp cho phép đối với máy biến áp theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia. Quy định riêng của trạm (nếu có)?</a></p>
-    <p><a href="cau-hoi/cau13.html" class="question-link">Câu 13. Trình bày quy định về báo cáo sự cố theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia.</a></p>
-    <p><a href="cau-hoi/cau14.html" class="question-link">Câu 14. Trình bày xử lý của trưởng kíp khi máy biến áp có những hiện tượng khác thường theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia...</a></p>
-    <p><a href="cau-hoi/cau15.html" class="question-link">Câu 15. Theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia, nhiệm vụ của nhân viên vận hành trong xử lý sự cố như thế nào?</a></p>
-    <p><a href="cau-hoi/cau16.html" class="question-link">Câu 16. Trình bày các yêu cầu về rơ le bảo vệ khi đưa các thiết bị vào vận hành theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia</a></p>
-    <p><a href="cau-hoi/cau17.html" class="question-link">Câu 17. Trình bày về quy định vận hành quá tải đối với máy biến áp theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia. Quy định riêng của trạm (nếu có)?</a></p>
+    <div class="question-item">
+        <a href="cau-hoi/cau11.html" class="question-link"><b>Câu 11.</b> Trình bày nguyên tắc xử lý sự cố theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia.</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau12.html" class="question-link"><b>Câu 12.</b> Trình bày về mức quá áp cho phép đối với máy biến áp theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia. Quy định riêng của trạm (nếu có)?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau13.html" class="question-link"><b>Câu 13.</b> Trình bày quy định về báo cáo sự cố theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia.</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau14.html" class="question-link"><b>Câu 14.</b> Trình bày xử lý của trưởng kíp khi máy biến áp có những hiện tượng khác thường theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia...</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau15.html" class="question-link"><b>Câu 15.</b> Theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia, nhiệm vụ của nhân viên vận hành trong xử lý sự cố như thế nào?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau16.html" class="question-link"><b>Câu 16.</b> Trình bày các yêu cầu về rơ le bảo vệ khi đưa các thiết bị vào vận hành theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau17.html" class="question-link"><b>Câu 17.</b> Trình bày về quy định vận hành quá tải đối với máy biến áp theo thông tư quy định Quy trình xử lý sự cố trong hệ thống điện Quốc gia. Quy định riêng của trạm (nếu có)?</a>
+    </div>
 
     <h2>III. THAO TÁC</h2>
-    <p><a href="cau-hoi/cau18.html" class="question-link">Câu 18. Máy cắt cần phải được đưa ra kiểm tra, bảo dưỡng trong các trường hợp nào theo Thông tư quy định quy trình thao tác trong HTĐ?</a></p>
-    <p><a href="cau-hoi/cau19.html" class="question-link">Câu 19. Trình bày quy định về Lập và duyệt phiếu thao tác theo Thông tư quy định quy trình thao tác trong HTĐ?</a></p>
-    <p><a href="cau-hoi/cau20.html" class="question-link">Câu 20. Trình bày về Thao tác thanh cái theo Thông tư quy định quy trình thao tác trong HTĐ?</a></p>
-    <p><a href="cau-hoi/cau21.html" class="question-link">Câu 21. Trình bày quy định về Thực hiện thao tác liên quan đến mạch nhị thứ theo Thông tư quy định quy trình thao tác trong HTĐ?</a></p>
-    <p><a href="cau-hoi/cau22.html" class="question-link">Câu 22. Trình bày quy định về Thao tác máy biến áp theo Thông tư quy định quy trình thao tác trong HTĐ?</a></p>
-    <p><a href="cau-hoi/cau23.html" class="question-link">Câu 23. Trình bày trình tự, nội dung đăng ký công tác đột xuất MBA AT2 của trạm theo Quy trình lập kế hoạch sửa chữa bảo dưỡng lưới điện và nhà máy điện?</a></p>
-    <p><a href="cau-hoi/cau24.html" class="question-link">Câu 24. Trình bày quy định về Thao tác hòa điện, khép vòng theo Thông tư quy định quy trình thao tác trong HTĐ?</a></p>
-    <p><a href="cau-hoi/cau25.html" class="question-link">Câu 25. Trình bày quy định về Thao tác dao cách ly theo Thông tư quy định quy trình thao tác trong HTĐ?</a></p>
+    <div class="question-item">
+        <a href="cau-hoi/cau18.html" class="question-link"><b>Câu 18.</b> Máy cắt cần phải được đưa ra kiểm tra, bảo dưỡng trong các trường hợp nào theo Thông tư quy định quy trình thao tác trong HTĐ?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau19.html" class="question-link"><b>Câu 19.</b> Trình bày quy định về Lập và duyệt phiếu thao tác theo Thông tư quy định quy trình thao tác trong HTĐ?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau20.html" class="question-link"><b>Câu 20.</b> Trình bày về Thao tác thanh cái theo Thông tư quy định quy trình thao tác trong HTĐ?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau21.html" class="question-link"><b>Câu 21.</b> Trình bày quy định về Thực hiện thao tác liên quan đến mạch nhị thứ theo Thông tư quy định quy trình thao tác trong HTĐ?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau22.html" class="question-link"><b>Câu 22.</b> Trình bày quy định về Thao tác máy biến áp theo Thông tư quy định quy trình thao tác trong HTĐ?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau23.html" class="question-link"><b>Câu 23.</b> Trình bày trình tự, nội dung đăng ký công tác đột xuất MBA AT2 của trạm theo Quy trình lập kế hoạch sửa chữa bảo dưỡng lưới điện và nhà máy điện?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau24.html" class="question-link"><b>Câu 24.</b> Trình bày quy định về Thao tác hòa điện, khép vòng theo Thông tư quy định quy trình thao tác trong HTĐ?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau25.html" class="question-link"><b>Câu 25.</b> Trình bày quy định về Thao tác dao cách ly theo Thông tư quy định quy trình thao tác trong HTĐ?</a>
+    </div>
 
     <h2>IV. CÂU HỎI TÌNH HUỐNG</h2>
-    <p><a href="cau-hoi/cau26.html" class="question-link">Câu 26. Trình tự xử lý của trưởng kíp khi mất điện toàn trạm.</a></p>
-    <p><a href="cau-hoi/cau27.html" class="question-link">Câu 27. Trình tự xử lý của trưởng kíp khi máy biến áp AT1 nhảy sự cố do bảo vệ so lệch tác động.</a></p>
-    <p><a href="cau-hoi/cau28.html" class="question-link">Câu 28. Trình tự xử lý của trưởng kíp khi máy biến áp AT1 nhảy sự cố do bảo vệ rơ le nhiệt độ cuộn dây tác động.</a></p>
-    <p><a href="cau-hoi/cau29.html" class="question-link">Câu 29. Trình tự xử lý của trưởng kíp khi máy biến áp bị quá áp 6%.</a></p>
-    <p><a href="cau-hoi/cau30.html" class="question-link">Câu 30. Trình tự xử lý của trưởng kíp khi thanh cái C51 nhảy sự cố do bảo vệ so lệch tác động</a></p>
-    <p><a href="cau-hoi/cau31.html" class="question-link">Câu 31. Trình tự xử lý của trưởng kíp khi đường dây nhảy sự cố do bảo vệ so lệch tác động.</a></p>
-
-    <p><a href="cau-hoi/cau32.html" class="question-link">Câu 32. Các điều kiện khôi phục máy biến áp sau sự cố.</a></p>
-    <p><a href="cau-hoi/cau33.html" class="question-link">Câu 33. Các điều kiện khôi phục đường dây 500kV sau sự cố</a></p>
-    <p><a href="cau-hoi/cau34.html" class="question-link">Câu 34: Trình bày phương thức bảo vệ MBA AT1 trạm 500kV Hoà Bình?</a></p>
-    <p><a href="cau-hoi/cau35.html" class="question-link">Câu 35: Trình bày phương thức bảo vệ đường dây 572 trạm 500kV Hoà Bình?</a></p>
-    <p><a href="cau-hoi/cau36.html" class="question-link">Câu 36: Trình bày phương thức bảo vệ MBA AT2 trạm 500kV Hoà Bình?</a></p>
-    <p><a href="cau-hoi/cau37.html" class="question-link">Câu 37: Trình bày phương thức bảo vệ đường dây 574 trạm 500kV Hoà Bình?</a></p>
-    <p><a href="cau-hoi/cau38.html" class="question-link">Câu 38: Yêu cầu đối với người giám sát, người thao tác</a></p>
-    <p><a href="cau-hoi/cau39.html" class="question-link">Câu 39: Yêu cầu đối với NVVH thực hiện thao tác thiết bị điện nhất thứ</a></p>
-    <p><a href="cau-hoi/cau40.html" class="question-link">Câu 40: Yêu cầu đối với NVVH thực hiện thao tác liên quan đến mạch nhị thứ</a></p>
-    <p><a href="cau-hoi/cau41.html" class="question-link">Câu 41: Xử lý của Trưởng kíp trạm điện khi quá tải máy biến áp</a></p>
-    <p><a href="cau-hoi/cau42.html" class="question-link">Câu 42: Quy định về thao tác dao tiếp địa</a></p>
-    <p><a href="cau-hoi/cau43.html" class="question-link">Câu 43 :Thao tác trong giờ nhu cầu sử dụng điện cao và giao nhận ca, Thao tác trong điều kiện thời tiết xấu, Tạm ngừng thao tác</a></p>
-    <p><a href="cau-hoi/cau44.html" class="question-link">Câu 44: Quy định đối với nhân viên vận hành trong thời gian trực ca</a></p>
-    <p><a href="cau-hoi/cau45.html" class="question-link">Câu 45: Xử lý của Nhân viên vận hành trạm điện khi sự cố thanh cái</a></p>
-    <p><a href="cau-hoi/cau46.html" class="question-link">Câu 46: Quyền của Đơn vị quản lý vận hành trạm điện</a></p>
-    <p><a href="cau-hoi/cau47.html" class="question-link">Câu 47: KIỂM TRA TRẠNG THÁI MÁY CẮT VÀ DAO CÁCH LY</a></p>
-    <p><a href="cau-hoi/cau48.html" class="question-link">Câu 48: Trách nhiệm của Đơn vị truyền tải điện</a></p>
-    <p><a href="cau-hoi/cau49.html" class="question-link">Câu 49: Báo cáo vận hành ngày và báo cáo sự cố</a></p>
-    <p><a href="cau-hoi/cau50.html" class="question-link">Câu 50: Phân cấp điều độ hệ thống điện quốc gia</a></p>
-    <p><a href="cau-hoi/cau51.html" class="question-link">Câu 51: Quy định chung về thao tác máy cắt</a></p>
-    <p><a href="cau-hoi/cau52.html" class="question-link">Câu 52: Yêu cầu về rơ le bảo vệ khi đưa thiết bị vào vận hành</a></p>
-
-</div>
-
-</body>
-</html>
+    <div class="question-item">
+        <a href="cau-hoi/cau26.html" class="question-link"><b>Câu 26.</b> Trình tự xử lý của trưởng kíp khi mất điện toàn trạm.</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau27.html" class="question-link"><b>Câu 27.</b> Trình tự xử lý của trưởng kíp khi máy biến áp AT1 nhảy sự cố do bảo vệ so lệch tác động.</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau28.html" class="question-link"><b>Câu 28.</b> Trình tự xử lý của trưởng kíp khi máy biến áp AT1 nhảy sự cố do bảo vệ rơ le nhiệt độ cuộn dây tác động.</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau29.html" class="question-link"><b>Câu 29.</b> Trình tự xử lý của trưởng kíp khi máy biến áp bị quá áp 6%.</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau30.html" class="question-link"><b>Câu 30.</b> Trình tự xử lý của trưởng kíp khi thanh cái C51 nhảy sự cố do bảo vệ so lệch tác động</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau31.html" class="question-link"><b>Câu 31.</b> Trình tự xử lý của trưởng kíp khi đường dây nhảy sự cố do bảo vệ so lệch tác động.</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau32.html" class="question-link"><b>Câu 32.</b> Các điều kiện khôi phục máy biến áp sau sự cố.</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau33.html" class="question-link"><b>Câu 33.</b> Các điều kiện khôi phục đường dây 500kV sau sự cố</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau34.html" class="question-link"><b>Câu 34.</b> Trình bày phương thức bảo vệ MBA AT1 trạm 500kV Hoà Bình?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau35.html" class="question-link"><b>Câu 35.</b> Trình bày phương thức bảo vệ đường dây 572 trạm 500kV Hoà Bình?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau36.html" class="question-link"><b>Câu 36.</b> Trình bày phương thức bảo vệ MBA AT2 trạm 500kV Hoà Bình?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau37.html" class="question-link"><b>Câu 37.</b> Trình bày phương thức bảo vệ đường dây 574 trạm 500kV Hoà Bình?</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau38.html" class="question-link"><b>Câu 38.</b> Yêu cầu đối với người giám sát, người thao tác</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau39.html" class="question-link"><b>Câu 39.</b> Yêu cầu đối với NVVH thực hiện thao tác thiết bị điện nhất thứ</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau40.html" class="question-link"><b>Câu 40.</b> Yêu cầu đối với NVVH thực hiện thao tác liên quan đến mạch nhị thứ</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau41.html" class="question-link"><b>Câu 41.</b> Xử lý của Trưởng kíp trạm điện khi quá tải máy biến áp</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau42.html" class="question-link"><b>Câu 42.</b> Quy định về thao tác dao tiếp địa</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau43.html" class="question-link"><b>Câu 43.</b> Thao tác trong giờ nhu cầu sử dụng điện cao và giao nhận ca, Thao tác trong điều kiện thời tiết xấu, Tạm ngừng thao tác</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau44.html" class="question-link"><b>Câu 44.</b> Quy định đối với nhân viên vận hành trong thời gian trực ca</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau45.html" class="question-link"><b>Câu 45.</b> Xử lý của Nhân viên vận hành trạm điện khi sự cố thanh cái</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau46.html" class="question-link"><b>Câu 46.</b> Quyền của Đơn vị quản lý vận hành trạm điện</a>
+    </div>
+    <div class="question-item">
+        <a href="cau-hoi/cau47.html" class="question-link"><b>Câu 47.</b> KIỂM TRA TR
