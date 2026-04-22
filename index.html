@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html onclick lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -76,7 +76,19 @@
     }
 
     .dropdown-content li a:hover { background-color: #f1f1f1; color: #0056b3 !important; }
-    .dropdown:hover .dropdown-content { display: block; }
+/* Trên máy tính (màn hình lớn) vẫn giữ hiệu ứng hover */
+@media (min-width: 769px) {
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+}
+
+/* Trên mobile, ẩn hover để JavaScript điều khiển */
+@media (max-width: 768px) {
+    .dropdown:hover .dropdown-content {
+        display: none; 
+    }
+}
 
     /* Căn lề phải cho menu cuối cùng */
     .nav-links li.dropdown:last-child .dropdown-content { left: auto; right: 0; }
@@ -459,6 +471,36 @@
         if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
         else alert("Sai mật khẩu!");
     }
+</script>
+
+
+<script>
+// Xử lý đóng/mở menu trên thiết bị di động (đặc biệt là Safari)
+document.addEventListener('click', function (event) {
+    var dropdowns = document.querySelectorAll('.dropdown');
+    
+    dropdowns.forEach(function (dropdown) {
+        var content = dropdown.querySelector('.dropdown-content');
+        var btn = dropdown.querySelector('.dropbtn');
+
+        // Nếu chạm vào nút menu
+        if (dropdown.contains(event.target)) {
+            // Chuyển trạng thái đóng/mở
+            var isVisible = window.getComputedStyle(content).display === 'block';
+            content.style.display = isVisible ? 'none' : 'block';
+        } else {
+            // Nếu chạm ra ngoài thì đóng menu
+            content.style.display = 'none';
+        }
+    });
+});
+
+// Ngăn việc click vào các link bên trong menu làm đóng menu đột ngột trước khi chuyển trang
+document.querySelectorAll('.dropdown-content a').forEach(function(link) {
+    link.onclick = function(e) {
+        e.stopPropagation();
+    };
+});
 </script>
 
 </body>
