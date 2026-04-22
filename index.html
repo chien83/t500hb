@@ -186,38 +186,223 @@
 </div>
 
 <script>
-    // Dữ liệu thiết bị giữ nguyên
+    // --- 2. DỮ LIỆU THIẾT BỊ ---
     const deviceData = {
-        "571": { name: "Máy cắt 571", type: "3AP3FI", brand: "Siemens", volt: "550kV", cur: "4000A", lightningVolt: "1550kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
-        "572": { name: "Máy cắt 572", type: "3AP3FI", brand: "Siemens", volt: "550kV", cur: "4000A", lightningVolt: "1550 (+315) kV", switchingVolt: "1325kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
-        "573": { name: "Máy cắt 573", type: "GL317D", brand: "AREVA", volt: "550kV", cur: "4000A", lightningVolt: "1550kV", switchingVolt: "1175kV", shortCircuitCur: "50kA", opSequence: "O-0.3s-CO-1min-CO", sf6Press: "0.9 MPa (9.0 bar)" },
-        "574": { name: "Máy cắt 574", type: "GL317D", brand: "AREVA", volt: "550kV", cur: "4000A", lightningVolt: "1550kV", switchingVolt: "1175kV", shortCircuitCur: "50kA", opSequence: "O-0.3s-CO-1min-CO", sf6Press: "0.9 MPa (9.0 bar)" },
-        "K504": { name: "Máy cắt Kháng 504", type: "3AP2FI", brand: "Siemens", volt: "550kV", cur: "4000A", lightningVolt: "1800kV", switchingVolt: "1175kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
-        "AT1": { name: "Máy biến áp AT1", brand: "Toshiba/Japan", cap: "3x(300/300/60) MVA", volt: "500 ± 8x1.25% / 225 / 35 kV", year: "2026" }, 
-        "AT2": { name: "Máy biến áp AT2", brand: "EEMC/VIETNAM", cap: "3x(300/300/60) MVA", volt: "500 ± 8x1.25% / 225 / 35 kV", year: "2025" },    
-        "KH504": { name: "Kháng điện KH504", brand: "ABB/Brazil", volt: "500kV (Max 550kV)", cur: "75A", cap: "65 MVAr" },
-        "200": { name: "Máy cắt 200", type: "3AP2FI", brand: "Siemens", volt: "245kV", cur: "4000A", lightningVolt: "1050kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
-        "221": { name: "Máy cắt 221", type: "3AP2FI", brand: "Siemens", volt: "245kV", cur: "4000A", lightningVolt: "1050kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
-        "222": { name: "Máy cắt 222", type: "3AP2FI", brand: "Siemens", volt: "245kV", cur: "4000A", lightningVolt: "1050kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
-        "341": { name: "Máy cắt 341", type: "3AP1 FG", brand: "Siemens Energy", volt: "40.5kV", cur: "1250A", lightningVolt: "170kV", shortCircuitCur: "31.5kA", opSequence: "O-0.3s-CO-3min-CO", sf6Press: "0.6 MPa (6.0 bar)", controlVolt: "DC 220V" },
-        "342": { name: "Máy cắt 342", type: "3AP1 FG", brand: "Siemens Energy", volt: "40.5kV", cur: "1250A", lightningVolt: "170kV", shortCircuitCur: "31.5kA", opSequence: "O-0.3s-CO-3min-CO", sf6Press: "0.6 MPa (6.0 bar)", controlVolt: "DC 220V" },
-        "574-7": { name: "Dao cách ly 574-7", type: "3DN5550-1", brand: "Siemens Energy", year: "2025", volt: "550kV", cur: "3150A", lightningVolt: "1550kV", switchingVolt: "1175kV", shortTimeCur: "50kA / 1s" },
-        "572-7": { name: "Dao cách ly 572-7", type: "OH500", brand: "GEC Alsthom (Pháp)", year: "1993", volt: "500kV (Max 550kV)", cur: "2000A", lightningVolt: "1550kV", switchingVolt: "1175kV", shortTimeCur: "40kA / 3s" },
-    };
+        "571": { 
+                name: "Máy cắt 571", 
+                type: "3AP3FI",
+                brand: "Siemens", 
+                volt: "550kV", 
+                cur: "4000A",
+                lightningVolt: "1550kV", // Điện áp chịu đựng xung sét
+                shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
+                sf6Press: "6,0 bar",
+                opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
+            },
 
-    function showDeviceInfo(id) {
-        const item = deviceData[id];
-        if(!item) return;
-        document.getElementById('pop-title').innerText = item.name;
-        document.getElementById('pop-content').innerHTML = `
-            <table style="width:100%; font-size:14px; border-collapse:collapse; line-height: 1.6;">
-                <tr><td style="padding:4px 0; color:#666;">Hãng:</td><td><b>${item.brand}</b></td></tr>
-                ${item.type ? `<tr><td style="padding:4px 0; color:#666;">Kiểu:</td><td><b>${item.type}</b></td></tr>` : ''}
-                <tr><td style="padding:4px 0; color:#666;">U định mức:</td><td><b>${item.volt}</b></td></tr>
-                ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp SF6:</td><td><b style="color:#d32f2f;">${item.sf6Press}</b></td></tr>` : ''}
-            </table>`;
-        document.getElementById('info-popup').style.display = 'block';
-    }
+        
+        "572": { 
+            name: "Máy cắt 572", 
+            type: "3AP3FI",
+            brand: "Siemens", 
+            volt: "550kV", 
+            cur: "4000A",
+            lightningVolt: "1550 (+315) kV", 
+            switchingVolt: "1325kV", // Thông số xung đóng cắt bổ sung
+            shortCircuitCur: "63kA",  
+            sf6Press: "6,0 bar", 
+            opSequence: "O-0.3s-CO-3min-CO",
+        },
+
+
+    
+        "573": { 
+            name: "Máy cắt 573", 
+            type: "GL317D",
+            brand: "AREVA", 
+            volt: "550kV", 
+            cur: "4000A",
+            lightningVolt: "1550kV", 
+            switchingVolt: "1175kV",
+            shortCircuitCur: "50kA",  
+            opSequence: "O-0.3s-CO-1min-CO",
+            sf6Press: "0.9 MPa (9.0 bar)",
+
+        },
+
+            
+        "574": { 
+            name: "Máy cắt 574", 
+            type: "GL317D",
+            brand: "AREVA", 
+            volt: "550kV", 
+            cur: "4000A",
+            lightningVolt: "1550kV", 
+            switchingVolt: "1175kV",
+            shortCircuitCur: "50kA",  
+            opSequence: "O-0.3s-CO-1min-CO",
+            sf6Press: "0.9 MPa (9.0 bar)",
+
+        },
+        "K504": { 
+            name: "Máy cắt Kháng 504", 
+            type: "3AP2FI",
+            brand: "Siemens", 
+            volt: "550kV", 
+            cur: "4000A",
+            lightningVolt: "1800kV", 
+            switchingVolt: "1175kV", 
+            shortCircuitCur: "63kA",  
+            sf6Press: "6,0 bar", 
+            opSequence: "O-0.3s-CO-3min-CO"
+        },
+
+        
+
+      "AT1": { 
+        name: "Máy biến áp AT1", 
+        brand: "Toshiba/Japan", 
+        cap: "3x(300/300/60) MVA", 
+        volt: "500 ± 8x1.25% / 225 / 35 kV", 
+        year: "2026",
+        }, 
+
+        "AT2": { 
+        name: "Máy biến áp AT2", 
+        brand: "EEMC/VIETNAM", 
+        cap: "3x(300/300/60) MVA", 
+        volt: "500 ± 8x1.25% / 225 / 35 kV",
+        year: "2025",
+        },    
+
+
+
+        "KH504": { 
+                name: "Kháng điện KH504", 
+                brand: "ABB/Brazil", 
+                volt: "500kV (Max 550kV)", 
+                cur: "75A", 
+                cap: "65 MVAr" // Dùng 'cap' cho chuẩn Q
+            },
+
+
+        
+        "200": { 
+                name: "Máy cắt 200", 
+                type: "3AP2FI",
+                brand: "Siemens", 
+                volt: "245kV", 
+                cur: "4000A",
+                lightningVolt: "1050kV", // Điện áp chịu đựng xung sét
+                shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
+                sf6Press: "6,0 bar",
+                opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
+            },
+        
+        "221": { 
+                name: "Máy cắt 221", 
+                type: "3AP2FI",
+                brand: "Siemens", 
+                volt: "245kV", 
+                cur: "4000A",
+                lightningVolt: "1050kV", // Điện áp chịu đựng xung sét
+                shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
+                sf6Press: "6,0 bar",
+                opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
+            },
+        
+        "222": { 
+                name: "Máy cắt 222", 
+                type: "3AP2FI",
+                brand: "Siemens", 
+                volt: "245kV", 
+                cur: "4000A",
+                lightningVolt: "1050kV", // Điện áp chịu đựng xung sét
+                shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
+                sf6Press: "6,0 bar",
+                opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
+            },
+        
+        "341": { 
+            name: "Máy cắt 341", 
+            type: "3AP1 FG",
+            brand: "Siemens Energy", 
+            volt: "40.5kV", 
+            cur: "1250A",
+            lightningVolt: "170kV", 
+            shortCircuitCur: "31.5kA",  
+            opSequence: "O-0.3s-CO-3min-CO",
+            sf6Press: "0.6 MPa (6.0 bar)",
+            controlVolt: "DC 220V" // Thông số điện áp điều khiển
+        },
+
+        "342": { 
+            name: "Máy cắt 342", 
+            type: "3AP1 FG",
+            brand: "Siemens Energy", 
+            volt: "40.5kV", 
+            cur: "1250A",
+            lightningVolt: "170kV", 
+            shortCircuitCur: "31.5kA",  
+            opSequence: "O-0.3s-CO-3min-CO",
+            sf6Press: "0.6 MPa (6.0 bar)",
+            controlVolt: "DC 220V" // Thông số điện áp điều khiển
+        },
+
+        "574-7": { 
+            name: "Dao cách ly 574-7", 
+            type: "3DN5550-1",
+            brand: "Siemens Energy", 
+            year: "2025",
+            volt: "550kV", 
+            cur: "3150A",
+            lightningVolt: "1550kV", 
+            switchingVolt: "1175kV",
+            shortTimeCur: "50kA / 1s", // Dòng chịu ngắn mạch của DCL
+        },
+
+        "572-7": { 
+            name: "Dao cách ly 572-7", 
+            type: "OH500",
+            brand: "GEC Alsthom (Pháp)", 
+            year: "1993",
+            volt: "500kV (Max 550kV)", 
+            cur: "2000A", // Lưu ý dòng định mức thấp
+            lightningVolt: "1550kV", 
+            switchingVolt: "1175kV",
+            shortTimeCur: "40kA / 3s", // Thông số đặc trưng đồ cũ Pháp
+        },
+        
+     };
+
+function showDeviceInfo(id) {
+            const item = deviceData[id];
+            if(!item) return;
+        
+            document.getElementById('pop-title').innerText = item.name;
+            document.getElementById('pop-content').innerHTML = `
+                <table style="width:100%; font-size:14px; border-collapse:collapse; line-height: 1.6;">
+                    <tr><td style="padding:4px 0; color:#666;">Hãng:</td><td><b>${item.brand || '-'}</b></td></tr>
+                    ${item.type ? `<tr><td style="padding:4px 0; color:#666;">Kiểu máy:</td><td><b>${item.type}</b></td></tr>` : ''}
+                    <tr><td style="padding:4px 0; color:#666;">U định mức:</td><td><b>${item.volt}</b></td></tr>
+                    ${item.cur ? `<tr><td style="padding:4px 0; color:#666;">Dòng ĐM:</td><td><b>${item.cur}</b></td></tr>` : ''}
+                    
+                    ${item.lightningVolt ? `<tr><td style="padding:4px 0; color:#666;">U chịu xung sét:</td><td><b>${item.lightningVolt}</b></td></tr>` : ''}
+                    
+                    ${item.switchingVolt ? `<tr><td style="padding:4px 0; color:#666;">U xung đóng cắt:</td><td><b>${item.switchingVolt}</b></td></tr>` : ''}
+                    
+                    ${item.shortCircuitCur ? `<tr><td style="padding:4px 0; color:#666;">Dòng cắt NM:</td><td><b>${item.shortCircuitCur}</b></td></tr>` : ''}
+                    
+                    ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp suất SF6 ĐM:</td><td><b style="color: #d32f2f;">${item.sf6Press}</b></td></tr>` : ''}
+                    
+                    ${item.opSequence ? `<tr><td style="padding:4px 0; color:#666;">Chu trình ĐC:</td><td><b style="font-size:12px;">${item.opSequence}</b></td></tr>` : ''}
+                    ${item.controlVolt ? `<tr><td style="padding:4px 0; color:#666;">U điều khiển:</td><td><b>${item.controlVolt}</b></td></tr>` : ''}
+                    ${item.cap ? `<tr><td style="padding:4px 0; color:#666;">Công suất:</td><td><b>${item.cap}</b></td></tr>` : ''}
+                    ${item.year ? `<tr><td style="padding:4px 0; color:#666;">Năm SX:</td><td><b>${item.year}</b></td></tr>` : ''}
+                </table>`;
+                
+            document.getElementById('info-popup').style.display = 'block';
+        }
 
     function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
     function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
