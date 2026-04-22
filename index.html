@@ -136,13 +136,36 @@
     .footer-info { color: white; font-size: 12px; font-weight: bold; width: 100%; display: flex; justify-content: space-between; }
     .footer-info a { color: #ffeb3b; text-decoration: none; }
 
-    /* 6. TỐI ƯU MOBILE */
+/* 6. TỐI ƯU MOBILE - ĐÃ HỢP NHẤT */
     @media (max-width: 768px) {
+        /* Giữ lại khung layout cũ của sếp */
         .navbar { flex-direction: column; height: auto; padding: 5px; gap: 4px; }
         .nav-logo-box img { height: 30px; }
-        .nav-links { width: 100%; justify-content: center; }
+        .nav-links { width: 100%; justify-content: center; flex-wrap: wrap; gap: 3px; }
         .nav-links a, .dropbtn { font-size: 10px; padding: 5px 8px; height: auto; background: rgba(255,255,255,0.1); border-radius: 3px; }
         .dropdown-content { min-width: 160px; max-width: 90vw; }
+
+        /* BỔ SUNG: Phần xử lý cho menu Kiến thức (Cấp 3) */
+        .submenu-content {
+            position: static !important; /* Đẩy xuống dưới, không bay sang phải */
+            display: none; /* Mặc định ẩn, chạm vào mới hiện */
+            width: 100% !important;
+            box-shadow: none !important;
+            background-color: #f9f9f9 !important;
+            padding-left: 20px !important; /* Thụt lề để phân biệt cấp con */
+            border-left: 3px solid #1a4694 !important; /* Vạch xanh đánh dấu */
+        }
+
+        /* Khi mục Kiến thức được chạm (active), hiện các mục Máy biến áp, Máy cắt... */
+        .submenu.active .submenu-content { 
+            display: block !important; 
+        }
+
+        /* Hiệu ứng xoay mũi tên khi mở menu con */
+        .submenu.active .fa-chevron-right {
+            transform: rotate(90deg);
+            transition: 0.3s;
+        }
     }
 
     /* MODALS */
@@ -496,30 +519,52 @@ function validatePass() {
     }
 }
 
-    // --- XỬ LÝ ĐÓNG/MỞ MENU: KHÔNG XUNG ĐỘT VỚI PC ---
-    document.addEventListener('click', function (event) {
-        var dropdowns = document.querySelectorAll('.dropdown');
-        
-        dropdowns.forEach(function (dropdown) {
-            var content = dropdown.querySelector('.dropdown-content');
-            var isClickInside = dropdown.contains(event.target);
+// --- BỘ ĐIỀU KHIỂN MENU TỔNG HỢP: PC & MOBILE ---
+document.addEventListener('click', function (event) {
+    const isMobile = window.innerWidth <= 768;
 
-            if (isClickInside) {
-                // CHỈ CHẠY TRÊN MOBILE
-                if (window.innerWidth <= 768) {
-                    if (event.target.classList.contains('dropbtn') || event.target.closest('.dropbtn')) {
-                        var isVisible = window.getComputedStyle(content).display === 'block';
-                        document.querySelectorAll('.dropdown-content').forEach(el => el.style.display = 'none');
-                        content.style.display = isVisible ? 'none' : 'block';
-                    }
-                }
-            } else {
-                // Khi click ra ngoài: Thay vì dùng "none", dùng rỗng để xóa inline style
-                // Giúp CSS :hover trên PC hoạt động bình thường trở lại
-                content.style.display = ""; 
-            }
-        });
-    });
+    // 1. XỬ LÝ MENU CHÍNH (Học trắc nghiệm, Menu...)
+    const dropbtn = event.target.closest('.dropbtn');
+    if (dropbtn && isMobile) {
+        const dropdown = dropbtn.parentElement;
+        const content = dropdown.querySelector('.dropdown-content');
+        const isVisible = window.getComputedStyle(content).display === 'block';
+
+        // Đóng tất cả các menu cha khác đang mở
+        document.querySelectorAll('.dropdown-content').forEach(el => el.style.display = 'none');
+        // Đóng luôn cả các menu Kiến thức con đang mở để tránh rối
+        document.querySelectorAll('.submenu').forEach(el => el.classList.remove('active'));
+
+        // Bật/Tắt menu hiện tại
+        content.style.display = isVisible ? 'none' : 'block';
+        return; // Xong việc thì dừng, không chạy xuống dưới nữa
+    }
+
+    // 2. XỬ LÝ MENU CẤP 3 (Mục Kiến thức)
+    // Kiểm tra xem có chạm vào thẻ <a> bên trong .submenu không
+    const submenuA = event.target.closest('.submenu > a');
+    if (submenuA && isMobile) {
+        event.preventDefault(); // Ngăn nhảy link #
+        event.stopPropagation(); // Ngăn sự kiện lan ra menu cha
+        const submenu = submenuA.parentElement;
+        submenu.classList.toggle('active');
+        return;
+    }
+
+    // 3. XỬ LÝ KHI CLICK RA NGOÀI (Để đóng menu)
+    if (!event.target.closest('.dropdown')) {
+        if (isMobile) {
+            // Trên Mobile: Ẩn hẳn bằng display none
+            document.querySelectorAll('.dropdown-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.submenu').forEach(el => el.classList.remove('active'));
+        } else {
+            // Trên PC: Xóa sạch style inline để trả lại quyền điều khiển cho CSS :hover
+            document.querySelectorAll('.dropdown-content').forEach(el => el.style.display = '');
+        }
+    }
+});
+
+
 
 
 </script>
