@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="vi" onclick=""> <head>
+<html lang="vi" onclick="">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="icon" type="image/png" href="favicon.png">
@@ -13,7 +14,6 @@
         height: 100vh; height: 100dvh;
         background-color: #ffffff; font-family: 'Segoe UI', sans-serif;
         overflow: hidden; display: flex; flex-direction: column;
-        /* ĐÃ XÓA cursor: pointer ở đây để sửa lỗi bàn tay trên PC */
         -webkit-tap-highlight-color: transparent;
     }
 
@@ -31,7 +31,7 @@
     .nav-links a, .dropbtn {
         color: white; text-decoration: none; font-size: 15px; font-weight: bold;
         padding: 0 15px; display: flex; align-items: center; text-transform: uppercase; cursor: pointer;
-        height: 60px; /* Đồng nhất chiều cao nút */
+        height: 60px;
     }
     .nav-links a i, .dropbtn i { font-size: 20px !important; margin-right: 8px; }
 
@@ -58,14 +58,14 @@
         font-size: 14px;
         border-bottom: 1px solid #f0f0f0;
         text-transform: none;
-        height: auto; /* Menu con không cần cố định 60px */
+        height: auto;
     }
 
     .dropdown-content li a:hover { background-color: #f1f1f1; color: #0056b3 !important; }
 
-    /* Hiệu ứng hover trên PC */
+    /* Hiệu ứng hover trên PC - Cực kỳ quan trọng */
     @media (min-width: 769px) {
-        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown:hover .dropdown-content { display: block !important; }
     }
 
     .nav-links li.dropdown:last-child .dropdown-content { left: auto; right: 0; }
@@ -186,7 +186,7 @@
 </div>
 
 <script>
-    // Dữ liệu thiết bị (giữ nguyên của sếp Chiến)
+    // Dữ liệu thiết bị giữ nguyên
     const deviceData = {
         "571": { name: "Máy cắt 571", type: "3AP3FI", brand: "Siemens", volt: "550kV", cur: "4000A", lightningVolt: "1550kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
         "572": { name: "Máy cắt 572", type: "3AP3FI", brand: "Siemens", volt: "550kV", cur: "4000A", lightningVolt: "1550 (+315) kV", switchingVolt: "1325kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
@@ -211,12 +211,10 @@
         document.getElementById('pop-title').innerText = item.name;
         document.getElementById('pop-content').innerHTML = `
             <table style="width:100%; font-size:14px; border-collapse:collapse; line-height: 1.6;">
-                <tr><td style="padding:4px 0; color:#666;">Hãng:</td><td><b>${item.brand || '-'}</b></td></tr>
+                <tr><td style="padding:4px 0; color:#666;">Hãng:</td><td><b>${item.brand}</b></td></tr>
                 ${item.type ? `<tr><td style="padding:4px 0; color:#666;">Kiểu:</td><td><b>${item.type}</b></td></tr>` : ''}
                 <tr><td style="padding:4px 0; color:#666;">U định mức:</td><td><b>${item.volt}</b></td></tr>
-                ${item.cur ? `<tr><td style="padding:4px 0; color:#666;">Dòng ĐM:</td><td><b>${item.cur}</b></td></tr>` : ''}
                 ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp SF6:</td><td><b style="color:#d32f2f;">${item.sf6Press}</b></td></tr>` : ''}
-                ${item.year ? `<tr><td style="padding:4px 0; color:#666;">Năm SX:</td><td><b>${item.year}</b></td></tr>` : ''}
             </table>`;
         document.getElementById('info-popup').style.display = 'block';
     }
@@ -229,7 +227,7 @@
         else alert("Sai mật khẩu!");
     }
 
-    // --- XỬ LÝ ĐÓNG/MỞ MENU CHO MOBILE & SAFARI ---
+    // --- XỬ LÝ ĐÓNG/MỞ MENU: KHÔNG XUNG ĐỘT VỚI PC ---
     document.addEventListener('click', function (event) {
         var dropdowns = document.querySelectorAll('.dropdown');
         
@@ -238,21 +236,22 @@
             var isClickInside = dropdown.contains(event.target);
 
             if (isClickInside) {
-                // Nếu đang ở mobile, click vào nút menu thì toggle đóng/mở
-                if (window.innerWidth <= 768 && (event.target.classList.contains('dropbtn') || event.target.closest('.dropbtn'))) {
-                    var isVisible = window.getComputedStyle(content).display === 'block';
-                    // Đóng các menu khác trước khi mở cái mới
-                    document.querySelectorAll('.dropdown-content').forEach(el => el.style.display = 'none');
-                    content.style.display = isVisible ? 'none' : 'block';
+                // CHỈ CHẠY TRÊN MOBILE
+                if (window.innerWidth <= 768) {
+                    if (event.target.classList.contains('dropbtn') || event.target.closest('.dropbtn')) {
+                        var isVisible = window.getComputedStyle(content).display === 'block';
+                        document.querySelectorAll('.dropdown-content').forEach(el => el.style.display = 'none');
+                        content.style.display = isVisible ? 'none' : 'block';
+                    }
                 }
             } else {
-                // Chạm ra ngoài (body) thì đóng sạch các menu đang mở
-                content.style.display = 'none';
+                // Khi click ra ngoài: Thay vì dùng "none", dùng rỗng để xóa inline style
+                // Giúp CSS :hover trên PC hoạt động bình thường trở lại
+                content.style.display = ""; 
             }
         });
     });
 
-    // Ngăn click vào link trong menu làm đóng menu đột ngột
     document.querySelectorAll('.dropdown-content a').forEach(function(link) {
         link.onclick = function(e) { e.stopPropagation(); };
     });
