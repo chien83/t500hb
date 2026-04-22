@@ -386,15 +386,10 @@ function showDeviceInfo(id) {
                     ${item.type ? `<tr><td style="padding:4px 0; color:#666;">Kiểu máy:</td><td><b>${item.type}</b></td></tr>` : ''}
                     <tr><td style="padding:4px 0; color:#666;">U định mức:</td><td><b>${item.volt}</b></td></tr>
                     ${item.cur ? `<tr><td style="padding:4px 0; color:#666;">Dòng ĐM:</td><td><b>${item.cur}</b></td></tr>` : ''}
-                    
                     ${item.lightningVolt ? `<tr><td style="padding:4px 0; color:#666;">U chịu xung sét:</td><td><b>${item.lightningVolt}</b></td></tr>` : ''}
-                    
                     ${item.switchingVolt ? `<tr><td style="padding:4px 0; color:#666;">U xung đóng cắt:</td><td><b>${item.switchingVolt}</b></td></tr>` : ''}
-                    
                     ${item.shortCircuitCur ? `<tr><td style="padding:4px 0; color:#666;">Dòng cắt NM:</td><td><b>${item.shortCircuitCur}</b></td></tr>` : ''}
-                    
                     ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp suất SF6 ĐM:</td><td><b style="color: #d32f2f;">${item.sf6Press}</b></td></tr>` : ''}
-                    
                     ${item.opSequence ? `<tr><td style="padding:4px 0; color:#666;">Chu trình ĐC:</td><td><b style="font-size:12px;">${item.opSequence}</b></td></tr>` : ''}
                     ${item.controlVolt ? `<tr><td style="padding:4px 0; color:#666;">U điều khiển:</td><td><b>${item.controlVolt}</b></td></tr>` : ''}
                     ${item.cap ? `<tr><td style="padding:4px 0; color:#666;">Công suất:</td><td><b>${item.cap}</b></td></tr>` : ''}
@@ -446,9 +441,7 @@ function validatePass() {
         });
     });
 
-    document.querySelectorAll('.dropdown-content a').forEach(function(link) {
-        link.onclick = function(e) { e.stopPropagation(); };
-    });
+
 </script>
 
 </body>
