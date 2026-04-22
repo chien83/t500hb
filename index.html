@@ -407,17 +407,17 @@ function showDeviceInfo(id) {
     function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
     function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
     function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
-    function validatePass() {
+function validatePass() {
     var passInput = document.getElementById('passInput');
     var passValue = passInput.value.trim();
     
     if (passValue === "0986362234") {
-        // Dùng dấu / ở đầu để chỉ định file ở thư mục gốc của domain
-        window.location.href = "/Vandap.html"; 
+        // Bỏ dấu / ở đầu đi sếp nhé
+        window.location.href = "Vandap.html"; 
     } else {
         alert("Mật khẩu sai rồi sếp Chiến ơi!");
-        passInput.value = ""; // Xóa trắng để nhập lại
-        passInput.focus();    // Tự động trỏ chuột vào ô nhập
+        passInput.value = "";
+        passInput.focus();
     }
 }
 
