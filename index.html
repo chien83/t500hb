@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html onclick lang="vi">
-<head>
+<html lang="vi" onclick=""> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="icon" type="image/png" href="favicon.png">
     <title>VẬN HÀNH-TRẮC NGHIỆM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-    /* 1. RESET & LAYOUT CHUẨN GRID */
+    /* 1. RESET & LAYOUT CHUẨN */
     * { box-sizing: border-box; }
     body, html {
         margin: 0; padding: 0; width: 100%; 
         height: 100vh; height: 100dvh;
         background-color: #ffffff; font-family: 'Segoe UI', sans-serif;
         overflow: hidden; display: flex; flex-direction: column;
-        /* Sửa lỗi Safari không tự đóng menu */
-        cursor: pointer;
+        /* ĐÃ XÓA cursor: pointer ở đây để sửa lỗi bàn tay trên PC */
         -webkit-tap-highlight-color: transparent;
     }
 
@@ -27,37 +25,24 @@
     }
     .nav-logo-box img { height: 42px; width: auto; background: white; padding: 2px 5px; border-radius: 4px; }
     
-    /* Thiết lập chung cho các mục Menu chính */
-    .nav-links { 
-        list-style: none; 
-        display: flex; 
-        margin: 0; 
-        padding: 0; 
-        align-items: center; 
-    }
-    
-    .nav-links li.dropdown {
-        position: relative;
-        display: inline-block;
-    }
+    .nav-links { list-style: none; display: flex; margin: 0; padding: 0; align-items: center; }
+    .nav-links li.dropdown { position: relative; display: inline-block; }
 
     .nav-links a, .dropbtn {
         color: white; text-decoration: none; font-size: 15px; font-weight: bold;
         padding: 0 15px; display: flex; align-items: center; text-transform: uppercase; cursor: pointer;
+        height: 60px; /* Đồng nhất chiều cao nút */
     }
-    
-    /* Đồng nhất chiều cao cho dropbtn bằng với các link khác */
-    .dropbtn { height: 60px; line-height: 60px; padding: 0 15px; }
     .nav-links a i, .dropbtn i { font-size: 20px !important; margin-right: 8px; }
 
-    /* Định dạng khung Menu con (Dropdown) */
+    /* 3. MENU CON (DROPDOWN) */
     .dropdown-content {
         display: none;
         position: absolute;
         background-color: #ffffff;
         min-width: 200px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1001; /* Phải cao hơn navbar */
+        z-index: 1001;
         list-style: none;
         padding: 0; margin: 0;
         border-radius: 0 0 4px 4px;
@@ -72,33 +57,24 @@
         text-align: left;
         font-size: 14px;
         border-bottom: 1px solid #f0f0f0;
-        text-transform: none; /* Menu con không cần viết hoa hết */
+        text-transform: none;
+        height: auto; /* Menu con không cần cố định 60px */
     }
 
     .dropdown-content li a:hover { background-color: #f1f1f1; color: #0056b3 !important; }
-/* Trên máy tính (màn hình lớn) vẫn giữ hiệu ứng hover */
-@media (min-width: 769px) {
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-}
 
-/* Trên mobile, ẩn hover để JavaScript điều khiển */
-@media (max-width: 768px) {
-    .dropdown:hover .dropdown-content {
-        display: none; 
+    /* Hiệu ứng hover trên PC */
+    @media (min-width: 769px) {
+        .dropdown:hover .dropdown-content { display: block; }
     }
-}
 
-    /* Căn lề phải cho menu cuối cùng */
     .nav-links li.dropdown:last-child .dropdown-content { left: auto; right: 0; }
 
-    /* 3. TIÊU ĐỀ */
+    /* 4. TIÊU ĐỀ & NỘI DUNG SVG */
     .header-info { padding: 2px 5px; text-align: center; flex-shrink: 0; background: #fff; }
     .header-info h1 { font-size: 14px; margin: 2px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
     .header-info p { font-size: 13px; color: #888; margin: 0; font-style: italic; }
 
-    /* 4. VÙNG CHỨA SƠ ĐỒ */
     .main-container {
         flex-grow: 1; width: 100%; overflow: auto;
         display: flex; align-items: center; justify-content: center;
@@ -106,7 +82,6 @@
     }
     #station-svg { display: block; background-color: white; max-width: 100%; max-height: 100%; width: auto; height: auto; }
     .hotspot { fill: rgba(0, 0, 0, 0); stroke: none; cursor: pointer; }
-    .hotspot:hover { fill: rgba(0, 0, 0, 0); stroke: none; }
 
     /* 5. FOOTER CỐ ĐỊNH */
     .footer-bar { background-color: #0000ff; height: 30px; display: flex; align-items: center; padding: 0 15%; flex-shrink: 0; }
@@ -116,19 +91,10 @@
     /* 6. TỐI ƯU MOBILE */
     @media (max-width: 768px) {
         .navbar { flex-direction: column; height: auto; padding: 5px; gap: 4px; }
-        .nav-logo-box { order: 1; }
         .nav-logo-box img { height: 30px; }
-        
-        .nav-links { order: 2; flex-wrap: wrap; justify-content: center; width: 100%; gap: 3px; }
-        .nav-links a, .dropbtn { font-size: 10px; padding: 5px 8px; height: auto; line-height: normal; background: rgba(255,255,255,0.1); border-radius: 3px; }
-        .nav-links a i, .dropbtn i { font-size: 14px !important; margin-right: 4px; }
-
-        /* Menu con trên mobile */
+        .nav-links { width: 100%; justify-content: center; }
+        .nav-links a, .dropbtn { font-size: 10px; padding: 5px 8px; height: auto; background: rgba(255,255,255,0.1); border-radius: 3px; }
         .dropdown-content { min-width: 160px; max-width: 90vw; }
-        .header-info h1 { font-size: 12px; }
-        .header-info p { font-size: 9px; }
-        .footer-bar { padding: 0 10px; height: 28px; }
-        .footer-info { font-size: 10px; }
     }
 
     /* MODALS */
@@ -147,9 +113,9 @@
         <li><a href="#"><i class="fa-solid fa-house-chimney"></i></a></li>
 
         <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn">
+            <div class="dropbtn">
                 <i class="fa-solid fa-graduation-cap"></i> HỌC-TRẮC NGHIỆM
-            </a>
+            </div>
             <ul class="dropdown-content">
                 <li><a href="hoctracnghiema0/"><i class="fa-solid fa-pen-to-square"></i> Học ghi nhớ</a></li>
                 <li><a onclick="openPassModal()"><i class="fa-solid fa-comments"></i> Vấn đáp</a></li>
@@ -159,9 +125,9 @@
         </li>
 
         <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn">
+            <div class="dropbtn">
                 <i class="fa-solid fa-gears"></i> MENU
-            </a>
+            </div>
             <ul class="dropdown-content">
                 <li><a href="#"><i class="fa-solid fa-bolt"></i> Sơ đồ kết dây</a></li>
                 <li><a href="#"><i class="fa-solid fa-diagram-project"></i> Sơ đồ phương thức</a></li>
@@ -179,7 +145,6 @@
 <div class="main-container">
     <svg id="station-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
         <image href="image/t500hb.png" x="0" y="0" width="100" height="100" />
-        
         <rect class="hotspot" x="78.74" y="38.11" width="4" height="5" onclick="showDeviceInfo('571')" />
         <rect class="hotspot" x="58.82" y="37.58" width="4" height="5" onclick="showDeviceInfo('572')" />
         <rect class="hotspot" x="36.11" y="37.84" width="4" height="5" onclick="showDeviceInfo('573')" />
@@ -195,7 +160,7 @@
         <rect class="hotspot" x="35.55" y="20" width="5" height="5.5" onclick="showDeviceInfo('K504')" />
         <rect class="hotspot" x="12.55" y="18.5" width="4" height="3.5" onclick="showDeviceInfo('574-7')" />
         <rect class="hotspot" x="58.68" y="18.5" width="4" height="3.5" onclick="showDeviceInfo('572-7')" />
-        </svg>  
+    </svg>  
 </div>
 
 <footer class="footer-bar">
@@ -221,248 +186,40 @@
 </div>
 
 <script>
-// --- HÀM LẤY TỌA ĐỘ NÂNG CẤP: CLICK LÀ TỰ COPY ---
- /*   const svg = document.getElementById('station-svg');
-    svg.addEventListener('click', function(e) {
-        const pt = svg.createSVGPoint();
-        pt.x = e.clientX;
-        pt.y = e.clientY;
-        // Chuyển đổi tọa độ sang hệ 0-100 của SVG
-        const cursorpt = pt.matrixTransform(svg.getScreenCTM().inverse());
-        
-        const res = `x="${cursorpt.x.toFixed(2)}" y="${cursorpt.y.toFixed(2)}"`;
-
-        // Lệnh tự động chép vào bộ nhớ đệm
-        navigator.clipboard.writeText(res).then(() => {
-            // Hiện thông báo nhẹ để sếp biết là đã copy thành công
-            console.log("Đã copy: " + res);
-            alert("Đã COPY tọa độ: " + res + "\nSếp chỉ cần sang code nhấn Ctrl+V là xong!");
-        }).catch(err => {
-            // Nếu trình duyệt chặn tự động copy, dùng hàm prompt để sếp bôi đen
-            prompt("Sếp bôi đen đoạn này để copy nhé:", res);
-        });
-    });
-*/
-
-    
-    // --- 2. DỮ LIỆU THIẾT BỊ ---
+    // Dữ liệu thiết bị (giữ nguyên của sếp Chiến)
     const deviceData = {
-        "571": { 
-                name: "Máy cắt 571", 
-                type: "3AP3FI",
-                brand: "Siemens", 
-                volt: "550kV", 
-                cur: "4000A",
-                lightningVolt: "1550kV", // Điện áp chịu đựng xung sét
-                shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
-                sf6Press: "6,0 bar",
-                opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
-            },
+        "571": { name: "Máy cắt 571", type: "3AP3FI", brand: "Siemens", volt: "550kV", cur: "4000A", lightningVolt: "1550kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
+        "572": { name: "Máy cắt 572", type: "3AP3FI", brand: "Siemens", volt: "550kV", cur: "4000A", lightningVolt: "1550 (+315) kV", switchingVolt: "1325kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
+        "573": { name: "Máy cắt 573", type: "GL317D", brand: "AREVA", volt: "550kV", cur: "4000A", lightningVolt: "1550kV", switchingVolt: "1175kV", shortCircuitCur: "50kA", opSequence: "O-0.3s-CO-1min-CO", sf6Press: "0.9 MPa (9.0 bar)" },
+        "574": { name: "Máy cắt 574", type: "GL317D", brand: "AREVA", volt: "550kV", cur: "4000A", lightningVolt: "1550kV", switchingVolt: "1175kV", shortCircuitCur: "50kA", opSequence: "O-0.3s-CO-1min-CO", sf6Press: "0.9 MPa (9.0 bar)" },
+        "K504": { name: "Máy cắt Kháng 504", type: "3AP2FI", brand: "Siemens", volt: "550kV", cur: "4000A", lightningVolt: "1800kV", switchingVolt: "1175kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
+        "AT1": { name: "Máy biến áp AT1", brand: "Toshiba/Japan", cap: "3x(300/300/60) MVA", volt: "500 ± 8x1.25% / 225 / 35 kV", year: "2026" }, 
+        "AT2": { name: "Máy biến áp AT2", brand: "EEMC/VIETNAM", cap: "3x(300/300/60) MVA", volt: "500 ± 8x1.25% / 225 / 35 kV", year: "2025" },    
+        "KH504": { name: "Kháng điện KH504", brand: "ABB/Brazil", volt: "500kV (Max 550kV)", cur: "75A", cap: "65 MVAr" },
+        "200": { name: "Máy cắt 200", type: "3AP2FI", brand: "Siemens", volt: "245kV", cur: "4000A", lightningVolt: "1050kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
+        "221": { name: "Máy cắt 221", type: "3AP2FI", brand: "Siemens", volt: "245kV", cur: "4000A", lightningVolt: "1050kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
+        "222": { name: "Máy cắt 222", type: "3AP2FI", brand: "Siemens", volt: "245kV", cur: "4000A", lightningVolt: "1050kV", shortCircuitCur: "63kA", sf6Press: "6,0 bar", opSequence: "O-0.3s-CO-3min-CO" },
+        "341": { name: "Máy cắt 341", type: "3AP1 FG", brand: "Siemens Energy", volt: "40.5kV", cur: "1250A", lightningVolt: "170kV", shortCircuitCur: "31.5kA", opSequence: "O-0.3s-CO-3min-CO", sf6Press: "0.6 MPa (6.0 bar)", controlVolt: "DC 220V" },
+        "342": { name: "Máy cắt 342", type: "3AP1 FG", brand: "Siemens Energy", volt: "40.5kV", cur: "1250A", lightningVolt: "170kV", shortCircuitCur: "31.5kA", opSequence: "O-0.3s-CO-3min-CO", sf6Press: "0.6 MPa (6.0 bar)", controlVolt: "DC 220V" },
+        "574-7": { name: "Dao cách ly 574-7", type: "3DN5550-1", brand: "Siemens Energy", year: "2025", volt: "550kV", cur: "3150A", lightningVolt: "1550kV", switchingVolt: "1175kV", shortTimeCur: "50kA / 1s" },
+        "572-7": { name: "Dao cách ly 572-7", type: "OH500", brand: "GEC Alsthom (Pháp)", year: "1993", volt: "500kV (Max 550kV)", cur: "2000A", lightningVolt: "1550kV", switchingVolt: "1175kV", shortTimeCur: "40kA / 3s" },
+    };
 
-        
-        "572": { 
-            name: "Máy cắt 572", 
-            type: "3AP3FI",
-            brand: "Siemens", 
-            volt: "550kV", 
-            cur: "4000A",
-            lightningVolt: "1550 (+315) kV", 
-            switchingVolt: "1325kV", // Thông số xung đóng cắt bổ sung
-            shortCircuitCur: "63kA",  
-            sf6Press: "6,0 bar", 
-            opSequence: "O-0.3s-CO-3min-CO",
-        },
-
-
-    
-        "573": { 
-            name: "Máy cắt 573", 
-            type: "GL317D",
-            brand: "AREVA", 
-            volt: "550kV", 
-            cur: "4000A",
-            lightningVolt: "1550kV", 
-            switchingVolt: "1175kV",
-            shortCircuitCur: "50kA",  
-            opSequence: "O-0.3s-CO-1min-CO",
-            sf6Press: "0.9 MPa (9.0 bar)",
-
-        },
-
-            
-        "574": { 
-            name: "Máy cắt 574", 
-            type: "GL317D",
-            brand: "AREVA", 
-            volt: "550kV", 
-            cur: "4000A",
-            lightningVolt: "1550kV", 
-            switchingVolt: "1175kV",
-            shortCircuitCur: "50kA",  
-            opSequence: "O-0.3s-CO-1min-CO",
-            sf6Press: "0.9 MPa (9.0 bar)",
-
-        },
-        "K504": { 
-            name: "Máy cắt Kháng 504", 
-            type: "3AP2FI",
-            brand: "Siemens", 
-            volt: "550kV", 
-            cur: "4000A",
-            lightningVolt: "1800kV", 
-            switchingVolt: "1175kV", 
-            shortCircuitCur: "63kA",  
-            sf6Press: "6,0 bar", 
-            opSequence: "O-0.3s-CO-3min-CO"
-        },
-
-        
-
-      "AT1": { 
-        name: "Máy biến áp AT1", 
-        brand: "Toshiba/Japan", 
-        cap: "3x(300/300/60) MVA", 
-        volt: "500 ± 8x1.25% / 225 / 35 kV", 
-        year: "2026",
-        }, 
-
-        "AT2": { 
-        name: "Máy biến áp AT2", 
-        brand: "EEMC/VIETNAM", 
-        cap: "3x(300/300/60) MVA", 
-        volt: "500 ± 8x1.25% / 225 / 35 kV",
-        year: "2025",
-        },    
-
-
-
-        "KH504": { 
-                name: "Kháng điện KH504", 
-                brand: "ABB/Brazil", 
-                volt: "500kV (Max 550kV)", 
-                cur: "75A", 
-                cap: "65 MVAr" // Dùng 'cap' cho chuẩn Q
-            },
-
-
-        
-        "200": { 
-                name: "Máy cắt 200", 
-                type: "3AP2FI",
-                brand: "Siemens", 
-                volt: "245kV", 
-                cur: "4000A",
-                lightningVolt: "1050kV", // Điện áp chịu đựng xung sét
-                shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
-                sf6Press: "6,0 bar",
-                opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
-            },
-        
-        "221": { 
-                name: "Máy cắt 221", 
-                type: "3AP2FI",
-                brand: "Siemens", 
-                volt: "245kV", 
-                cur: "4000A",
-                lightningVolt: "1050kV", // Điện áp chịu đựng xung sét
-                shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
-                sf6Press: "6,0 bar",
-                opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
-            },
-        
-        "222": { 
-                name: "Máy cắt 222", 
-                type: "3AP2FI",
-                brand: "Siemens", 
-                volt: "245kV", 
-                cur: "4000A",
-                lightningVolt: "1050kV", // Điện áp chịu đựng xung sét
-                shortCircuitCur: "63kA",  // Dòng cắt ngắn mạch
-                sf6Press: "6,0 bar",
-                opSequence: "O-0.3s-CO-3min-CO" // Chu trình đóng cắt
-            },
-        
-        "341": { 
-            name: "Máy cắt 341", 
-            type: "3AP1 FG",
-            brand: "Siemens Energy", 
-            volt: "40.5kV", 
-            cur: "1250A",
-            lightningVolt: "170kV", 
-            shortCircuitCur: "31.5kA",  
-            opSequence: "O-0.3s-CO-3min-CO",
-            sf6Press: "0.6 MPa (6.0 bar)",
-            controlVolt: "DC 220V" // Thông số điện áp điều khiển
-        },
-
-        "342": { 
-            name: "Máy cắt 342", 
-            type: "3AP1 FG",
-            brand: "Siemens Energy", 
-            volt: "40.5kV", 
-            cur: "1250A",
-            lightningVolt: "170kV", 
-            shortCircuitCur: "31.5kA",  
-            opSequence: "O-0.3s-CO-3min-CO",
-            sf6Press: "0.6 MPa (6.0 bar)",
-            controlVolt: "DC 220V" // Thông số điện áp điều khiển
-        },
-
-        "574-7": { 
-            name: "Dao cách ly 574-7", 
-            type: "3DN5550-1",
-            brand: "Siemens Energy", 
-            year: "2025",
-            volt: "550kV", 
-            cur: "3150A",
-            lightningVolt: "1550kV", 
-            switchingVolt: "1175kV",
-            shortTimeCur: "50kA / 1s", // Dòng chịu ngắn mạch của DCL
-        },
-
-        "572-7": { 
-            name: "Dao cách ly 572-7", 
-            type: "OH500",
-            brand: "GEC Alsthom (Pháp)", 
-            year: "1993",
-            volt: "500kV (Max 550kV)", 
-            cur: "2000A", // Lưu ý dòng định mức thấp
-            lightningVolt: "1550kV", 
-            switchingVolt: "1175kV",
-            shortTimeCur: "40kA / 3s", // Thông số đặc trưng đồ cũ Pháp
-        },
-        
-     };
-
-        function showDeviceInfo(id) {
-            const item = deviceData[id];
-            if(!item) return;
-        
-            document.getElementById('pop-title').innerText = item.name;
-            document.getElementById('pop-content').innerHTML = `
-                <table style="width:100%; font-size:14px; border-collapse:collapse; line-height: 1.6;">
-                    <tr><td style="padding:4px 0; color:#666;">Hãng:</td><td><b>${item.brand || '-'}</b></td></tr>
-                    ${item.type ? `<tr><td style="padding:4px 0; color:#666;">Kiểu máy:</td><td><b>${item.type}</b></td></tr>` : ''}
-                    <tr><td style="padding:4px 0; color:#666;">U định mức:</td><td><b>${item.volt}</b></td></tr>
-                    ${item.cur ? `<tr><td style="padding:4px 0; color:#666;">Dòng ĐM:</td><td><b>${item.cur}</b></td></tr>` : ''}
-                    
-                    ${item.lightningVolt ? `<tr><td style="padding:4px 0; color:#666;">U chịu xung sét:</td><td><b>${item.lightningVolt}</b></td></tr>` : ''}
-                    
-                    ${item.switchingVolt ? `<tr><td style="padding:4px 0; color:#666;">U xung đóng cắt:</td><td><b>${item.switchingVolt}</b></td></tr>` : ''}
-                    
-                    ${item.shortCircuitCur ? `<tr><td style="padding:4px 0; color:#666;">Dòng cắt NM:</td><td><b>${item.shortCircuitCur}</b></td></tr>` : ''}
-                    
-                    ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp suất SF6 ĐM:</td><td><b style="color: #d32f2f;">${item.sf6Press}</b></td></tr>` : ''}
-                    
-                    ${item.opSequence ? `<tr><td style="padding:4px 0; color:#666;">Chu trình ĐC:</td><td><b style="font-size:12px;">${item.opSequence}</b></td></tr>` : ''}
-                    ${item.controlVolt ? `<tr><td style="padding:4px 0; color:#666;">U điều khiển:</td><td><b>${item.controlVolt}</b></td></tr>` : ''}
-                    ${item.cap ? `<tr><td style="padding:4px 0; color:#666;">Công suất:</td><td><b>${item.cap}</b></td></tr>` : ''}
-                    ${item.year ? `<tr><td style="padding:4px 0; color:#666;">Năm SX:</td><td><b>${item.year}</b></td></tr>` : ''}
-                </table>`;
-                
-            document.getElementById('info-popup').style.display = 'block';
-        }
-
+    function showDeviceInfo(id) {
+        const item = deviceData[id];
+        if(!item) return;
+        document.getElementById('pop-title').innerText = item.name;
+        document.getElementById('pop-content').innerHTML = `
+            <table style="width:100%; font-size:14px; border-collapse:collapse; line-height: 1.6;">
+                <tr><td style="padding:4px 0; color:#666;">Hãng:</td><td><b>${item.brand || '-'}</b></td></tr>
+                ${item.type ? `<tr><td style="padding:4px 0; color:#666;">Kiểu:</td><td><b>${item.type}</b></td></tr>` : ''}
+                <tr><td style="padding:4px 0; color:#666;">U định mức:</td><td><b>${item.volt}</b></td></tr>
+                ${item.cur ? `<tr><td style="padding:4px 0; color:#666;">Dòng ĐM:</td><td><b>${item.cur}</b></td></tr>` : ''}
+                ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp SF6:</td><td><b style="color:#d32f2f;">${item.sf6Press}</b></td></tr>` : ''}
+                ${item.year ? `<tr><td style="padding:4px 0; color:#666;">Năm SX:</td><td><b>${item.year}</b></td></tr>` : ''}
+            </table>`;
+        document.getElementById('info-popup').style.display = 'block';
+    }
 
     function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
     function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
@@ -471,36 +228,34 @@
         if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
         else alert("Sai mật khẩu!");
     }
-</script>
 
+    // --- XỬ LÝ ĐÓNG/MỞ MENU CHO MOBILE & SAFARI ---
+    document.addEventListener('click', function (event) {
+        var dropdowns = document.querySelectorAll('.dropdown');
+        
+        dropdowns.forEach(function (dropdown) {
+            var content = dropdown.querySelector('.dropdown-content');
+            var isClickInside = dropdown.contains(event.target);
 
-<script>
-// Xử lý đóng/mở menu trên thiết bị di động (đặc biệt là Safari)
-document.addEventListener('click', function (event) {
-    var dropdowns = document.querySelectorAll('.dropdown');
-    
-    dropdowns.forEach(function (dropdown) {
-        var content = dropdown.querySelector('.dropdown-content');
-        var btn = dropdown.querySelector('.dropbtn');
-
-        // Nếu chạm vào nút menu
-        if (dropdown.contains(event.target)) {
-            // Chuyển trạng thái đóng/mở
-            var isVisible = window.getComputedStyle(content).display === 'block';
-            content.style.display = isVisible ? 'none' : 'block';
-        } else {
-            // Nếu chạm ra ngoài thì đóng menu
-            content.style.display = 'none';
-        }
+            if (isClickInside) {
+                // Nếu đang ở mobile, click vào nút menu thì toggle đóng/mở
+                if (window.innerWidth <= 768 && (event.target.classList.contains('dropbtn') || event.target.closest('.dropbtn'))) {
+                    var isVisible = window.getComputedStyle(content).display === 'block';
+                    // Đóng các menu khác trước khi mở cái mới
+                    document.querySelectorAll('.dropdown-content').forEach(el => el.style.display = 'none');
+                    content.style.display = isVisible ? 'none' : 'block';
+                }
+            } else {
+                // Chạm ra ngoài (body) thì đóng sạch các menu đang mở
+                content.style.display = 'none';
+            }
+        });
     });
-});
 
-// Ngăn việc click vào các link bên trong menu làm đóng menu đột ngột trước khi chuyển trang
-document.querySelectorAll('.dropdown-content a').forEach(function(link) {
-    link.onclick = function(e) {
-        e.stopPropagation();
-    };
-});
+    // Ngăn click vào link trong menu làm đóng menu đột ngột
+    document.querySelectorAll('.dropdown-content a').forEach(function(link) {
+        link.onclick = function(e) { e.stopPropagation(); };
+    });
 </script>
 
 </body>
