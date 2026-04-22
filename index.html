@@ -70,6 +70,54 @@
 
     .nav-links li.dropdown:last-child .dropdown-content { left: auto; right: 0; }
 
+/* Thiết lập vị trí để menu con bám vào */
+.dropdown-content li {
+    position: relative;
+}
+
+/* Menu cấp 3 (Kiến thức) - Ẩn mặc định và đẩy sang phải */
+.submenu-content {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background-color: #ffffff;
+    min-width: 180px;
+    box-shadow: 8px 0 16px rgba(0,0,0,0.1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-left: 2px solid #1a4694;
+    z-index: 1002;
+}
+
+.submenu-content li a {
+    color: #333 !important;
+    text-transform: none;
+    font-weight: normal;
+    padding: 10px 15px;
+}
+
+/* Hiệu ứng hiển thị khi di chuột (PC) */
+@media (min-width: 769px) {
+    .submenu:hover .submenu-content {
+        display: block !important;
+    }
+}
+
+/* Tối ưu cho Mobile */
+@media (max-width: 768px) {
+    .submenu-content {
+        position: static;
+        box-shadow: none;
+        background-color: #f8f9fa;
+        padding-left: 15px;
+        border-left: none;
+        border-top: 1px solid #eee;
+    }
+}
+
+
     /* 4. TIÊU ĐỀ & NỘI DUNG SVG */
     .header-info { padding: 2px 5px; text-align: center; flex-shrink: 0; background: #fff; }
     .header-info h1 { font-size: 14px; margin: 2px 0; color: #1a4694; text-transform: uppercase; font-weight: 800; }
@@ -118,7 +166,7 @@
             </div>
             <ul class="dropdown-content">
                 <li><a href="hoctracnghiema0/"><i class="fa-solid fa-pen-to-square"></i> Học ghi nhớ</a></li>
-                <li><a href="javascript:void(0)" onclick="openPassModal()"><i class="fa-solid fa-comments"></i> Vấn đáp</a></li>            
+                <li><a href="javascript:void(0)" onclick="openPassModal()"><i class="fa-solid fa-comments"></i> Vấn đáp</a></li>
                 <li><a href="A0choMaytinh/"><i class="fa-solid fa-desktop"></i> Test Máy tính</a></li>
                 <li><a href="thia0/"><i class="fa-solid fa-mobile-screen-button"></i> Test Điện thoại</a></li>
             </ul>
@@ -129,6 +177,20 @@
                 <i class="fa-solid fa-gears"></i> MENU
             </div>
             <ul class="dropdown-content">
+                <li class="submenu">
+                    <a href="javascript:void(0)">
+                        <i class="fa-solid fa-book"></i> Kiến thức 
+                        <i class="fa-solid fa-chevron-right" style="float: right; font-size: 10px; margin-top: 5px;"></i>
+                    </a>
+                    <ul class="submenu-content">
+                        <li><a href="#"><i class="fa-solid fa-bolt" style="color: #ffc107;"></i> Máy biến áp</a></li>
+                        <li><a href="#"><i class="fa-solid fa-power-off" style="color: #dc3545;"></i> Máy cắt</a></li>
+                        <li><a href="#"><i class="fa-solid fa-link-slash" style="color: #28a745;"></i> Dao cách ly</a></li>
+                        <li><a href="#"><i class="fa-solid fa-gauge-high"></i> TU</a></li>
+                        <li><a href="#"><i class="fa-solid fa-gauge"></i> TI</a></li>
+                    </ul>
+                </li>
+
                 <li><a href="#"><i class="fa-solid fa-diagram-project"></i> Sơ đồ phương thức</a></li>
                 <li><a href="#"><i class="fa-solid fa-clipboard-check"></i> Phiếu thao tác</a></li>
             </ul>
