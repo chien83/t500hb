@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="icon" type="image/png" href="favicon.png">
-    <title>Hệ thống Trắc nghiệm - Trạm 500kV Hòa Bình</title>
+    <title>VẬN HÀNH-TRẮC NGHIỆM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* 1. RESET & LAYOUT CHUẨN GRID */
@@ -106,10 +106,25 @@
     <div class="nav-logo-box"><img src="logo.png" alt="EVN NPT"></div>
     <ul class="nav-links">
         <li><a href="#"><i class="fa-solid fa-house"></i></a></li>
-        <li><a href="hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
-        <li><a onclick="openPassModal()">VẤN ĐÁP</a></li>
-        <li><a href="A0choMaytinh/">TEST-MÁY TÍNH</a></li>
-        <li><a href="thia0/">TEST-ĐIỆN THOẠI</a></li>
+
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">HỌC-TRẮC NGHIỆM <i class="fa-solid fa-caret-down"></i></a>
+            <ul class="dropdown-content">
+                <li><a href="hoctracnghiema0/">HỌC-TRẮC NGHIỆM</a></li>
+                <li><a onclick="openPassModal()">VẤN ĐÁP</a></li>
+                <li><a href="A0choMaytinh/">TEST-MÁY TÍNH</a></li>
+                <li><a href="thia0/">TEST-ĐIỆN THOẠI</a></li>
+            </ul>
+        </li>
+
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">MENU <i class="fa-solid fa-caret-down"></i></a>
+            <ul class="dropdown-content">
+                <li><a href="#">Sơ đồ kết dây</a></li>
+                <li><a href="#">Sơ đồ phương thức</a></li>
+                <li><a href="#">Phiếu thao tác</a></li>
+            </ul>
+        </li>
     </ul>
 </nav>
 
