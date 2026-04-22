@@ -118,7 +118,7 @@
             </div>
             <ul class="dropdown-content">
                 <li><a href="hoctracnghiema0/"><i class="fa-solid fa-pen-to-square"></i> Học ghi nhớ</a></li>
-                <li><a href="Vandap.html" onclick="openPassModal(); return false;"><i class="fa-solid fa-comments"></i> Vấn đáp</a></li>
+                <li><a href="javascript:void(0)" onclick="openPassModal()"><i class="fa-solid fa-comments"></i> Vấn đáp</a></li>            
                 <li><a href="A0choMaytinh/"><i class="fa-solid fa-desktop"></i> Test Máy tính</a></li>
                 <li><a href="thia0/"><i class="fa-solid fa-mobile-screen-button"></i> Test Điện thoại</a></li>
             </ul>
@@ -178,7 +178,10 @@
 
 <div id="passwordModal">
     <h3 style="margin:0; font-size:18px;">XÁC THỰC</h3>
-    <input type="password" id="passInput" style="width:100%; padding:12px; margin:15px 0; border:1px solid #ddd; border-radius:6px; text-align:center;" placeholder="Mật khẩu">
+    <input type="password" id="passInput" 
+       onkeyup="if(event.keyCode===13) validatePass()" 
+       style="width:100%; padding:12px; margin:15px 0; border:1px solid #ddd; border-radius:6px; text-align:center;" 
+       placeholder="Mật khẩu">
     <div style="display:flex; gap:10px;">
         <button onclick="closePassModal()" style="flex:1; padding:10px; border:none; border-radius:6px; background:#eee; cursor:pointer;">HỦY</button>
         <button onclick="validatePass()" style="flex:1; padding:10px; border:none; border-radius:6px; background:#1a4694; color:white; cursor:pointer;">VÀO</button>
@@ -410,7 +413,7 @@ function validatePass() {
         // Bỏ dấu / ở đầu đi sếp nhé
         window.location.href = "Vandap.html"; 
     } else {
-        alert("Mật khẩu sai rồi sếp Chiến ơi!");
+        alert("Mật khẩu sai rồi!");
         passInput.value = "";
         passInput.focus();
     }
