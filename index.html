@@ -118,7 +118,7 @@
             </div>
             <ul class="dropdown-content">
                 <li><a href="hoctracnghiema0/"><i class="fa-solid fa-pen-to-square"></i> Học ghi nhớ</a></li>
-                <li><a href="Vandap.html" onclick="openPassModal()"><i class="fa-solid fa-comments"></i> Vấn đáp</a></li>
+                <li><a href="Vandap.html" onclick="openPassModal(); return false;"><i class="fa-solid fa-comments"></i> Vấn đáp</a></li>
                 <li><a href="A0choMaytinh/"><i class="fa-solid fa-desktop"></i> Test Máy tính</a></li>
                 <li><a href="thia0/"><i class="fa-solid fa-mobile-screen-button"></i> Test Điện thoại</a></li>
             </ul>
@@ -408,8 +408,18 @@ function showDeviceInfo(id) {
     function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
     function closePassModal() { document.getElementById('passwordModal').style.display = 'none'; }
     function validatePass() {
-        if(document.getElementById('passInput').value === "0986362234") window.location.href = "Vandap.html";
-        else alert("Sai mật khẩu!");
+        // Lấy giá trị và loại bỏ khoảng trắng thừa
+        var pass = document.getElementById('passInput').value.trim();
+        
+        if (pass === "0986362234") {
+            // Nếu đúng mật khẩu, lệnh này mới thực hiện chuyển trang thực sự
+            window.location.href = "Vandap.html"; 
+        } else {
+            alert("Sai mật khẩu rồi sếp ơi!");
+            // Reset ô nhập để nhập lại cho nhanh
+            document.getElementById('passInput').value = "";
+            document.getElementById('passInput').focus();
+        }
     }
 
     // --- XỬ LÝ ĐÓNG/MỞ MENU: KHÔNG XUNG ĐỘT VỚI PC ---
