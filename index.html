@@ -163,6 +163,20 @@
     margin-left: 5px;
 }
 
+/* Nếu là mục menu cuối cùng, căn lề sang bên phải để không bị tràn màn hình */
+.nav-links li.dropdown:last-child .dropdown-content {
+    left: auto; /* Bỏ căn lề trái */
+    right: 0;   /* Căn theo mép phải của nút MENU */
+}
+
+/* Tối ưu thêm cho điện thoại */
+@media screen and (max-width: 600px) {
+    .dropdown-content {
+        min-width: 180px; /* Thu nhỏ chiều rộng một chút trên điện thoại */
+        max-width: 90vw;  /* Đảm bảo không bao giờ rộng quá màn hình */
+    }
+}
+
 
     </style>
 </head>
