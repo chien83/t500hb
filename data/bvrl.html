@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tổng quan Bảo vệ Rơ le - T500HB</title>
     <style>
-        /* 1. ĐỊNH DẠNG CƠ BẢN */
+        /* 1. ĐỊNH DẠNG NỀN VÀ KHUNG CHỨA */
         body {
             font-family: "Times New Roman", Times, serif;
             line-height: 1.5;
             color: #000;
-            background-color: #e9ecef; 
+            background-color: #e9ecef; /* Màu nền xám nhạt */
             margin: 0;
             padding: 0;
         }
@@ -18,39 +18,46 @@
         .document-container {
             max-width: 850px;
             margin: 0 auto;
-            background: #fff;
-            /* Giảm padding trên xuống còn 15px để PDF đẩy lên cao hơn */
-            padding: 15px 40px 30px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background-color: #e9ecef; /* Trùng màu với body để không lộ khung trắng */
+            padding: 10px 40px 30px; /* Thu hẹp padding trên để đẩy nội dung lên */
             min-height: 100vh;
             box-sizing: border-box;
         }
 
-        /* 2. NÚT QUAY LẠI - Thu nhỏ và làm mờ bớt để tinh tế */
+        /* 2. DÀN HÀNG NGANG TIÊU ĐỀ VÀ NÚT QUAY LẠI */
+        .header-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+            border-bottom: 1px solid #00338d; /* Đường kẻ mảnh 1px */
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
         .back-home {
-            display: inline-block;
-            margin-bottom: 5px;
+            position: absolute; /* Đưa nút quay lại về cánh trái */
+            left: 0;
             text-decoration: none;
             color: #888;
             font-size: 10.5pt;
             font-style: italic;
+            white-space: nowrap;
+            z-index: 10;
         }
         .back-home:hover { color: #00338d; text-decoration: underline; }
 
-        /* 3. TIÊU ĐỀ - Đã thu nhỏ (18pt) và làm mảnh đường kẻ (1px) */
         h1 {
+            width: 100%;
+            margin: 0;
+            padding: 0;
             color: #00338d;
-            font-size: 18pt; 
+            font-size: 16pt; /* Thu nhỏ cỡ chữ cho thanh thoát */
             text-align: center;
             text-transform: uppercase;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #00338d; /* Đường kẻ mảnh 1px */
-            letter-spacing: 1px; /* Giãn chữ nhẹ cho sang trọng */
+            letter-spacing: 1px;
         }
 
-        /* 4. LỚP PHÁ KHUNG ĐỂ PDF TO TOÀN MÀN HÌNH */
+        /* 3. LỚP PHÁ KHUNG ĐỂ PDF TO TOÀN MÀN HÌNH (100vw) */
         .full-width-pdf {
             width: 100vw;
             position: relative;
@@ -58,11 +65,10 @@
             right: 50%;
             margin-left: -50vw;
             margin-right: -50vw;
-            height: 90vh; /* Cao hơn một chút */
+            height: 90vh; /* Cao chiếm 90% màn hình */
             background-color: #525659;
         }
 
-        /* 5. LINK PHỤ */
         .zoom-link {
             display: block;
             text-align: center;
@@ -75,24 +81,27 @@
         }
         .zoom-link:hover { opacity: 1; text-decoration: underline; }
 
-        /* 6. TỐI ƯU CHO ĐIỆN THOẠI */
+        /* 4. TỐI ƯU CHO ĐIỆN THOẠI */
         @media (max-width: 600px) {
-            .document-container {
-                padding: 10px 10px 20px;
+            .document-container { padding: 10px 10px 20px; }
+            .header-wrapper {
+                flex-direction: column; /* Trên đt thì quay lại trên, tiêu đề dưới */
+                align-items: flex-start;
+                position: static;
             }
-            h1 { font-size: 15pt; letter-spacing: 0; }
-            .full-width-pdf {
-                height: 85vh;
-            }
+            .back-home { position: static; margin-bottom: 8px; }
+            h1 { font-size: 14pt; text-align: left; }
+            .full-width-pdf { height: 85vh; }
         }
     </style>
 </head>
 <body>
 
 <div class="document-container">
-    <a href="../index.html" class="back-home">← Quay lại trang chủ</a>
-    
-    <h1>Tổng quan về bảo vệ rơ le</h1>
+    <div class="header-wrapper">
+        <a href="../index.html" class="back-home">← Quay lại trang chủ</a>
+        <h1>Tổng quan về bảo vệ rơ le</h1>
+    </div>
 
     <div class="full-width-pdf">
         <iframe 
