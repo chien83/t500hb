@@ -78,10 +78,13 @@
 
     /* XỬ LÝ TOÁN HỌC (MATHJAX) CHUNG */
     mjx-container {
-        max-width: 100%;
-        overflow-x: auto; /* Cho phép cuộn ngang */
+        overflow-x: auto; 
         overflow-y: hidden;
-        padding: 5px 0;
+        max-width: 100%;
+        /* Chỉ hiện thanh cuộn khi thực sự dài hơn màn hình */
+        display: inline-block !important; 
+        vertical-align: middle;
+        padding: 0;
     }
 
     /* Ép công thức nhỏ nằm cùng dòng và không bị dãn chữ */
@@ -126,6 +129,8 @@
 </style>
 </head>
 <body>
+
+<div id="wrapper" style="display: none;">
 
 <div class="container">
     <div class="header">
@@ -448,5 +453,22 @@
     });
 </script>
 
+<script>
+    (function() {
+        const passwordChuan = "hchien83"; // Mật khẩu của bạn
+        let nhapPass = prompt("Vui lòng nhập mật khẩu để xem tài liệu:");
+
+        if (nhapPass === passwordChuan) {
+            // Nếu đúng pass thì hiện nội dung
+            document.getElementById("wrapper").style.display = "block";
+        } else {
+            // Nếu sai pass thì thông báo và đẩy về trang chủ hoặc đóng trang
+            alert("Mật khẩu không chính xác!");
+            window.location.href = "index.html"; // Quay lại trang index
+        }
+    })();
+</script>
+
+</div>
 </body>
 </html>
