@@ -84,22 +84,34 @@
             }
             
             .header-wrapper {
+                display: flex;
                 flex-direction: row; /* ÉP LÊN CÙNG MỘT HÀNG */
                 justify-content: space-between;
                 align-items: center;
+                position: relative;
+                border-bottom: 1px solid #00338d;
                 padding-bottom: 5px;
                 margin-bottom: 5px; /* Co tối đa hộp xanh */
             }
 
-            .back-home { 
-                font-size: 9pt; /* Thu nhỏ chữ quay lại để đủ chỗ */
-                margin-right: 10px;
-            }
+        .back-home {
+            position: absolute; /* Nhấc nút ra khỏi hàng để không đẩy tiêu đề */
+            left: 1;            /* Ép nó sát lề trái */
+            text-decoration: none;
+            color: #888;
+            font-size: 9pt;     /* Thu nhỏ lại cho gọn */
+            font-style: italic;
+            white-space: nowrap;
+        }
 
-            h1 { 
-                font-size: 11pt !important; /* Hạ font tiêu đề xuống để không bị nhảy dòng */
-                text-align: center; /* Đẩy sang phải đối xứng với nút bên trái */
-                letter-spacing: 0;
+            h1 {
+                margin: 0;
+                padding: 0;
+                color: #00338d;
+                font-size: 10pt;    /* Cỡ chữ Chiến muốn thu nhỏ trên mobile */
+                text-align: center; /* Căn giữa tuyệt đối */
+                width: 100%;
+                text-transform: uppercase;
             }
 
             .full-width-pdf { height: 88vh; }
