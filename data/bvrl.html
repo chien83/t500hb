@@ -1,3 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tổng quan Bảo vệ Rơ le</title>
+    <style>
+        /* 1. ĐỊNH DẠNG CƠ BẢN GIỐNG WORD */
+        body {
+            font-family: "Times New Roman", Times, serif;
+            line-height: 1.5;
+            color: #000;
+            background-color: #e9ecef; /* Màu nền phía sau trang giấy */
+            margin: 0;
+            padding: 0;
+        }
+
+        .document-container {
+            max-width: 850px; /* Khổ giấy A4 tiêu chuẩn trên web */
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px 60px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* 2. TIÊU ĐỀ */
+        h1 {
+            color: #00338d;
+            font-size: 22pt;
+            text-align: center;
+            text-transform: uppercase;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #00338d;
+        }
+
+        /* 3. LỚP PHÁ KHUNG ĐỂ PDF TO TOÀN MÀN HÌNH */
+        .full-width-pdf {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            height: 88vh; /* Chiều cao chiếm 88% màn hình */
+            background-color: #525659; /* Màu nền tối giống trình xem PDF chuyên nghiệp */
+        }
+
+        /* 4. NÚT QUAY LẠI VÀ LINK PHỤ */
+        .back-home {
+            display: inline-block;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #666;
+            font-size: 12pt;
+            font-style: italic;
+        }
+        .back-home:hover { color: #00338d; text-decoration: underline; }
+
+        .zoom-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #00338d;
+            text-decoration: underline;
+            font-style: italic;
+            font-size: 13pt;
+        }
+
+        /* 5. TỐI ƯU CHO ĐIỆN THOẠI */
+        @media (max-width: 600px) {
+            .document-container {
+                padding: 20px 10px;
+            }
+            h1 { font-size: 18pt; }
+            .full-width-pdf {
+                height: 80vh; /* Điện thoại để thấp hơn để dễ vuốt thoát */
+            }
+        }
+    </style>
+</head>
 <body>
 
 <div class="document-container">
@@ -5,24 +89,22 @@
     
     <h1>Tổng quan về bảo vệ rơ le</h1>
 
-<div style="width: 100%; height: 92vh; overflow: hidden;">
-    <iframe 
-        src="https://docs.google.com/viewer?url=https://nganhdien.io.vn/data/bvrl/BVRL.pdf&embedded=true" 
-        width="100%" 
-        height="100%" 
-        style="border: none;">
-    </iframe>
-</div>
+    <div class="full-width-pdf">
+        <iframe 
+            src="https://docs.google.com/viewer?url=https://nganhdien.io.vn/data/bvrl/BVRL.pdf&embedded=true" 
+            width="100%" 
+            height="100%" 
+            style="border: none;">
+        </iframe>
+    </div>
 
-<p style="text-align: center; margin-top: 10px;">
-    <a href="bvrl/BVRL.pdf" target="_blank" style="color: #00338d; text-decoration: underline; font-style: italic;">
-        [ Phóng to toàn màn hình ]
+    <a href="bvrl/BVRL.pdf" target="_blank" class="zoom-link">
+        [ Nhấn vào đây để Phóng to / Tải về / In tài liệu ]
     </a>
-</p>
+
     </div>
 
 </body>
-
-
+</html>
 
 
