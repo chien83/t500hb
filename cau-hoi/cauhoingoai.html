@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài liệu Ôn tập Vận hành - Trạm 500kV Hòa Bình</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #00558f; 
+            --accent-color: #d32f2f;  
+            --bg-color: #f4f7f9;
+            --text-color: #2c3e50;
+            --arrow-color: #007bff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0; padding: 0;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px double var(--primary-color);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+        }
+
+        .header h1 { color: var(--primary-color); text-transform: uppercase; margin: 0; font-size: 1.8em; }
+
+        .content p { margin: 15px 0; text-align: justify; }
+
+        /* Câu hỏi (nhận diện bằng số ở đầu dòng) */
+        .question {
+            color: var(--accent-color);
+            font-weight: bold;
+            display: block;
+            margin-top: 30px;
+            font-size: 1.15em;
+            border-left: 5px solid var(--accent-color);
+            padding-left: 12px;
+        }
+
+        /* Khung dành cho nội dung có mũi tên ➔ */
+        .arrow-box {
+            background: #f0f7ff !important;
+            padding: 15px 20px !important;
+            border-left: 4px solid var(--arrow-color) !important;
+            border-radius: 4px;
+            margin: 15px 0 15px 15px !important;
+            font-style: italic;
+        }
+
+        .arrow-icon {
+            color: var(--arrow-color);
+            font-size: 1.2em;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .category-title {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            margin: 40px 0 20px 0;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .formula-img {
+            display: block;
+            margin: 20px auto;
+            max-width: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background: #fff;
+        }
+
+        ul { margin-left: 20px; }
+        
+        .footer {
+            margin-top: 50px; text-align: center; color: #7f8c8d;
+            border-top: 1px solid #eee; padding-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; margin: 5px; }
+            .arrow-box { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>TÀI LIỆU ÔN TẬP VẬN HÀNH</h1>
+        <p>Trạm 500kV Hòa Bình (T500HB)</p>
+    </div>
+
+    <div class="content">
+        <h2 class="category-title">I. Các câu hỏi ngoài</h2>
+
+        <p class="question">1. Tại sao phải báo cáo ngày:</p>
+        <p>>>> Để điều độ nắm được số lần vi phạm chế độ vận hành trong ngày như : Quá tải, quá áp, sản lượng.</p>
+
+        <p class="question">2. Báo cáo sự cố thì báo cáo cho ai, báo những gì?</p>
+        <p>>>> Khi có sự cố phần tử thiết bị thì nhân viên vận hành báo cáo sự cố theo quy định trong thông tư xử lý sự cố hệ thống điện quốc gia (báo cáo cho cấp điều độ có quyền điều khiển, quyền kiểm tra và lãnh đạo đơn vị, truyền tải); tuỳ thuộc vào sự cố phần tử gì mà báo cáo theo phần tử đó.</p>
+
+        <p class="question">3. Công ty anh có chế độ quá tải riêng cho MBA ngoài thông tư không?</p>
+        <p>- Hiện tại trạm không có chế độ quá tải riêng cho máy biến áp, mà áp dụng theo quy định trong thông tư.</p>
+
+        <p class="question">4. Khi quá tải thì các anh kiểm tra cái gì?</p>
+        <p>a) Báo cáo Cấp điều độ có quyền điều khiển các thông tin sau:</p>
+        <ul>
+            <li>Thời gian bắt đầu và mức mang tải trên 90%, 100%, 110% giá trị định mức.</li>
+            <li>Nhiệt độ dầu và cuộn dây của MBA (theo dõi liên tục báo cáo ngay khi có sự thay đổi);.</li>
+            <li>Thời gian cho phép quá tải theo quy định.</li>
+        </ul>
+        <p>b) Kiểm tra tình trạng làm việc của hệ thống làm mát máy biến áp và xử lý theo Quy trình vận hành và xử lý sự cố máy biến áp do Đơn vị quản lý vận hành ban hành.</p>
+
+        <p class="question">5. Khi MBA quá tải quá mà ĐĐ không thể cắt bớt tải thì anh có nên cắt máy không hay anh làm gì lúc đấy?</p>
+        <div class="arrow-box">
+            <p>➔ Khi máy biến áp bị quá tải thì nhân viên vận hành <b>không được phép tự ý cắt máy cắt</b>, mà phải xử lý theo quy định cho phép quá tải của máy biến áp:</p>
+            <p><b>a) Báo cáo Cấp điều độ có quyền điều khiển các thông tin sau:</b></p>
+            <ul>
+                <li>Thời gian bắt đầu và mức mang tải trên 90%, 100%, 110% giá trị định mức;</li>
+                <li>Nhiệt độ dầu và cuộn dây của máy biến áp (theo dõi liên tục, báo cáo ngay khi có sự thay đổi);</li>
+                <li>Thời gian cho phép quá tải theo quy định.</li>
+            </ul>
+            <p><b>b) Kiểm tra tình trạng làm việc của hệ thống làm mát:</b> Kiểm tra dàn quạt, bơm dầu máy biến áp và xử lý theo Quy trình vận hành và xử lý sự cố máy biến áp do Đơn vị quản lý vận hành ban hành.</p>
+        </div>
+        <p class="question">6. Nấc MBA, cách tính U, I của từng nấc:</p>
+    <div class="calculation-block">
+        <p>Công thức tính công suất 3 pha của máy biến áp:</p>
+        <p style="text-align: center;">\[S_{3pha} = 3 \cdot U_p \cdot I_p\]</p>
+        
+        <p>Đối với phía đấu Sao (Y): Ta có \(U_d = \sqrt{3} \cdot U_p\) và \(I_d = I_p\). Thay vào ta có công thức tính theo đại lượng dây:</p>
+        <p style="text-align: center;">\[S_{3pha} = \sqrt{3} \cdot U_d \cdot I_d\]</p>
+
+    <div class="arrow-box">
+        <p>➔ <b>Nguyên tắc thay đổi nấc:</b> Mỗi lần chuyển nấc, điện áp dao động giữa các nấc là \(1,25\% \cdot U_{đm}\).</p>
+        <p><b>Ví dụ cụ thể:</b> Với máy biến áp 500kV (\(U_{đm} = 500\text{kV}\)):</p>
+        <ul>
+            <li>Giá trị điện áp mỗi nấc: \(1,25\% \cdot 500 = 6,25 \text{ kV}\).</li>
+            <li>Nếu nấc 9 là \(500\text{kV}\) thì nấc 10 sẽ là: \(500 - 6,25 = 493,75 \text{ kV}\).</li>
+        </ul>
+    </div>
+
+    <p><b>Ví dụ tính toán cho MBA T500HB (Nấc 9):</b></p>
+    <ul>
+        <li>Điện áp pha: \(U_p = \frac{500}{\sqrt{3}} \text{ kV}\)</li>
+        <li>Dòng điện định mức: \(I = 1039 \text{ A}\)</li>
+        <li>Công suất 3 pha: \(S_{3pha} = \sqrt{3} \cdot 500 \cdot 1039 \approx 900 \text{ MVA}\)</li>
+    </ul>
+</div>
+
+    <p class="question">7. Anh dựa vào đâu xác định là mất điện toàn trạm?</p>
+    <div class="arrow-box">
+        <p>➔ Tất cả thông số điện áp đo lường phía nhất thứ trạm bằng không.</p>
+    </div>
+
+    <p class="question">8. Trạm anh dùng tự dùng ở đâu?</p>
+    <div class="arrow-box">
+        <p>➔ T500HB dùng tự dùng lấy từ nguồn địa phương.</p>
+    </div>
+
+    <p class="question">9. Khi xảy ra mất điện toàn trạm mà tự dùng địa phương cũng mất thì sao?</p>
+    <div class="arrow-box">
+        <p>➔ <b>Mục đích chính của nguồn tự dùng:</b> Cấp cho tủ nạp để nạp ắc quy (Dàn ắc quy này sẽ cấp nguồn điều khiển, bảo vệ rơ le, cuộn đóng và cuộn cắt của máy cắt).</p>
+        <p>➔ <b>Xử lý khi mất cả nguồn địa phương:</b> Nhân viên vận hành phải nhanh chóng khởi động nguồn từ <b>máy phát điện Diesel</b> của trạm để cấp điện lại cho hệ thống tự dùng, đảm bảo duy trì nguồn DC cho các thiết bị bảo vệ.</p>
+    </div>
+
+    <p class="question">10. Hòa điện và khép vòng có dùng chung con rơ le F25 được không hay dùng riêng biệt?</p>
+    <div class="arrow-box">
+        <p>➔ <b>Được dùng chung:</b> Như thực tế tại Trạm 500kV Hòa Bình, hệ thống sử dụng chung rơ le F25 nhưng phân tách cấu hình: dùng <b>GR1</b> cho chức năng hòa đồng bộ và <b>GR2</b> cho chức năng khép vòng (check-sync).</p>
+    </div>
+
+    <p class="question">11. Accu của trạm nhảy vào làm việc thì được mấy tiếng, tầm quan trọng của Accu trong ca trực như thế nào?</p>
+    <div class="arrow-box">
+        <p>➔ <b>Tầm quan trọng:</b> Cực kỳ quan trọng vì đây là "nguồn sống" cuối cùng của hệ thống điều khiển. Các thiết bị rơ le bảo vệ, mạch tín hiệu, cuộn đóng và cuộn cắt của máy cắt (MC) đều sử dụng <b>nguồn một chiều (DC)</b> từ ắc quy.</p>
+        <p>➔ <b>Thời gian làm việc:</b> Thời gian duy trì phụ thuộc vào dung lượng định mức của dàn bình và mức tải thực tế trong ca trực (thường các trạm 500kV được thiết kế để duy trì nguồn DC từ 5 - 10 giờ sau khi mất điện tự dùng AC để nhân viên kịp thời xử lý).</p>
+    </div>
+
+    <p class="question">12. Tại sao dùng MC221 thao tác đóng xông điện MBA AT1 mà không dùng MC phía 500kV?</p>
+    <div class="arrow-box">
+        <p>➔ <b>Nguyên tắc:</b> Theo quy định, khi đóng máy biến áp phải đóng từ phía <b>có điện</b> (phía nguồn). Tại trạm, phía 220kV là phía đang có điện (nguồn), do đó phải dùng MC221 để đóng xung điện cho AT1.</p>
+    </div>
+
+    <p class="question">13. SCADA dùng để làm gì?</p>
+    <div class="arrow-box">
+        <p>➔ <b>Chức năng:</b> Giám sát trạng thái thiết bị (đóng/cắt, vị trí dao...) và các thông số vận hành thực tế (\(U, I, P, Q\)) để truyền dữ liệu về trung tâm điều độ, phục vụ việc điều hành hệ thống điện trực tuyến.</p>
+    </div>
+
+    <p class="question">14. Tần số và sự cân bằng giữa nguồn và tải:</p>
+    <div class="arrow-box">
+        <p>➔ <b>Định nghĩa:</b> Tần số phản ánh sự cân bằng giữa công suất phát (\(P_{phát}\)) và công suất tiêu thụ (\(P_{tải}\)) trong toàn hệ thống. Khi nguồn và tải cân bằng thì tần số ổn định ở mức \(50\text{Hz}\).</p>
+        
+        <p>➔ <b>Công thức vật lý:</b> Tần số liên quan đến tốc độ quay của rotor máy phát điện đồng bộ:</p>
+        <p style="text-align: center;">\[f = \frac{n \cdot p}{60}\]</p>
+        <p><i>Trong đó: \(n\) là tốc độ quay của rotor (vòng/phút); \(p\) là số cặp cực của máy phát.</i></p>
+
+        <p>➔ <b>Cách điều chỉnh tần số:</b></p>
+        <ol>
+            <li><b>Điều chỉnh sơ cấp:</b> Các bộ điều tốc (Governor) tại nhà máy điện tự động thay đổi lượng nhiên liệu/nước vào turbine ngay khi thấy tần số biến động nhỏ.</li>
+            <li><b>Điều chỉnh thứ cấp (AGC):</b> Trung tâm điều độ hệ thống điện quốc gia can thiệp thay đổi điểm đặt công suất (\(P_{setpoint}\)) của các nhà máy để đưa tần số về đúng \(50\text{Hz}\).</li>
+        </ol>
+    </div>
+
+        <p class="question">15. Xử lý khi TU đường dây bị phóng điện hoặc đe dọa sự cố?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Trường hợp phóng điện:</b> Đây là tình huống ảnh hưởng trực tiếp đến an toàn thiết bị, nhân viên vận hành <b>được phép cắt máy cắt (MC) ngay lập tức</b> để cô lập điểm lỗi, sau đó mới báo cáo cấp điều độ.</p>
+            <p>➔ <b>Trường hợp đe dọa sự cố (Phát nhiệt, rỉ dầu):</b> Nhân viên vận hành tiến hành đánh giá mức độ nguy hiểm và phải <b>báo cáo cấp điều độ</b> có quyền điều khiển để xin lệnh xử lý trước khi thực hiện.</p>
+        </div>
+
+        <p class="question">16. Xử lý trường hợp máy cắt (MC) bị tụt khí SF6 khóa thao tác?</p>
+        <div class="arrow-box">
+            <p>➔ Khi áp suất khí SF6 tụt xuống mức thấp (mức khóa), mạch điều khiển sẽ tự động khóa thao tác đóng/cắt. Nhân viên vận hành phải <b>báo ngay cho A0 (Điều độ quốc gia)</b> để phối hợp phương thức cô lập máy cắt khiếm khuyết này một cách an toàn.</p>
+        </div>
+
+        <p class="question">17. Tại sao Vùng 1 của bảo vệ khoảng cách (F21) không chỉnh định 100%?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Lý do:</b> Để đảm bảo <b>tính chọn lọc</b>. Do sai số của thiết bị đo lường và tính toán trở kháng đường dây, nếu cài 100% thì rơ le có thể cắt nhầm khi sự cố nằm ở đầu đoạn đường dây kế tiếp. </p>
+            <p>➔ <b>Giải pháp:</b> Vùng 1 chỉ trùm khoảng 80-85% đường dây. Để bảo vệ tức thời cho cả 100% đường dây, người ta sử dụng sơ đồ phối hợp truyền tín hiệu <b>POTT</b> (nhận tín hiệu cho phép cắt từ đầu đối diện).</p>
+        </div>
+
+        <p class="question">18. Bảo vệ chính (BV chính) là gì?</p>
+        <div class="arrow-box">
+            <p>➔ Bảo vệ chính là bảo vệ đảm bảo loại bỏ sự cố trong phạm vi được bảo vệ với thời gian nhanh nhất, thông thường thời gian tác động là <b>0 giây (0s)</b>.</p>
+        </div>
+
+        <p class="question">19. Tại sao phải sử dụng kênh truyền trong bảo vệ so lệch đường dây (87L)?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Mục đích:</b> Để truyền thông tin, so sánh trị số dòng điện tức thời giữa rơ le tại hai đầu đường dây (Trạm A và Trạm B), từ đó xác định chính xác điểm sự cố nằm trong hay ngoài vùng bảo vệ.</p>
+            
+            <p>➔ <b>Tại sao nối dây đồng trực tiếp là KHÔNG KHẢ THI?</b> Theo sơ đồ nguyên lý, ta có thể nối dây đồng giữa 2 đầu, nhưng thực tế với khoảng cách xa hàng chục km, việc này không thể thực hiện vì:</p>
+            <ul>
+                <li><b>Điện trở dây dẫn:</b> Quá lớn làm sai lệch hoàn toàn trị số dòng điện thực tế truyền về rơ le.</li>
+                <li><b>Sụt áp & Nhiễu:</b> Gây sụt áp cao và cực kỳ dễ bị nhiễu điện từ từ các đường dây cao thế xung quanh, làm rơ le tác động sai.</li>
+                <li><b>Chi phí:</b> Đầu tư hàng chục km cáp đồng là cực kỳ đắt đỏ và khó bảo trì.</li>
+            </ul>
+
+            <p>➔ <b>Giải pháp thực tế:</b> Rơ le tại hai đầu trạm sẽ "nói chuyện" với nhau thông qua <b>Kênh truyền tín hiệu số</b>:</p>
+            <ul>
+                <li><b>Cáp quang:</b> Đây là phương thức phổ biến nhất hiện nay tại các trạm 500kV nhờ tốc độ truyền tin cực nhanh và khả năng chống nhiễu điện từ tuyệt đối.</li>
+                <li><b>Tải ba (PLC - Power Line Carrier):</b> Truyền tín hiệu cao tần trực tiếp trên đường dây tải điện (hiện nay ít dùng cho bảo vệ so lệch vì băng thông thấp).</li>
+                <li><b>Sóng vô tuyến/Vi ba:</b> Truyền qua các hệ thống trạm thu phát vô tuyến trung gian.</li>
+            </ul>
+        </div>
+
+        <p class="question">20. Các giá trị định mức của các ngăn lộ đường dây được xác định như thế nào?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Nguyên tắc xác định:</b> Dòng điện định mức của một ngăn lộ được xác định dựa trên trị số <b>nhỏ nhất</b> của các thiết bị nối tiếp trong ngăn lộ đó (bao gồm đường dây, máy cắt, dao cách ly, biến dòng điện...). Trị số thấp nhất này chính là giới hạn vận hành an toàn cho cả ngăn lộ.</p>
+            
+            <p>➔ <b>Ví dụ thực tế:</b> Đối với các đường dây 500kV, mặc dù bản thân dây dẫn có khả năng chịu tải rất lớn, nhưng nếu biến dòng (TI) hoặc dao cách ly (DCL) đi kèm chỉ có dòng định mức là \(2000\text{A}\), thì trị số định mức của toàn ngăn lộ đó sẽ bị giới hạn ở mức \(2000\text{A}\).</p>
+            
+            <p>➔ <b>Ý nghĩa:</b> Việc này nhằm đảm bảo không có bất kỳ thiết bị nhất thứ nào bị quá tải dẫn đến phát nhiệt hoặc hư hỏng trong quá trình truyền tải công suất lớn.</p>
+        </div>
+
+        <p class="question">21. Đóng xông điện là gì và mục đích của việc này?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Khái niệm:</b> Đóng xông điện là việc đóng điện vào thiết bị mới lắp đặt hoặc thiết bị sau khi đại tu, sửa chữa. Thao tác này được thực hiện bằng cách đóng điện từ một phía có điện vào thiết bị (phía còn lại để hở - không có tải).</p>
+            
+            <p>➔ <b>Mục đích:</b></p>
+            <ul>
+                <li>Kiểm tra độ tin cậy và tình trạng làm việc của thiết bị xem có hiện tượng bất thường hay không (phóng điện, phát nóng, tiếng kêu lạ...).</li>
+                <li>Kiểm tra sự làm việc của các thiết bị liên quan như: Rơ le bảo vệ, các mạch tín hiệu, hệ thống đo lường và thông tin SCADA.</li>
+                <li>Đảm bảo thiết bị đủ tiêu chuẩn vận hành trước khi chính thức cho mang tải.</li>
+            </ul>
+
+            <p>➔ <b>Quy định về dự phòng:</b> Đối với các thiết bị mới hoặc thiết bị đang để dự phòng, nếu thời gian dự phòng <b>quá 3 tháng</b> thì phải thực hiện đóng xông điện để kiểm tra lại tình trạng hoạt động và độ cách điện trước khi đưa vào vận hành chính thức.</p>
+        </div>
+
+        <h2 class="category-title">II. BẢO VỆ RƠ LE</h2>
+
+        <p class="question">22. Tại sao bảo vệ khoảng cách lại chia làm 3 vùng bảo vệ?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Lý do chính:</b> Do sai số của thiết bị đo lường và yêu cầu về tính chọn lọc trong hệ thống điện.</p>
+            
+            <p><b>1. Các loại sai số thường gặp:</b></p>
+            <ul>
+                <li><b>Sai số thiết bị đo (CT, VT):</b> Các thiết bị nhất thứ này không bao giờ chính xác tuyệt đối 100%.</li>
+                <li><b>Sai số tính toán trở kháng:</b> Thông số thực tế của đường dây (chiều dài, điện trở, điện kháng) có thể lệch so với sơ đồ tính toán.</li>
+                <li><b>Sai số rơ le:</b> Thuật toán xử lý tín hiệu số luôn có một dải dung sai nhất định.</li>
+            </ul>
+
+            <p><b>2. Phân vùng để đảm bảo tính chọn lọc:</b></p>
+            <p>Nếu cài Vùng 1 trùm hết 100% đường dây, rơ le có thể "nhìn nhầm" sự cố ở trạm kế tiếp thành sự cố của mình và cắt nhầm. Vì vậy, ta chia thành 3 vùng phối hợp:</p>
+
+            <div style="background: rgba(255,255,255,0.5); padding: 15px; border-radius: 5px; margin-top: 10px;">
+                <p><b>● Vùng 1 (Zone 1):</b></p>
+                <ul>
+                    <li>Phạm vi: <b>80% - 85%</b> chiều dài đường dây.</li>
+                    <li>Thời gian tác động (t_1): <b>0 giây (0s)</b> - Cắt tức thời.</li>
+                </ul>
+
+                <p><b>● Vùng 2 (Zone 2):</b></p>
+                <ul>
+                    <li>Phạm vi: 100% đường dây hiện tại + 20% đến 50% đường dây kế tiếp.</li>
+                    <li>Thời gian tác động (t_2): Thường từ <b>0.3s đến 0.5s</b> (để đợi Vùng 1 của đường dây kế tiếp làm việc trước).</li>
+                    <li>Mục đích: Bảo vệ nốt 15% cuối đường dây mà Vùng 1 bỏ sót.</li>
+                </ul>
+
+                <p><b>● Vùng 3 (Zone 3):</b></p>
+                <ul>
+                    <li>Phạm vi: Bao phủ toàn bộ đường dây hiện tại và toàn bộ đường dây kế tiếp.</li>
+                    <li>Thời gian tác động (t_3): Trễ lớn nhất (thường <b>> 1 giây</b>).</li>
+                    <li>Mục đích: Bảo vệ dự phòng từ xa khi các rơ le hoặc máy cắt phía trước bị hỏng.</li>
+                </ul>
+            </div>
+        </div>           
+
+            <p class="question">23. Tại sao bảo vệ so lệch (87) lại phải sử dụng đặc tính hãm?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Vấn đề thực tế:</b> Theo lý tưởng, khi không có sự cố trong vùng bảo vệ, dòng điện so lệch \(I_{sl}\) phải bằng 0. Tuy nhiên, thực tế \(I_{sl}\) luôn tồn tại một trị số nhất định (dòng không cân bằng) do các sai số sau:</p>
+            
+            <ul>
+                <li><b>Sai số của các biến dòng (CT):</b> Các CT ở các đầu không bao giờ hoàn toàn giống hệt nhau về đặc tính từ hóa.</li>
+                <li><b>Sai số tỷ số biến:</b> Tỷ số biến thực tế của các CT có thể lệch nhau một chút.</li>
+                <li><b>Hiện tượng bão hòa CT:</b> Khi có dòng ngắn mạch ngoài cực lớn, CT phía gần điểm sự cố dễ bị bão hòa, làm dòng thứ cấp không còn chính xác, tạo ra dòng \(I_{sl}\) "giả" rất lớn.</li>
+            </ul>
+
+            <p>➔ <b>Giải pháp (Đặc tính hãm):</b> Để tránh rơ le tác động nhầm trong các trường hợp trên, người ta đưa vào <b>Dòng hãm (\(I_{hãm}\))</b>.</p>
+            <p>➔ <b>Nguyên lý:</b> Khi dòng chạy xuyên qua thiết bị càng lớn (ngắn mạch ngoài), rơ le sẽ tự động nâng ngưỡng tác động lên cao hơn thông qua đặc tính hãm. Điều này giúp tăng <b>tính chọn lọc</b>, đảm bảo rơ le chỉ làm việc khi thực sự có sự cố trong vùng bảo vệ.</p>
+        </div>
+
+        <p class="question">24. Tại sao phải bù tổ đấu dây và tỷ số biến trong bảo vệ so lệch máy biến áp (87T)?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Lý do:</b> Để rơ le có thể so sánh chính xác dòng điện giữa các phía của máy biến áp và không tác động nhầm khi vận hành bình thường.</p>
+            
+            <p><b>1. Bù tỷ số biến (Ratio Compensation):</b></p>
+            <ul>
+                <li><b>Vấn đề:</b> Do máy biến áp thay đổi cấp điện áp (ví dụ 500kV sang 220kV) nên trị số dòng điện ở hai phía là hoàn toàn khác nhau.</li>
+                <li><b>Giải pháp:</b> Sử dụng các hệ số cân bằng (<b>Matching Factors</b>) để quy đổi dòng điện ở các phía về cùng một quy mô (thường là đơn vị tương đối - p.u) trước khi đưa vào thuật toán so sánh.</li>
+            </ul>
+
+            <p><b>2. Bù tổ đấu dây (Vector Group Compensation):</b></p>
+            <ul>
+                <li><b>Vấn đề:</b> Các tổ đấu dây như Sao/Tam giác (ví dụ \(Y/\Delta\)-11) sẽ làm dòng điện ở phía Tam giác lệch pha so với phía Sao (thường là 30°). Nếu không bù, rơ le sẽ thấy một dòng so lệch rất lớn dù máy biến áp không có sự cố.</li>
+                <li><b>Giải pháp:</b> Thực hiện bù góc pha để đưa các vectơ dòng điện về cùng một phương trước khi thực hiện phép tính so lệch.</li>
+            </ul>
+
+            <p><b>3. Phương pháp thực hiện:</b></p>
+            <div style="background: rgba(255,255,255,0.5); padding: 15px; border-radius: 5px; border: 1px dashed var(--primary-color);">
+                <p>● <b>Với rơ le kỹ thuật số hiện nay:</b> Việc bù được thực hiện hoàn toàn bằng <b>phần mềm</b>. Nhân viên cài đặt chỉ cần khai báo thông số định mức (\(U_{đm}, I_{đm}\)) và tổ đấu dây trong phần mềm cấu hình.</p>
+                <p>● <b>Với rơ le cơ cũ:</b> Người ta phải thực hiện bù bằng cách <b>đấu nối dây nhị thứ</b> của biến dòng (CT) theo sơ đồ ngược lại (Ví dụ: CT phía Sao thì đấu Tam giác và ngược lại) để khử góc pha.</p>
+            </div>
+        </div>
+
+            <p class="question">25. Phân biệt So lệch đường dây (87L) và So lệch máy biến áp (87T) về mặt truyền nhận tín hiệu?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Sự khác biệt cốt lõi:</b> Nằm ở khoảng cách vật lý giữa các máy biến dòng (CT) và cách thức đưa tín hiệu về rơ le bảo vệ.</p>
+
+            <p><b>1. Bảo vệ So lệch Máy biến áp (87T):</b></p>
+            <ul>
+                <li><b>Khoảng cách:</b> Các CT ở các phía (ví dụ 500kV và 220kV) nằm gần nhau, trong cùng phạm vi của một trạm biến áp.</li>
+                <li><b>Kết nối:</b> Tín hiệu dòng điện nhị thứ từ các CT được đưa trực tiếp vào rơ le thông qua hệ thống <b>cáp đồng</b> điều khiển.</li>
+            </ul>
+
+            <p><b>2. Bảo vệ So lệch Đường dây (87L):</b></p>
+            <ul>
+                <li><b>Khoảng cách:</b> Các CT nằm ở hai đầu đường dây, cách xa nhau hàng chục hoặc hàng trăm km (ví dụ: một đầu tại trạm Hòa Bình và một đầu tại trạm đối diện).</li>
+                <li><b>Kết nối:</b> Không thể dùng cáp đồng. Rơ le ở hai đầu phải trao đổi dữ liệu số với nhau qua <b>kênh truyền thông</b> (thường là cáp quang chuyên dụng).</li>
+                <li><b>Đặc điểm kỹ thuật:</b> Do tín hiệu đi quãng đường xa mất thời gian, rơ le 87L cần có thuật toán <b>bù trễ thời gian truyền dẫn (Time Delay Compensation)</b> để đảm bảo dữ liệu dòng điện được so sánh tại cùng một thời điểm chính xác.</li>
+            </ul>
+        </div>
+
+
+    </div>
+
+        <p class="question">26. Hiện tượng bão hòa biến dòng (CT) ảnh hưởng thế nào đến bảo vệ so lệch?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Hiện tượng:</b> Khi xảy ra ngắn mạch ngoài vùng bảo vệ với trị số dòng điện cực lớn, biến dòng (CT) ở phía gần điểm sự cố có thể rơi vào trạng thái <b>bão hòa mạch từ</b>.</p>
+            
+            <p>➔ <b>Hậu quả:</b> Lúc này, dòng điện nhị thứ (phía thứ cấp) của CT bị bão hòa sẽ không còn phản ánh đúng tỉ lệ với dòng sơ cấp (dòng bị méo, sụt giảm). Điều này làm mất sự cân bằng vectơ giữa các đầu, dẫn đến xuất hiện một dòng so lệch \(I_{sl}\) "giả" rất lớn.</p>
+            
+            <p>➔ <b>Nguy cơ:</b> Nếu không có biện pháp xử lý, rơ le sẽ "hiểu lầm" đây là sự cố trong vùng và tác động cắt nhầm máy cắt dù thực tế sự cố nằm ở ngoài trạm.</p>
+
+            <p>➔ <b>Giải pháp khắc phục:</b></p>
+            <ul>
+                <li><b>Sử dụng đặc tính hãm:</b> Như đã giải thích ở Câu 23, rơ le sẽ tự động tăng ngưỡng tác động dựa trên dòng chạy xuyên để bù đắp sai số.</li>
+                <li><b>Thuật toán phát hiện bão hòa (Saturation Detection):</b> Rơ le hiện đại có khả năng nhận diện dạng sóng bị méo do bão hòa CT để tự động khóa tác động (Block) tạm thời hoặc tăng mạnh ngưỡng hãm khi xác định đó là sự cố ngoài vùng.</li>
+            </ul>
+        </div>
+
+
+    
+    <div class="footer">
+        <p>© 2026 - Dự án t500hb - Chien500hb</p>
+    </div>
+</div>
+
+<script>
+    // Script tự động định dạng
+    document.querySelectorAll('.content p').forEach(p => {
+        let html = p.innerHTML;
+        // Chuyển >>> thành mũi tên và thêm khung xanh
+        if (html.includes('&gt;&gt;&gt;') || html.includes('>>>')) {
+            p.classList.add('arrow-box');
+            p.innerHTML = html.replace(/&gt;&gt;&gt;|>>>/g, '<span class="arrow-icon">➔</span>');
+        }
+        // Tự động in đậm câu hỏi có số thứ tự
+        if (/^\s*\d+\./.test(p.innerText)) {
+            p.classList.add('question-text');
+            p.style.color = "var(--accent-color)";
+            p.style.fontWeight = "bold";
+        }
+    });
+</script>
+
+</body>
+</html>
