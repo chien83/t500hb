@@ -126,6 +126,51 @@
             padding: 8px 10px;
         }
     }
+
+            /* Định vị cụm nút tăng giảm chữ */
+        .header {
+            position: relative; /* Để các nút căn theo khung header */
+        }
+
+        .font-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .font-controls button {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .font-controls button:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Ẩn nút khi in tài liệu */
+        @media print {
+            .font-controls { display: none; }
+        }
+
+        /* Tối ưu cho điện thoại */
+        @media (max-width: 600px) {
+            .font-controls {
+                position: static; /* Đẩy xuống dưới tiêu đề nếu màn hình quá hẹp */
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+        }
+
 </style>
 </head>
 <body>
@@ -134,6 +179,11 @@
 
 <div class="container">
     <div class="header">
+    <div class="font-controls">
+            <button onclick="changeFontSize(1)" title="Tăng cỡ chữ">A+ <i class="fa-solid fa-plus"></i></button>
+            <button onclick="changeFontSize(-1)" title="Giảm cỡ chữ">A- <i class="fa-solid fa-minus"></i></button>
+        </div>
+
         <h1>TÀI LIỆU ÔN TẬP VẬN HÀNH</h1>
         <p>Trạm 500kV Hòa Bình (T500HB)</p>
     </div>
@@ -467,6 +517,25 @@
             window.location.href = "index.html"; // Quay lại trang index
         }
     })();
+
+
+        // Thiết lập cỡ chữ mặc định (100%)
+        let currentZoom = 100; 
+
+        function changeFontSize(direction) {
+            // Mỗi lần nhấn tăng/giảm 10%
+            currentZoom += direction * 10;
+            
+            // Giới hạn không cho quá nhỏ (70%) hoặc quá to (150%)
+            if (currentZoom < 70) currentZoom = 70;
+            if (currentZoom > 150) currentZoom = 150;
+            
+            // Áp dụng vào phần nội dung chính
+            const content = document.querySelector('.content');
+            if (content) {
+                content.style.fontSize = currentZoom + "%";
+            }
+        }
 </script>
 
 </div>
