@@ -8,101 +8,122 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <style>
-        :root {
-            --primary-color: #00558f; 
-            --accent-color: #d32f2f;  
-            --bg-color: #f4f7f9;
-            --text-color: #2c3e50;
-            --arrow-color: #007bff;
-        }
+<style>
+    :root {
+        --primary-color: #00558f; 
+        --accent-color: #d32f2f;  
+        --bg-color: #f4f7f9;
+        --text-color: #2c3e50;
+        --arrow-color: #007bff;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.8;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0; padding: 0;
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.8;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0; padding: 0;
+    }
 
+    .container {
+        max-width: 950px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .header {
+        text-align: center;
+        border-bottom: 3px double var(--primary-color);
+        margin-bottom: 30px;
+        padding-bottom: 10px;
+    }
+
+    .header h1 { color: var(--primary-color); text-transform: uppercase; margin: 0; font-size: 1.8em; }
+
+    /* Mặc định căn lề trái để an toàn cho mọi thiết bị */
+    .content p { margin: 15px 0; text-align: left; }
+
+    .question {
+        color: var(--accent-color);
+        font-weight: bold;
+        display: block;
+        margin-top: 30px;
+        font-size: 1.15em;
+        border-left: 5px solid var(--accent-color);
+        padding-left: 12px;
+    }
+
+    .arrow-box {
+        background: #f0f7ff !important;
+        padding: 15px 20px !important;
+        border-left: 4px solid var(--arrow-color) !important;
+        border-radius: 4px;
+        margin: 15px 0 15px 15px !important;
+        font-style: italic;
+    }
+
+    .category-title {
+        background: var(--primary-color);
+        color: white;
+        padding: 10px 20px;
+        margin: 40px 0 20px 0;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
+
+    ul { margin-left: 20px; }
+
+    /* XỬ LÝ TOÁN HỌC (MATHJAX) CHUNG */
+    mjx-container {
+        max-width: 100%;
+        overflow-x: auto; /* Cho phép cuộn ngang */
+        overflow-y: hidden;
+        padding: 5px 0;
+    }
+
+    /* Ép công thức nhỏ nằm cùng dòng và không bị dãn chữ */
+    p mjx-container, li mjx-container {
+        display: inline-block !important;
+        vertical-align: middle;
+        white-space: nowrap;
+        margin: 0 2px !important;
+    }
+
+    .nowrap { white-space: nowrap; }
+
+    /* THIẾT LẬP RIÊNG CHO DI ĐỘNG (Dưới cùng để đè lên tất cả) */
+    @media (max-width: 600px) {
         .container {
-            max-width: 950px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 15px 10px !important;
+            margin: 0 !important;
+            width: 100% !important;
+            border-radius: 0;
         }
 
-        .header {
-            text-align: center;
-            border-bottom: 3px double var(--primary-color);
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-        }
+        .header h1 { font-size: 1.3em !important; }
 
-        .header h1 { color: var(--primary-color); text-transform: uppercase; margin: 0; font-size: 1.8em; }
-
-        .content p { margin: 15px 0; text-align: justify; }
-
-        /* Câu hỏi (nhận diện bằng số ở đầu dòng) */
-        .question {
-            color: var(--accent-color);
-            font-weight: bold;
-            display: block;
-            margin-top: 30px;
-            font-size: 1.15em;
-            border-left: 5px solid var(--accent-color);
-            padding-left: 12px;
-        }
-
-        /* Khung dành cho nội dung có mũi tên ➔ */
         .arrow-box {
-            background: #f0f7ff !important;
-            padding: 15px 20px !important;
-            border-left: 4px solid var(--arrow-color) !important;
-            border-radius: 4px;
-            margin: 15px 0 15px 15px !important;
-            font-style: italic;
+            margin-left: 5px !important;
+            padding: 10px !important;
+            font-size: 0.95em;
         }
 
-        .arrow-icon {
-            color: var(--arrow-color);
-            font-size: 1.2em;
-            margin-right: 8px;
-            font-weight: bold;
+        .arrow-box p, .arrow-box li {
+            text-align: left !important;
+            line-height: 1.6;
         }
+
+        ul { padding-left: 15px !important; }
 
         .category-title {
-            background: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            margin: 40px 0 20px 0;
-            border-radius: 4px;
-            text-transform: uppercase;
+            font-size: 1.1em;
+            padding: 8px 10px;
         }
-
-        .formula-img {
-            display: block;
-            margin: 20px auto;
-            max-width: 150px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            background: #fff;
-        }
-
-        ul { margin-left: 20px; }
-        
-        .footer {
-            margin-top: 50px; text-align: center; color: #7f8c8d;
-            border-top: 1px solid #eee; padding-top: 20px;
-        }
-
-        @media (max-width: 600px) {
-            .container { padding: 15px; margin: 5px; }
-            .arrow-box { margin-left: 0; }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
 
@@ -150,30 +171,29 @@
             </ul>
             <p><b>b) Kiểm tra tình trạng làm việc của hệ thống làm mát:</b> Kiểm tra dàn quạt, bơm dầu máy biến áp và xử lý theo Quy trình vận hành và xử lý sự cố máy biến áp do Đơn vị quản lý vận hành ban hành.</p>
         </div>
+
         <p class="question">6. Nấc MBA, cách tính U, I của từng nấc:</p>
-    <div class="calculation-block">
-        <p>Công thức tính công suất 3 pha của máy biến áp:</p>
-        <p style="text-align: center;">\[S_{3pha} = 3 \cdot U_p \cdot I_p\]</p>
-        
-        <p>Đối với phía đấu Sao (Y): Ta có \(U_d = \sqrt{3} \cdot U_p\) và \(I_d = I_p\). Thay vào ta có công thức tính theo đại lượng dây:</p>
-        <p style="text-align: center;">\[S_{3pha} = \sqrt{3} \cdot U_d \cdot I_d\]</p>
+        <div class="calculation-block">
+            <p>Công thức tính công suất 3 pha của máy biến áp:</p>
+            <p style="text-align: center;">\[S_{3p} = 3 \cdot U_p \cdot I_p = \sqrt{3} \cdot U_d \cdot I_d\]</p>
+            
+            <p>Đối với phía đấu Sao (Y): <span class="nowrap">Ta có \(U_d = \sqrt{3} \cdot U_p\)</span> và <span class="nowrap">\(I_d = I_p\)</span>.</p>
+            <div class="arrow-box">
+                <p>➔ <b>Nguyên tắc thay đổi nấc:</b> Mỗi lần chuyển nấc, điện áp dao động giữa các nấc là \(1,25\% \cdot U_{đm}\).</p>
+                <p><b>Ví dụ cụ thể:</b> Với MBA 500kV \( (U_{đm} = 500\text{kV}) \):</p>
+                <ul>
+                    <li>Giá trị điện áp mỗi nấc: \( 1,25\% \cdot 500 = 6,25 \)&nbsp;kV.</li>
+                    <li>Nếu nấc 9 là 500&nbsp;kV thì nấc 10 là: \( 500 - 6,25 = 493,75 \)&nbsp;kV.</li>
+                </ul>
+            </div>
 
-    <div class="arrow-box">
-        <p>➔ <b>Nguyên tắc thay đổi nấc:</b> Mỗi lần chuyển nấc, điện áp dao động giữa các nấc là \(1,25\% \cdot U_{đm}\).</p>
-        <p><b>Ví dụ cụ thể:</b> Với máy biến áp 500kV (\(U_{đm} = 500\text{kV}\)):</p>
-        <ul>
-            <li>Giá trị điện áp mỗi nấc: \(1,25\% \cdot 500 = 6,25 \text{ kV}\).</li>
-            <li>Nếu nấc 9 là \(500\text{kV}\) thì nấc 10 sẽ là: \(500 - 6,25 = 493,75 \text{ kV}\).</li>
-        </ul>
-    </div>
-
-    <p><b>Ví dụ tính toán cho MBA T500HB (Nấc 9):</b></p>
-    <ul>
-        <li>Điện áp pha: \(U_p = \frac{500}{\sqrt{3}} \text{ kV}\)</li>
-        <li>Dòng điện định mức: \(I = 1039 \text{ A}\)</li>
-        <li>Công suất 3 pha: \(S_{3pha} = \sqrt{3} \cdot 500 \cdot 1039 \approx 900 \text{ MVA}\)</li>
-    </ul>
-</div>
+            <p><b>Ví dụ tính toán cho MBA T500HB (Nấc 9):</b></p>
+            <ul>
+                <li>Điện áp pha: \( U_p = \frac{500}{\sqrt{3}} \)&nbsp;kV.</li>
+                <li>Dòng điện định mức: \( I = 1039 \)&nbsp;A.</li>
+                <li>Công suất 3 pha: \( S_{3p} = \sqrt{3} \cdot 500 \cdot 1039 \approx 900 \)&nbsp;MVA.</li>
+            </ul>
+        </div>
 
     <p class="question">7. Anh dựa vào đâu xác định là mất điện toàn trạm?</p>
     <div class="arrow-box">
