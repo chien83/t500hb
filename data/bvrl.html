@@ -8,9 +8,9 @@
         /* 1. ĐỊNH DẠNG NỀN VÀ KHUNG CHỨA */
         body {
             font-family: "Times New Roman", Times, serif;
-            line-height: 1.5;
+            line-height: 1.4;
             color: #000;
-            background-color: #e9ecef; /* Màu nền xám nhạt */
+            background-color: #e9ecef;
             margin: 0;
             padding: 0;
         }
@@ -18,46 +18,43 @@
         .document-container {
             max-width: 850px;
             margin: 0 auto;
-            background-color: #e9ecef; /* Trùng màu với body để không lộ khung trắng */
-            padding: 10px 40px 30px; /* Thu hẹp padding trên để đẩy nội dung lên */
+            background-color: #e9ecef;
+            padding: 10px 40px 20px;
             min-height: 100vh;
             box-sizing: border-box;
         }
 
-        /* 2. DÀN HÀNG NGANG TIÊU ĐỀ VÀ NÚT QUAY LẠI */
+        /* 2. DÀN HÀNG NGANG TIÊU ĐỀ (PC) */
         .header-wrapper {
             display: flex;
             align-items: center;
-            position: relative;
-            border-bottom: 1px solid #00338d; /* Đường kẻ mảnh 1px */
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            justify-content: space-between;
+            border-bottom: 1px solid #00338d;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .back-home {
-            position: absolute; /* Đưa nút quay lại về cánh trái */
-            left: 0;
             text-decoration: none;
             color: #888;
             font-size: 10.5pt;
             font-style: italic;
             white-space: nowrap;
-            z-index: 10;
         }
         .back-home:hover { color: #00338d; text-decoration: underline; }
 
         h1 {
-            width: 100%;
             margin: 0;
             padding: 0;
             color: #00338d;
-            font-size: 16pt; /* Thu nhỏ cỡ chữ cho thanh thoát */
+            font-size: 18pt;
             text-align: center;
+            flex: 1; /* Để tiêu đề chiếm không gian còn lại */
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
-        /* 3. LỚP PHÁ KHUNG ĐỂ PDF TO TOÀN MÀN HÌNH (100vw) */
+        /* 3. KHUNG PDF TO TOÀN MÀN HÌNH */
         .full-width-pdf {
             width: 100vw;
             position: relative;
@@ -65,39 +62,47 @@
             right: 50%;
             margin-left: -50vw;
             margin-right: -50vw;
-            height: 90vh; /* Cao chiếm 90% màn hình */
+            height: 90vh;
             background-color: #525659;
         }
 
         .zoom-link {
             display: block;
             text-align: center;
-            margin-top: 15px;
+            margin-top: 10px;
             color: #00338d;
             text-decoration: none;
             font-style: italic;
-            font-size: 11pt;
+            font-size: 10.5pt;
             opacity: 0.8;
         }
-        .zoom-link:hover { opacity: 1; text-decoration: underline; }
 
-        /* 4. TỐI ƯU CHO ĐIỆN THOẠI */
+        /* 4. TỐI ƯU SIÊU GỌN CHO ĐIỆN THOẠI */
         @media (max-width: 600px) {
-            .document-container { padding: 6px 6px 10px; }
+            .document-container { 
+                padding: 5px 10px 10px; 
+            }
+            
             .header-wrapper {
-                flex-direction: column; 
-                align-items: flex-start;
-                position: static;
+                flex-direction: row; /* ÉP LÊN CÙNG MỘT HÀNG */
+                justify-content: space-between;
+                align-items: center;
+                padding-bottom: 5px;
+                margin-bottom: 5px; /* Co tối đa hộp xanh */
             }
-            .back-home { position: static; margin-bottom: 8px; }
-            
-            /* CHIẾN SỬA DÒNG NÀY */
+
+            .back-home { 
+                font-size: 9pt; /* Thu nhỏ chữ quay lại để đủ chỗ */
+                margin-right: 10px;
+            }
+
             h1 { 
-                font-size: 10pt; /* Bạn giảm từ 14pt hoặc 15pt xuống 12pt hoặc 13pt cho vừa mắt */
-                text-align: center; 
+                font-size: 11pt !important; /* Hạ font tiêu đề xuống để không bị nhảy dòng */
+                text-align: center; /* Đẩy sang phải đối xứng với nút bên trái */
+                letter-spacing: 0;
             }
-            
-            .full-width-pdf { height: 85vh; }
+
+            .full-width-pdf { height: 88vh; }
         }
     </style>
 </head>
@@ -105,8 +110,8 @@
 
 <div class="document-container">
     <div class="header-wrapper">
-        <a href="../index.html" class="back-home">← Quay lại trang chủ</a>
-        <h1>Tổng quan về bảo vệ rơ le</h1>
+        <a href="../index.html" class="back-home">← Quay lại</a>
+        <h1>Bảo vệ rơ le</h1>
     </div>
 
     <div class="full-width-pdf">
@@ -118,8 +123,6 @@
         </iframe>
     </div>
 
-
-</div>
 
 </body>
 </html>
