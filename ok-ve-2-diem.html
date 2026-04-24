@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sơ Đồ Dòng Chảy - Kỹ thuật Marker Chuẩn</title>
+    <style>
+        :root {
+            --bg-color: #0b0e14;
+            --arrow-color: #00d2ff;
+            --border-color: #e21818;
+        }
+
+        body { margin: 0; background-color: var(--bg-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; font-family: sans-serif; }
+        
+        .toolbar {
+            background: #1a1f26; color: #fff; padding: 10px 20px;
+            display: flex; gap: 20px; align-items: center; border-bottom: 1px solid #333;
+        }
+
+        #status { font-family: monospace; color: var(--arrow-color); font-weight: bold; min-width: 300px; }
+        button { background: #e21818; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+        .canvas { flex-grow: 1; position: relative; display: flex; justify-content: center; align-items: center; }
+
+        svg {
+            width: auto; height: 90vh; aspect-ratio: 1/1;
+            background: #000; cursor: crosshair;
+        }
+
+        /* ANIMATION DÒNG CHẢY BẰNG ĐƯỜNG ĐỨT NÉT
+           Dashoffset giảm dần tạo cảm giác chảy tới trước 
+        */
+        .flow-line {
+            stroke: var(--arrow-color);
+            stroke-width: 0.6;
+            stroke-dasharray: 4 6; /* Chiều dài nét : Khoảng cách */
+            animation: flow-dash 1s linear infinite;
+        }
+
+        @keyframes flow-dash {
+            to { stroke-dashoffset: -10; } /* Phải là số âm để chạy tiến tới */
+        }
+
+        .glow { filter: drop-shadow(0 0 2px var(--arrow-color)); }
+        
+        /* Chỉnh kích thước nút */
+        .node-marker { r: 1.2; fill: none; stroke-width: 0.4; }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <div id="status">Sẵn sàng: Click điểm A</div>
+        <button onclick="resetDrawing()">Xóa hết</button>
+        <span style="font-size: 0.8rem; color: #888;">* Vẽ độc lập: Click 2 điểm để tạo 1 đoạn.</span>
+    </div>
+
+    <div class="canvas">
+        <svg id="main-svg" viewBox="0 0 100 100">
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
+                        markerWidth="4" markerHeight="4" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10" fill="none" stroke="#00d2ff" stroke-width="1.5" />
+                </marker>
+            </defs>
+
+            <image href="image/test.png" x="0" y="0" width="100" height="100" />
+            
+            <g id="border-layer"></g> <g id="flow-layer"></g>   <g id="node-layer"></g>   </svg>
+    </div>
+
+    <script>
+        const svg = document.getElementById('main-svg');
+        const borderLayer = document.getElementById('border-layer');
+        const flowLayer = document.getElementById('flow-layer');
+        const nodeLayer = document.getElementById('node-layer');
+        const status = document.getElementById('status');
+
+        let startPoint = null;
+        let segCount = 0;
+
+        svg.addEventListener('mousedown', function(e) {
+            const rect = svg.getBoundingClientRect();
+            const x = parseFloat(((e.clientX - rect.left) / rect.width * 100).toFixed(2));
+            const y = parseFloat(((e.clientY - rect.top) / rect.height * 100).toFixed(2));
+
+            if (!startPoint) {
+                // CHỌN ĐIỂM A
+                startPoint = { x, y };
+                addMarker(x, y, "#00d2ff");
+                status.innerText = `Chờ điểm B...`;
+            } else {
+                // CHỌN ĐIỂM B
+                segCount++;
+                addMarker(x, y, "#e21818");
+                drawFlow(startPoint, {x, y}, segCount);
+                startPoint = null; 
+                status.innerText = `Đã nối đoạn #${segCount}. Click A cho đoạn mới...`;
+            }
+        });
+
+        function drawFlow(p1, p2, id) {
+            // 1. Vẽ 2 viền đỏ song song (Ống rỗng)
+            const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+            const offset = 1.2; // Khoảng cách từ tâm ra viền
+            const dx = offset * Math.sin(angle);
+            const dy = offset * Math.cos(angle);
+
+            [1, -1].forEach(side => {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', p1.x + (side * dx));
+                line.setAttribute('y1', p1.y - (side * dy));
+                line.setAttribute('x2', p2.x + (side * dx));
+                line.setAttribute('y2', p2.y - (side * dy));
+                line.setAttribute('stroke', '#e21818');
+                line.setAttribute('stroke-width', '0.35');
+                borderLayer.appendChild(line);
+            });
+
+            // 2. Vẽ dòng chảy ở chính giữa bằng đường đứt nét
+            // Gắn Marker mũi tên vào điểm kết thúc của đường
+            const flowLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            flowLine.setAttribute('x1', p1.x); 
+            flowLine.setAttribute('y1', p1.y);
+            flowLine.setAttribute('x2', p2.x); 
+            flowLine.setAttribute('y2', p2.y);
+            flowLine.setAttribute('class', 'flow-line glow');
+            // Gắn mũi tên vào cuối đường
+            flowLine.setAttribute('marker-end', 'url(#arrow)');
+            
+            flowLayer.appendChild(flowLine);
+        }
+
+        function addMarker(x, y, color) {
+            const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            c.setAttribute('cx', x); c.setAttribute('cy', y);
+            c.setAttribute('class', 'node-marker');
+            c.setAttribute('stroke', color);
+            nodeLayer.appendChild(c);
+        }
+
+        function resetDrawing() {
+            startPoint = null; segCount = 0;
+            borderLayer.innerHTML = ''; flowLayer.innerHTML = ''; nodeLayer.innerHTML = '';
+            status.innerText = "Click điểm A (Bắt đầu)";
+        }
+    </script>
+</body>
+</html>

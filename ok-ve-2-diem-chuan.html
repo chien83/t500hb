@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>SVG Flow Marker - T500HB (Bản Chuẩn Nhất)</title>
+    <style>
+        :root {
+            --bg-color: #0b0e14;
+            --arrow-color: #00d2ff; /* Màu xanh neon */
+            --border-color: #e21818; /* Màu viền đỏ */
+            --flow-speed: 1s;       /* Tốc độ chảy */
+        }
+
+        body { margin: 0; background-color: var(--bg-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        
+        .toolbar {
+            background: #1a1f26; color: white; padding: 10px 25px;
+            display: flex; gap: 20px; align-items: center; border-bottom: 1px solid #333; z-index: 100;
+        }
+
+        #status { font-family: monospace; color: var(--arrow-color); font-weight: bold; min-width: 350px; }
+        button { background: var(--border-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+        .canvas-container { flex-grow: 1; position: relative; display: flex; justify-content: center; align-items: center; padding: 10px; }
+
+        svg {
+            width: auto; height: 90vh; aspect-ratio: 1/1; /* Giữ tỷ lệ vuông cho sơ đồ */
+            background: #000; cursor: crosshair; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        /* LỚP CSS CHO ĐƯỜNG DÒNG CHẢY - Siêu ổn định */
+        .power-flow-line {
+            stroke: var(--arrow-color);
+            stroke-width: 0.6;
+            fill: none;
+            /* Tạo đường đứt nét: NET_DAI_4_KHOANG_TRONG_6 */
+            stroke-dasharray: 4 6; 
+            /* Gắn hiệu ứng animation: GIAM_DASHOFFSET_DE_CHAY */
+            animation: power-dash var(--flow-speed) linear infinite;
+        }
+
+        @keyframes power-dash {
+            /* Số âm để chạy tiến về phía trước */
+            to { stroke-dashoffset: -10; } 
+        }
+
+        /* Hiệu ứng phát sáng neon */
+        .glow { filter: drop-shadow(0 0 2px var(--arrow-color)) drop-shadow(0 0 1px white); }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <div id="status">Sẵn sàng: Click điểm A (Bắt đầu)</div>
+        <button onclick="resetDrawing()">Reset Bản Vẽ</button>
+        <span style="color: #888; font-size: 0.8rem;">Chế độ: Click 2 điểm chéo độc lập để nối 1 cặp rời.</span>
+    </div>
+
+    <div class="canvas-container">
+        <svg id="main-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <marker id="arrowhead" viewBox="0 0 10 10" refX="5" refY="5"
+                        markerWidth="2" markerHeight="3" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10" fill="none" stroke="#02d3ff" stroke-width="0.6" stroke-linecap="round"/>
+                </marker>
+            </defs>
+
+            <image href="image/test.png" x="0" y="0" width="100" height="100" />
+
+            <g id="border-layer"></g> <g id="flow-layer"></g>   <g id="node-layer"></g>   </svg>
+    </div>
+
+    <script>
+        const svg = document.getElementById('main-svg');
+        const status = document.getElementById('status');
+        const borderLayer = document.getElementById('border-layer');
+        const flowLayer = document.getElementById('flow-layer');
+        const nodeLayer = document.getElementById('node-layer');
+
+        let startPoint = null; 
+
+        // XỬ LÝ CLICK CHUỘT
+        svg.addEventListener('mousedown', function(e) {
+            const rect = svg.getBoundingClientRect();
+            // Tính tọa độ theo tỷ lệ 0-100 của viewBox
+            const x = parseFloat(((e.clientX - rect.left) / rect.width * 100).toFixed(2));
+            const y = parseFloat(((e.clientY - rect.top) / rect.height * 100).toFixed(2));
+
+            if (!startPoint) {
+                // --- CLICK ĐIỂM A ---
+                startPoint = { x, y };
+                drawMarker(x, y, "transparent"); // Vòng tròn xanh cho transparent thành không màu
+                status.innerHTML = `Tọa độ A: ${x}, ${y}. Click điểm B...`;
+            } else {
+                // --- CLICK ĐIỂM B ---
+                drawMarker(x, y, "transparent"); // Vòng tròn đỏ, cho transparent thành không màu
+                
+                // Nối cặp chéo độc lập
+                drawPowerLine(startPoint, {x, y});
+                
+                // RESET ĐỂ CẶP TIẾP THEO ĐỘC LẬP
+                startPoint = null; 
+                status.innerHTML = `Đã nối xong cặp. Click điểm A mới...`;
+            }
+        });
+
+function drawPowerLine(p1, p2) {
+    // Tính toán góc của đoạn thẳng
+    const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+    
+    // --- 1. XỬ LÝ RÚT NGẮN ĐƯỜNG VIỀN ---
+    const shortenDist = 0.7; // ĐIỀU CHỈNH GIÁ TRỊ NÀY (VD: 1.0, 1.5, 2.0)
+    
+    // Tính toán tọa độ điểm kết thúc mới (p2_shortened) lùi lại dọc theo đường thẳng
+    const p2_shortened_x = p2.x - shortenDist * Math.cos(angle);
+    const p2_shortened_y = p2.y - shortenDist * Math.sin(angle);
+    // ------------------------------------
+
+    // --- 2. VẼ 2 VIỀN ĐỎ SONG SONG ---
+    const offset = 0.8; // Độ rộng ống
+    const dx = offset * Math.sin(angle);
+    const dy = offset * Math.cos(angle);
+
+    [1, -1].forEach(side => {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        // Điểm đầu giữ nguyên ở p1 (hoặc bạn có thể rút ngắn tương tự nếu muốn)
+        line.setAttribute('x1', p1.x + (side * dx));
+        line.setAttribute('y1', p1.y - (side * dy));
+        
+        // SỬ DỤNG TỌA ĐỘ ĐÃ RÚT NGẮN CHO ĐIỂM CUỐI CỦA VIỀN
+        line.setAttribute('x2', p2_shortened_x + (side * dx));
+        line.setAttribute('y2', p2_shortened_y - (side * dy));
+        
+        line.setAttribute('stroke', '#e21818');
+        line.setAttribute('stroke-width', '0.15'); // Viền mảnh
+        borderLayer.appendChild(line);
+    });
+
+    // --- 3. VẼ DÒNG CHẢY Ở CHÍNH GIỮA ---
+    // Đường dòng chảy (và mũi tên) vẫn kéo dài đến tận p2 gốc
+    const flow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    flow.setAttribute('x1', p1.x); 
+    flow.setAttribute('y1', p1.y);
+    flow.setAttribute('x2', p2.x); 
+    flow.setAttribute('y2', p2.y);
+    flow.setAttribute('class', 'power-flow-line glow');
+    
+    // GẮN MŨI TÊN VÀO CUỐI ĐƯỜNG (TỰ ĐỘNG XOAY)
+    flow.setAttribute('marker-end', 'url(#arrowhead)');
+    
+    flowLayer.appendChild(flow);
+}
+
+        // Vẽ vòng tròn tại điểm click   - thay đổi đường kính vòng tròn
+        function drawMarker(x, y, color) {
+            const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            c.setAttribute('cx', x); c.setAttribute('cy', y);
+            c.setAttribute('r', '0.8'); c.setAttribute('fill', 'transparent');
+            c.setAttribute('stroke', color); c.setAttribute('stroke-width', '0.3');
+            nodeLayer.appendChild(c);
+        }
+
+        // Xóa toàn bộ
+        function resetDrawing() {
+            startPoint = null; 
+            borderLayer.innerHTML = ''; flowLayer.innerHTML = ''; nodeLayer.innerHTML = '';
+            status.innerHTML = 'Sẵn sàng: Click điểm A';
+        }
+    </script>
+</body>
+</html>

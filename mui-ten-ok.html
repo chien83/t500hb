@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sơ Đồ Dòng Chảy - Chevrons Hoàn Hảo</title>
+    <style>
+        :root {
+            --bg-color: #0b0e14;
+            --arrow-color: #00d2ff;
+            --border-color: #e21818;
+            --speed: 0.8s;
+            --arrow-spacing: 5; /* Khoảng cách giữa các mũi tên */
+        }
+
+        body { 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+            font-family: 'Segoe UI', sans-serif; 
+        }
+        
+        .toolbar {
+            background: #1a1f26; color: white; padding: 10px 25px;
+            display: flex; gap: 20px; align-items: center; border-bottom: 1px solid #333; z-index: 100;
+        }
+
+        #status { font-family: monospace; color: var(--arrow-color); font-weight: bold; min-width: 400px; }
+        button { background: var(--border-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+        .canvas-container { flex-grow: 1; position: relative; display: flex; justify-content: center; align-items: center; padding: 10px; }
+
+        svg {
+            width: auto; height: 90vh; aspect-ratio: 1/1;
+            background: #000; cursor: crosshair; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        /* Animation class for the chevrons */
+        .flow-anim {
+            animation: flow-run var(--speed) linear infinite;
+        }
+
+        @keyframes flow-run {
+            /* Dịch chuyển đúng bằng khoảng cách giữa 2 mũi tên (var(--arrow-spacing)) */
+            from { transform: translateX(0); }
+            to { transform: translateX(5px); } 
+        }
+
+        .glow { filter: drop-shadow(0 0 2px var(--arrow-color)); }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <div id="status">Sẵn sàng: Click điểm A</div>
+        <button onclick="resetDrawing()">Xóa bản vẽ</button>
+        <span style="color: #666; font-size: 0.8rem;">* Chế độ cặp rời: A-B, C-D...</span>
+    </div>
+
+    <div class="canvas-container">
+        <svg id="main-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+            <image href="image/test.png" x="0" y="0" width="100" height="100" />
+
+            <g id="border-layer"></g>
+            <g id="flow-layer"></g>
+            <g id="node-layer"></g>
+        </svg>
+    </div>
+
+    <script>
+        const svg = document.getElementById('main-svg');
+        const status = document.getElementById('status');
+        const borderLayer = document.getElementById('border-layer');
+        const flowLayer = document.getElementById('flow-layer');
+        const nodeLayer = document.getElementById('node-layer');
+
+        let startPoint = null;
+        let segmentCount = 0;
+        
+        // Lấy giá trị khoảng cách từ CSS biến
+        const rootStyles = getComputedStyle(document.documentElement);
+        const arrowSpacing = parseFloat(rootStyles.getPropertyValue('--arrow-spacing'));
+
+        svg.addEventListener('mousedown', function(e) {
+            const rect = svg.getBoundingClientRect();
+            const x = parseFloat(((e.clientX - rect.left) / rect.width * 100).toFixed(2));
+            const y = parseFloat(((e.clientY - rect.top) / rect.height * 100).toFixed(2));
+
+            if (!startPoint) {
+                startPoint = { x, y };
+                drawMarker(x, y, "#00d2ff");
+                status.innerHTML = `Chờ click điểm B (Tọa độ A: ${x}, ${y})`;
+            } else {
+                const endPoint = { x, y };
+                segmentCount++;
+                drawMarker(x, y, "#e21818");
+                
+                drawSegment(startPoint, endPoint, segmentCount);
+                
+                startPoint = null; 
+                status.innerHTML = `Xong đoạn #${segmentCount}. Tiếp tục click điểm A mới...`;
+            }
+        });
+
+        function drawSegment(p1, p2, id) {
+            // Tính khoảng cách giữa A và B
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            
+            // Tính góc quay (theo độ)
+            const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+
+            // 1. Vẽ viền đỏ song song (Ống rỗng trong suốt)
+            const angleRad = Math.atan2(dy, dx);
+            const offset = 1.0; // Độ rộng ống
+            const offsetX = offset * Math.sin(angleRad);
+            const offsetY = offset * Math.cos(angleRad);
+
+            [1, -1].forEach(side => {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', p1.x + (side * offsetX));
+                line.setAttribute('y1', p1.y - (side * offsetY));
+                line.setAttribute('x2', p2.x + (side * offsetX));
+                line.setAttribute('y2', p2.y - (side * offsetY));
+                line.setAttribute('stroke', '#e21818');
+                line.setAttribute('stroke-width', '0.3');
+                borderLayer.appendChild(line);
+            });
+
+            // 2. TẠO NHÓM CHỨA MŨI TÊN (Được dịch chuyển và xoay)
+            const segmentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            // Dịch chuyển đến p1, sau đó xoay theo góc của đoạn thẳng
+            segmentGroup.setAttribute('transform', `translate(${p1.x}, ${p1.y}) rotate(${angleDeg})`);
+            
+            // ClipPath để cắt các mũi tên thừa ra khỏi ống
+            const clipId = `clip-${id}`;
+            const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+            clipPath.setAttribute('id', clipId);
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', '0');
+            rect.setAttribute('y', -offset); // Mở rộng ra 2 bên bằng độ rộng ống
+            rect.setAttribute('width', length);
+            rect.setAttribute('height', offset * 2);
+            clipPath.appendChild(rect);
+            flowLayer.appendChild(clipPath);
+            
+            segmentGroup.setAttribute('clip-path', `url(#${clipId})`);
+
+            // Nhóm tạo hiệu ứng chuyển động
+            const animGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            animGroup.setAttribute('class', 'flow-anim glow');
+
+            // Tính số lượng mũi tên cần vẽ (phủ dài hơn chiều dài thực tế để animation mượt)
+            const numArrows = Math.ceil(length / arrowSpacing) + 2; 
+
+            // Vẽ các mũi tên
+            for (let i = -1; i < numArrows; i++) {
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                // Tọa độ mũi tên chevron (đỉnh hướng sang phải, tâm ở Y=0)
+                // d="M (x-1.5) -1.5 L (x+0.5) 0 L (x-1.5) 1.5"
+                const xPos = i * arrowSpacing;
+                path.setAttribute('d', `M ${xPos - 1.5} -1.5 L ${xPos + 0.5} 0 L ${xPos - 1.5} 1.5`);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', '#00d2ff');
+                path.setAttribute('stroke-width', '0.5');
+                path.setAttribute('stroke-linecap', 'round');
+                path.setAttribute('stroke-linejoin', 'round');
+                animGroup.appendChild(path);
+            }
+
+            segmentGroup.appendChild(animGroup);
+            flowLayer.appendChild(segmentGroup);
+        }
+
+        function drawMarker(x, y, color) {
+            const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            c.setAttribute('cx', x); c.setAttribute('cy', y);
+            c.setAttribute('r', '0.7'); c.setAttribute('fill', 'transparent');
+            c.setAttribute('stroke', color); c.setAttribute('stroke-width', '0.2');
+            nodeLayer.appendChild(c);
+        }
+
+        function resetDrawing() {
+            startPoint = null; segmentCount = 0;
+            borderLayer.innerHTML = ''; flowLayer.innerHTML = ''; nodeLayer.innerHTML = '';
+            status.innerHTML = 'Sẵn sàng: Click điểm A';
+        }
+    </script>
+</body>
+</html>
