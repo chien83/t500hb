@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mô phỏng Ống Thủy Tinh (Glass Pipe Flow)</title>
+    <style>
+        /* PHẦN CÀI ĐẶT BIẾN */
+        :root {
+            --bg-color: #1e272e;           /* Màu nền tối để nổi bật hiệu ứng kính */
+            --pipe-border: rgba(255, 255, 255, 0.2);
+            --liquid-color-1: #00d2ff;     /* Màu nước (nhạt) */
+            --liquid-color-2: #3a7bd5;     /* Màu nước (đậm) */
+            --flow-speed: 1.5s;
+            --pipe-height: 24px;           /* Ống thủy tinh thường làm dày chút cho đẹp */
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            font-family: sans-serif;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .node {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #2c3e50, #000000);
+            border: 1px solid #444;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            z-index: 2;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Thân ống thủy tinh */
+        .glass-pipe {
+            flex-grow: 1;
+            height: var(--pipe-height);
+            background: rgba(255, 255, 255, 0.05); /* Nền hơi trong suốt */
+            border: 1px solid var(--pipe-border);
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px; /* Bo tròn để tạo hình ống trụ */
+            
+            /* Đổ bóng trong (Inner Shadow) để tạo chiều sâu */
+            box-shadow: 
+                inset 0 4px 6px rgba(0,0,0,0.4),
+                inset 0 -2px 5px rgba(255,255,255,0.1);
+        }
+
+        /* Lớp chất lỏng chảy bên trong */
+        .liquid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%; /* Dài gấp đôi để lặp lại animation mượt */
+            height: 100%;
+            
+            /* Gradient tạo hiệu ứng sóng nước hoặc dòng chảy mượt */
+            background: linear-gradient(
+                90deg, 
+                var(--liquid-color-1) 0%, 
+                var(--liquid-color-2) 25%, 
+                var(--liquid-color-1) 50%, 
+                var(--liquid-color-2) 75%, 
+                var(--liquid-color-1) 100%
+            );
+            
+            /* Làm mờ nhẹ để trông tự nhiên hơn */
+            opacity: 0.8;
+            
+            /* Animation dịch chuyển ngang */
+            animation: flow-smooth var(--flow-speed) linear infinite;
+        }
+
+        /* Điểm sáng phía trên ống (Highlight) - Tạo cảm giác phản chiếu của kính */
+        .glass-pipe::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 10px;
+            right: 10px;
+            height: 20%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes flow-smooth {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0); }
+        }
+
+        .label {
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="node">A</div>
+        <div class="glass-pipe">
+            <div class="liquid"></div>
+        </div>
+        <div class="node">B</div>
+    </div>
+
+    <div class="label">
+        <p>Hiệu ứng <b>Glass Pipe</b>: Kết hợp Inner Shadow và Alpha Transparency</p>
+    </div>
+
+</body>
+</html>

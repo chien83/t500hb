@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dòng chảy Mũi tên - Giải thích chi tiết</title>
+    <style>
+        /* =========================================
+           1. KHU VỰC CÀI ĐẶT CHUNG (BIẾN CSS)
+           Thay đổi ở đây sẽ cập nhật toàn bộ code bên dưới
+           ========================================= */
+        :root {
+            --bg-color: #0b0e14;      /* Màu nền của toàn bộ trang web */
+            --pipe-bg: #1a1f26;       /* Màu nền bên trong ống dẫn */
+            --arrow-color: #00d2ff;   /* Màu của mũi tên và viền điểm A, B */
+            --flow-speed: 0.5s;       /* Tốc độ chảy (số nhỏ = nhanh, số lớn = chậm) */
+            --pipe-height: 24px;      /* Độ dày (chiều cao) của ống dẫn */
+            --arrow-gap: 30px;        /* Khoảng cách giữa các mũi tên (quyết định độ dày đặc) */
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;  /* Căn giữa theo chiều dọc */
+            align-items: center;      /* Căn giữa theo chiều ngang */
+            height: 100vh;
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* =========================================
+           2. CONTAINER (KHUNG CHỨA MẠCH ĐIỆN)
+           ========================================= */
+        .container {
+            display: flex;
+            align-items: center;      /* Giúp A, Ống, B thẳng hàng ngang */
+            gap: 15px;                /* Khoảng hở giữa các nút và ống */
+            width: 90%;
+            max-width: 600px;         /* Chiều dài tối đa của mạch điện */
+        }
+
+        /* =========================================
+           3. NODE (ĐIỂM A VÀ B)
+           ========================================= */
+        .node {
+            width: 50px;              /* Độ rộng hình tròn */
+            height: 50px;             /* Chiều cao hình tròn */
+            background: #2c3e50;      /* Màu nền bên trong nút */
+            border: 2px solid var(--arrow-color); /* Viền nút (đang dùng chung màu mũi tên) */
+            border-radius: 50%;       /* Làm tròn 100% để tạo hình tròn */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;             /* Màu chữ A, B */
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); /* Hiệu ứng phát sáng bên ngoài nút */
+            flex-shrink: 0;           /* Giữ nguyên kích thước nút, không cho ống ép bẹp */
+        }
+
+        /* =========================================
+           4. PIPE (THÂN ỐNG DẪN)
+           ========================================= */
+        .pipe {
+            flex-grow: 1;             /* Để ống tự động dài ra lấp đầy khoảng trống giữa A và B */
+            height: var(--pipe-height);
+            background-color: var(--pipe-bg);
+            position: relative;       /* Làm gốc tọa độ cho lớp 'stream' bên trong */
+            overflow: hidden;         /* Quan trọng: Để mũi tên không chảy tràn ra ngoài ống */
+            border-radius: 12px;      /* Bo góc cho ống (bằng 1/2 chiều cao sẽ tạo hình trụ tròn) */
+            
+            /* CHỈNH VIỀN ỐNG TẠI ĐÂY */
+            border: 2px solid #e21818; /* Màu đỏ bạn đã chọn, tăng 2px để dày hơn */
+            
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.8); /* Tạo bóng đổ bên trong để ống có chiều sâu */
+        }
+
+        /* =========================================
+           5. STREAM (LỚP MŨI TÊN ĐANG CHẢY)
+           ========================================= */
+        .stream {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: calc(100% + var(--arrow-gap)); /* Dài hơn ống 1 khoảng để lặp lại mượt */
+            height: 100%;
+            
+            /* VẼ MŨI TÊN BẰNG SVG */
+            /* stroke='%2300d2ff' là mã màu (%23 là dấu #). stroke-width='3' là độ đậm của nét vẽ mũi tên */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'%3E%3Cpath d='M10 4 L18 10 L10 16' fill='none' stroke='%2300d2ff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            
+            background-repeat: repeat-x;        /* Lặp lại mũi tên theo chiều ngang */
+            background-size: var(--arrow-gap) 100%; /* Quy định khoảng cách mỗi mũi tên xuất hiện */
+            
+            /* GỌI ANIMATION CHẠY */
+            animation: flow-logic var(--flow-speed) linear infinite;
+            
+            /* TỐI ƯU GPU (Giúp mượt, không giật lag) */
+            will-change: transform;
+            transform: translateZ(0); 
+        }
+
+        /* =========================================
+           6. LOGIC CHUYỂN ĐỘNG (ANIMATION)
+           ========================================= */
+        @keyframes flow-logic {
+            from {
+                /* Bắt đầu dịch chuyển lùi lại 1 khoảng bằng khoảng cách mũi tên */
+                transform: translateX(calc(-1 * var(--arrow-gap)));
+            }
+            to {
+                /* Chạy về vị trí 0 */
+                transform: translateX(0);
+            }
+        }
+        /* Lưu ý: Nếu muốn đổi hướng:
+           - Chạy PHẢI (A->B): from: -gap, to: 0
+           - Chạy TRÁI (B->A): from: 0, to: -gap (và phải đổi hình SVG quay đầu lại) */
+
+        .label {
+            margin-top: 30px;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="node">A</div>
+        
+        <div class="pipe">
+            <div class="stream"></div>
+        </div>
+        
+        <div class="node">B</div>
+    </div>
+
+    <div class="label">
+        <p>Mô phỏng dòng chảy <b>Mũi tên</b></p>
+        <p><small>Tùy chỉnh các biến ở phần <b>:root</b> để thay đổi nhanh</small></p>
+    </div>
+
+</body>
+</html>
