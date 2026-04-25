@@ -230,27 +230,19 @@
                 
                 <li class="submenu">
                     <a href="javascript:void(0)" style="color: #ffeb3b; text-decoration: none;">
-                        <i class="fa-solid fa-pen-nib"></i> TOOL-VẼ
-                        <i class="fa-solid fa-chevron-right" style="float: right; font-size: 10px; margin-top: 5px;"></i>
+                        <span><i class="fa-solid fa-pen-nib"></i> TOOL-VẼ</span>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
                     </a>
                     <ul class="submenu-content">
-                        <li>
-                            <a href="javascript:void(0)" onclick="resetDrawing()">
-                                <i class="fa-solid fa-arrow-rotate-right" style="color: #dc3545;"></i> Reset bản vẽ
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" id="lock-btn" onclick="toggleLock()">
-                                <i class="fa-solid fa-lock-open" style="color: #28a745;"></i> Khóa/Mở vẽ
-                            </a>
-                        </li>
+                        <li><a href="javascript:void(0)" onclick="resetDrawing()"><i class="fa-solid fa-arrow-rotate-right" style="color: #dc3545;"></i> Reset bản vẽ</a></li>
+                        <li><a href="javascript:void(0)" id="lock-btn" onclick="toggleLock()"><i class="fa-solid fa-lock-open" style="color: #28a745;"></i> Khóa/Mở vẽ</a></li>
                     </ul>
                 </li>
 
                 <li class="submenu">
                     <a href="javascript:void(0)" style="text-decoration: none;">
-                        <i class="fa-solid fa-book"></i> Kiến thức 
-                        <i class="fa-solid fa-chevron-right" style="float: right; font-size: 10px; margin-top: 5px;"></i>
+                        <span><i class="fa-solid fa-book"></i> Kiến thức</span>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
                     </a>
                     <ul class="submenu-content">
                         <li><a href="#" onclick="showDeviceInfo('AT1')"><i class="fa-solid fa-bolt" style="color: #ffc107;"></i> Máy biến áp</a></li>
@@ -263,8 +255,29 @@
                     </ul>
                 </li>
 
-                <li><a href="#" style="text-decoration: none;"><i class="fa-solid fa-diagram-project"></i> Sơ đồ phương thức</a></li>
-                <li><a href="#" style="text-decoration: none;"><i class="fa-solid fa-clipboard-check"></i> Phiếu thao tác</a></li>
+                <li class="submenu">
+                    <a href="javascript:void(0)" style="text-decoration: none;">
+                        <span><i class="fa-solid fa-diagram-project"></i> P.Thức-BV</span>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+                    </a>
+                    <ul class="submenu-content">
+                        <li><a href="#" onclick="showDeviceInfo('AT1')"><i class="fa-solid fa-bolt" style="color: #ffc107;"></i> AT1</a></li>
+                        <li><a href="#" onclick="showDeviceInfo('571')"><i class="fa-solid fa-power-off" style="color: #dc3545;"></i> AT2</a></li>
+                        <li><a href="#" onclick="showDeviceInfo('574-7')"><i class="fa-solid fa-link-slash" style="color: #28a745;"></i> DZ-572</a></li>
+                        <li><a href="#" onclick="showDeviceInfo('221')"><i class="fa-solid fa-wave-square" style="color: #d15d5d;"></i> DZ-574</a></li>
+                    </ul>
+                </li>
+
+                <li class="submenu">
+                    <a href="javascript:void(0)" style="text-decoration: none;">
+                        <span><i class="fa-solid fa-clipboard-check"></i> Phiếu thao tác</span>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+                    </a>
+                    <ul class="submenu-content">
+                        <li><a href="#"><i class="fa-solid fa-file-circle-plus" style="color: #28a745;"></i> Mẫu phiếu mới</a></li>
+                        <li><a href="#"><i class="fa-solid fa-clock-rotate-left" style="color: #007bff;"></i> Lịch sử phiếu</a></li>
+                    </ul>
+                </li>
             </ul>
         </li>
     </ul>
