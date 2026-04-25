@@ -151,9 +151,23 @@
             overflow: hidden;
         }
 
-
-
-
+        /* Nút Reset nổi trên SVG */
+        #reset-btn {
+            position: absolute;
+            top: 10px;
+            right: 580px;
+            z-index: 10;
+            background: var(--border-color); 
+            color: rgb(255, 255, 255); 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        #reset-btn:hover { background: #ff3333; }
+        #status { position: absolute; display: none; top: 15px; left: 15px; z-index: 10; font-family: monospace; color: var(--arrow-color); font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 4px;}
 
         svg {
             display: block; 
@@ -210,8 +224,7 @@
     <ul class="nav-links">
         <li><a href="#"><i class="fa-solid fa-house-chimney"></i></a></li>
 
-
-             <li class="dropdown">
+        <li class="dropdown">
             <div class="dropbtn">
                 <i class="fa-solid fa-graduation-cap"></i> HỌC-TRẮC NGHIỆM
             </div>
@@ -244,18 +257,6 @@
                                 <i class="fa-solid fa-microchip"></i> RƠLE BẢO VỆ
                             </a>
                         </li>
-
-                        <li>
-                            <a href="javascript:void(0)" onclick="resetDrawing()" style="color: #ffeb3b;">
-                                <i class="fa-solid fa-arrow-rotate-right"></i> RESET   
-                            </a>
-                        </li>
-                        <li>
-                                <a href="javascript:void(0)" id="lock-btn" onclick="toggleLock()">
-                                    <i class="fa-solid fa-lock-open"></i> KHÓA VẼ
-                                </a>
-                            </li>
-
                         <li>
                             <a href="javascript:void(0)" onclick="window.location.href='cau-hoi/cauhoingoai.html'">
                                 <i class="fa-solid fa-circle-question" style="color: #00558f;"></i> Other
@@ -277,8 +278,8 @@
 </div>
 
 <div class="canvas-container">
-
-
+    <div id="status">Chọn điểm A (Bắt đầu)</div>
+    <button id="reset-btn" onclick="resetDrawing()">Reset Bản Vẽ</button>
 
     <svg id="main-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
         <defs>
@@ -591,19 +592,16 @@
     });
 
     // --- 4. LOGIC VẼ DÒNG ĐIỆN VỚI MŨI TÊN (MARKER + ĐƯỜNG ĐỨT NÉT) ---
-
-    let isLocked = false;    // mới thêm
     const svgElement = document.getElementById('main-svg');
     const borderLayerElem = document.getElementById('border-layer');
     const flowLayerElem = document.getElementById('flow-layer');
     const nodeLayerElem = document.getElementById('node-layer');
-   // const statusElem = document.getElementById('status');
+    const statusElem = document.getElementById('status');
 
     let currentStartPoint = null; 
 
     // Bỏ qua sự kiện click nếu click vào các thẻ g (thiết bị)
     svgElement.addEventListener('mousedown', function(e) {
-        if (isLocked) return; // NẾU ĐANG KHÓA THÌ KHÔNG LÀM GÌ CẢ (mới thêm)
         if(e.target.classList.contains('hotspot')) return;
 
         const rect = svgElement.getBoundingClientRect();
@@ -663,8 +661,6 @@
         flow.setAttribute('marker-end', 'url(#arrowhead)');
         
         flowLayerElem.appendChild(flow);
-
-        saveData(); // <--- THÊM DÒNG NÀY ĐỂ TỰ ĐỘNG LƯU DỮ LIỆU SAU MỖI LẦN VẼ
     }
 
     function drawNodeMarker(x, y, color) {
@@ -678,68 +674,12 @@
     }
 
     function resetDrawing() {
-        if (isLocked) {
-        alert("Sơ đồ đang bị khóa! Vui lòng bấm MỞ KHÓA trước khi Reset.");
-        return; 
-    }
         currentStartPoint = null; 
         borderLayerElem.innerHTML = ''; 
         flowLayerElem.innerHTML = ''; 
         nodeLayerElem.innerHTML = '';
         // statusElem.innerHTML = 'Sẵn sàng: Click điểm A';
-        saveData(); // <--- THÊM DÒNG NÀY ĐỂ TỰ ĐỘNG LƯU DỮ LIỆU SAU KHI RESET ( mới thêm)
     }
-
-    function toggleLock() {
-        isLocked = !isLocked; // Đảo trạng thái true <-> false
-        const lockBtn = document.getElementById('lock-btn');
-        
-        if (isLocked) {
-            // Trạng thái khi ĐÃ KHÓA
-            lockBtn.innerHTML = '<i class="fa-solid fa-lock"></i> ĐÃ KHÓA';
-            lockBtn.style.color = '#ff4d4d'; // Chuyển chữ sang màu đỏ để dễ nhận biết
-        } else {
-            // Trạng thái khi ĐANG MỞ
-            lockBtn.innerHTML = '<i class="fa-solid fa-lock-open"></i> KHÓA VẼ';
-            lockBtn.style.color = '#ffffff'; // Trở về màu trắng bình thường
-        }
-        saveData(); // <--- THÊM DÒNG NÀY ĐỂ LƯU TRẠNG THÁI KHÓA SAU MỖI LẦN THAY ĐỔI ( mới thêm)
-    }
-
-
-// HÀM LƯU DỮ LIỆU VÀO TRÌNH DUYỆT ( mới thêm)
-function saveData() {
-    const data = {
-        borders: borderLayerElem.innerHTML,
-        flows: flowLayerElem.innerHTML,
-        nodes: nodeLayerElem.innerHTML,
-        locked: isLocked
-    };
-    localStorage.setItem('myFlowData', JSON.stringify(data));
-}
-
-// HÀM TẢI DỮ LIỆU KHI MỞ TRANG
-function loadData() {
-    const savedData = localStorage.getItem('myFlowData');
-    if (savedData) {
-        const data = JSON.parse(savedData);
-        borderLayerElem.innerHTML = data.borders;
-        flowLayerElem.innerHTML = data.flows;
-        nodeLayerElem.innerHTML = data.nodes;
-        isLocked = data.locked;
-        
-        // Cập nhật lại giao diện nút khóa cho đúng trạng thái đã lưu
-        const lockBtn = document.getElementById('lock-btn');
-        if (isLocked) {
-            lockBtn.innerHTML = '<i class="fa-solid fa-lock"></i> ĐÃ KHÓA';
-            lockBtn.style.color = '#ff4d4d';
-        }
-    }
-}
-
-// GỌI HÀM TẢI DỮ LIỆU NGAY KHI TRANG WEB VỪA MỞ XONG
-window.onload = loadData;
-    
     </script>
 </body>
 </html>
