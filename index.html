@@ -184,7 +184,7 @@
             to { stroke-dashoffset: -10; } 
         }
 
-        .glow { filter: drop-shadow(0 0 2px var(--arrow-color)) drop-shadow(0 0 1px white); }
+        /*.glow { filter: drop-shadow(0 0 1.2px var(--arrow-color)) drop-shadow(0 0 1px white); }*/
         
         /* Chỉnh kích thước vòng tròn 2 đầu */
         .node-marker { r: 0.8; fill: transparent; stroke-width: 0.3; }
@@ -657,7 +657,7 @@
         flow.setAttribute('y1', p1.y);
         flow.setAttribute('x2', p2_shortened_x); 
         flow.setAttribute('y2', p2_shortened_y);
-        flow.setAttribute('class', 'power-flow-line glow');
+        flow.setAttribute('class', 'power-flow-line ');
         
         // Gắn mũi tên vào cuối đường
         flow.setAttribute('marker-end', 'url(#arrowhead)');
