@@ -210,8 +210,7 @@
     <ul class="nav-links">
         <li><a href="#"><i class="fa-solid fa-house-chimney"></i></a></li>
 
-
-             <li class="dropdown">
+        <li class="dropdown">
             <div class="dropbtn">
                 <i class="fa-solid fa-graduation-cap"></i> HỌC-TRẮC NGHIỆM
             </div>
@@ -228,8 +227,28 @@
                 <i class="fa-solid fa-gears"></i> MENU
             </div>
             <ul class="dropdown-content">
+                
                 <li class="submenu">
-                    <a href="javascript:void(0)">
+                    <a href="javascript:void(0)" style="color: #ffeb3b; text-decoration: none;">
+                        <i class="fa-solid fa-pen-nib"></i> TOOL-VẼ
+                        <i class="fa-solid fa-chevron-right" style="float: right; font-size: 10px; margin-top: 5px;"></i>
+                    </a>
+                    <ul class="submenu-content">
+                        <li>
+                            <a href="javascript:void(0)" onclick="resetDrawing()">
+                                <i class="fa-solid fa-arrow-rotate-right" style="color: #dc3545;"></i> Reset bản vẽ
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" id="lock-btn" onclick="toggleLock()">
+                                <i class="fa-solid fa-lock-open" style="color: #28a745;"></i> Khóa/Mở vẽ
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="submenu">
+                    <a href="javascript:void(0)" style="text-decoration: none;">
                         <i class="fa-solid fa-book"></i> Kiến thức 
                         <i class="fa-solid fa-chevron-right" style="float: right; font-size: 10px; margin-top: 5px;"></i>
                     </a>
@@ -239,38 +258,17 @@
                         <li><a href="#" onclick="showDeviceInfo('574-7')"><i class="fa-solid fa-link-slash" style="color: #28a745;"></i> Dao cách ly</a></li>
                         <li><a href="#" onclick="showDeviceInfo('221')"><i class="fa-solid fa-wave-square" style="color: #d15d5d;"></i> TU</a></li>
                         <li><a href="#" onclick="showDeviceInfo('341')"><i class="fa-solid fa-shuffle" style="color: #1d2fd3;"></i> TI</a></li>
-                        <li>
-                            <a href="javascript:void(0)" onclick="window.location.href='data/bvrl.html'">
-                                <i class="fa-solid fa-microchip"></i> RƠLE BẢO VỆ
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="javascript:void(0)" onclick="resetDrawing()" style="color: #ffeb3b;">
-                                <i class="fa-solid fa-arrow-rotate-right"></i> RESET   
-                            </a>
-                        </li>
-                        <li>
-                                <a href="javascript:void(0)" id="lock-btn" onclick="toggleLock()">
-                                    <i class="fa-solid fa-lock-open"></i> KHÓA VẼ
-                                </a>
-                            </li>
-
-                        <li>
-                            <a href="javascript:void(0)" onclick="window.location.href='cau-hoi/cauhoingoai.html'">
-                                <i class="fa-solid fa-circle-question" style="color: #00558f;"></i> Other
-                            </a>
-                        </li>
+                        <li><a href="javascript:void(0)" onclick="window.location.href='data/bvrl.html'"><i class="fa-solid fa-microchip"></i> RƠLE BẢO VỆ</a></li>
+                        <li><a href="javascript:void(0)" onclick="window.location.href='cau-hoi/cauhoingoai.html'"><i class="fa-solid fa-circle-question" style="color: #00558f;"></i> Other</a></li>
                     </ul>
                 </li>
 
-                <li><a href="#"><i class="fa-solid fa-diagram-project"></i> Sơ đồ phương thức</a></li>
-                <li><a href="#"><i class="fa-solid fa-clipboard-check"></i> Phiếu thao tác</a></li>
+                <li><a href="#" style="text-decoration: none;"><i class="fa-solid fa-diagram-project"></i> Sơ đồ phương thức</a></li>
+                <li><a href="#" style="text-decoration: none;"><i class="fa-solid fa-clipboard-check"></i> Phiếu thao tác</a></li>
             </ul>
         </li>
     </ul>
 </nav>
-
 <div class="header-info">
     <h1>Quản lý-vận hành-trắc nghiệm</h1>
     <p>Nhấn vào thiết bị để xem thông số kỹ thuật</p>
