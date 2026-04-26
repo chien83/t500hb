@@ -479,6 +479,29 @@
         </div>
 
 
+        <p class="question">27. Chu trình đóng cắt: O-0.3s-CO-1min-CO có ý nghĩa gì?</p>
+        <div class="arrow-box">
+            <p>➔ <b>Ý nghĩa:</b> khả năng chịu đựng của máy cắt khi thực hiện các thao tác đóng cắt liên tiếp.</p>
+            <ul>
+                <li>O (Open): Thao tác cắt (mở) máy cắt.</li>
+                <li>C (Close): Thao tác đóng máy cắt.</li>
+                <li>CO (Close-Open): Thao tác đóng vào nhưng máy cắt ngay lập tức cắt ra (thường xảy ra khi đóng vào một điểm sự cố vẫn còn tồn tại).</li>
+                <li>0.3s, 1min: Khoảng thời gian nghỉ (trạng thái không điện) giữa các lần thao tác.</li>
+            </ul>
+            <p><b>Chu trình này mô phỏng một kịch bản sự cố điển hình trên lưới điện:</b></p>
+        <ul><li><p>O (Open): Máy cắt đang đóng thì xuất hiện sự cố trên đường dây. Bảo vệ rơ le gửi lệnh cắt, máy cắt thực hiện thao tác Cắt để loại bỏ sự cố.</p></li>
+        <li><p>0.3s (Thời gian không điện): Đây là khoảng thời gian chờ để tự động đóng lại (TĐL).$0.3s$ ($300\text{ms}$) là thời gian tiêu chuẩn để môi trường cách điện tại điểm sự cố (hồ quang) kịp khử ion, đảm bảo khi đóng lại sẽ không bị phóng điện tiếp nếu là sự cố thoáng qua.</p></li>
+        <li><p>CO (Close-Open): Sau $0.3s$, bộ TĐL ra lệnh đóng máy cắt (C).Nếu sự cố vẫn còn (sự cố duy trì), rơ le sẽ ra lệnh cắt máy cắt ngay lập tức (O). Vì vậy, nó được viết gộp là CO.</p></li>
+        <li><p>1min (Thời gian phục hồi): Máy cắt cần thời gian nghỉ là 1 phút.
+        Khoảng thời gian này cực kỳ quan trọng để bộ truyền động (lò xo, khí nén hoặc thủy lực) nạp lại năng lượng cho lần đóng tiếp theo.
+        Nó cũng giúp các tiếp điểm máy cắt và bộ phận dập hồ quang nguội bớt sau hai lần cắt dòng ngắn mạch liên tiếp.</p>
+        <li><p>CO (Close-Open): Đây là lần đóng cuối cùng (thường là đóng bằng tay hoặc lệnh từ trung tâm điều độ). Nếu đóng vào vẫn còn sự cố, máy cắt sẽ cắt ra lần cuối và khóa (Lockout),
+         không cho phép đóng lại cho đến khi nhân viên vận hành kiểm tra và xử lý xong sự cố.</p></li></ul>
+        </div>
+
+
+
+
     
     <div class="footer">
         <p>© 2026 - Dự án t500hb - Chien500hb</p>
