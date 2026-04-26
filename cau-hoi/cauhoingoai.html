@@ -488,10 +488,10 @@
                 <li>CO (Close-Open): Thao tác đóng vào nhưng máy cắt ngay lập tức cắt ra (thường xảy ra khi đóng vào một điểm sự cố vẫn còn tồn tại).</li>
                 <li>0.3s, 1min: Khoảng thời gian nghỉ (trạng thái không điện) giữa các lần thao tác.</li>
             </ul>
-            <p><b>Chu trình này mô phỏng một kịch bản sự cố điển hình trên lưới điện:</b></p>
+            <p><b>Chu trình này mô phỏng sự cố điển hình trên lưới điện:</b></p>
         <ul><li><p>O (Open): Máy cắt đang đóng thì xuất hiện sự cố trên đường dây. Bảo vệ rơ le gửi lệnh cắt, máy cắt thực hiện thao tác Cắt để loại bỏ sự cố.</p></li>
-        <li><p>0.3s (Thời gian không điện): Đây là khoảng thời gian chờ để tự động đóng lại (TĐL).$0.3s$ ($300\text{ms}$) là thời gian tiêu chuẩn để môi trường cách điện tại điểm sự cố (hồ quang) kịp khử ion, đảm bảo khi đóng lại sẽ không bị phóng điện tiếp nếu là sự cố thoáng qua.</p></li>
-        <li><p>CO (Close-Open): Sau $0.3s$, bộ TĐL ra lệnh đóng máy cắt (C).Nếu sự cố vẫn còn (sự cố duy trì), rơ le sẽ ra lệnh cắt máy cắt ngay lập tức (O). Vì vậy, nó được viết gộp là CO.</p></li>
+        <li><p>0.3s (Thời gian không điện): Đây là khoảng thời gian chờ để tự động đóng lại (TĐL).0.3s là thời gian tiêu chuẩn để môi trường cách điện tại điểm sự cố (hồ quang) kịp khử ion, đảm bảo khi đóng lại sẽ không bị phóng điện tiếp nếu là sự cố thoáng qua.</p></li>
+        <li><p>CO (Close-Open): Sau 0.3s, bộ TĐL ra lệnh đóng máy cắt (C).Nếu sự cố vẫn còn (sự cố duy trì), rơ le sẽ ra lệnh cắt máy cắt ngay lập tức (O). Vì vậy, nó được viết gộp là CO.</p></li>
         <li><p>1min (Thời gian phục hồi): Máy cắt cần thời gian nghỉ là 1 phút.
         Khoảng thời gian này cực kỳ quan trọng để bộ truyền động (lò xo, khí nén hoặc thủy lực) nạp lại năng lượng cho lần đóng tiếp theo.
         Nó cũng giúp các tiếp điểm máy cắt và bộ phận dập hồ quang nguội bớt sau hai lần cắt dòng ngắn mạch liên tiếp.</p>
@@ -500,8 +500,33 @@
         </div>
 
 
+        <p class="question">28. Nguyên lý hoạt động của POTT</p>
+        <div class="arrow-box">
+            <p>➔ <b>Nguyên lý:</b> Thông thường, bảo vệ khoảng cách vùng 1 (Zone 1) chỉ bảo vệ được khoảng 80-85% chiều dài đường dây để đảm bảo tính chọn lọc. 15-20% còn lại ở cuối đường dây sẽ bị rơi vào vùng 2 (Zone 2) 
+                với thời gian trễ (t<sub>2</sub> &approx; 0.3s - 0.5s). POTT ra đời để cắt tức thời các sự cố nằm trong đoạn 15-20% này.</p>
+            <p><b>Cách thức vận hành:</b>
+            <p><b>Tại trạm A:</b> Khi rơ le phát hiện sự cố nằm trong vùng Zone 2 (vùng quá tầm - overreaching), nó sẽ gửi một tín hiệu "Cho phép" (Permissive signal) 
+            sang trạm B qua kênh truyền thông (cáp quang, vi ba, hoặc tải ba).</p>
+            <p><b>Tại trạm B:</b> Nếu rơ le tại trạm B cũng phát hiện sự cố trong vùng Zone 2 của nó VÀ nhận được tín hiệu "Cho phép" từ trạm A gửi sang, rơ le B sẽ ra lệnh cắt 
+            máy cắt ngay lập tức (t=0s) mà không cần đợi hết thời gian trễ của Zone 2.</p>
+            <p>Quá trình ngược lại từ B sang A cũng diễn ra tương tự.</p>
+
+        <p><b>1. Kịch bản khi KHÔNG có POTT</b> (Chỉ dùng bảo vệ khoảng cách thuần túy)Giả sử có sự cố tại vị trí 90% đường dây (sát Trạm B):Tại Trạm B: Rơ le thấy sự cố trong Vùng 1 ➔ Cắt máy cắt B tức thời (t = 0s). Quá tốt!
+        Tại Trạm A: Rơ le thấy sự cố trong Vùng 2 (vì Vùng 1 của A chỉ bao phủ đến 80%) ➔ Rơ le A phải đợi hết thời gian duy trì t_2 (khoảng 0.3s - 0.5s) rồi mới cắt.Hệ quả: Trong khoảng 0.4s đó, sự cố vẫn đang được 
+        "nuôi" từ phía Trạm A. Điều này gây nguy hiểm cho thiết bị, làm sụt áp kéo dài và có thể gây mất ổn định hệ thống điện.</p>
+
+        <p><b>2. Kịch bản KHI CÓ POTT</b> Cũng với sự cố tại vị trí 90% đó:Trạm B thấy sự cố trong Vùng 1 của nó (và tất nhiên cũng nằm trong Vùng 2 của nó ( vùng 2 trùm vùng 1 - Vùng quá tầm)). Rơ le B vừa cắt máy cắt tại chỗ, vừa gửi ngay một tín hiệu
+         "Cho phép cắt" sang Trạm A.Trạm A đang thấy sự cố trong Vùng 2 của mình. Theo lý thuyết, nó phải đợi 0.4s. Nhưng đúng lúc đó, nó nhận được tín hiệu "Cho phép" từ Trạm B gửi sang. Logic tại Trạm A thỏa mãn: 
+         (Thấy sự cố Vùng 2) + (Nhận tín hiệu cho phép) = Cắt ngay lập tức!Kết quả: Cả hai đầu A và B đều cắt sự cố tại thời điểm $0s$. Đường dây được cô lập hoàn toàn và tức thời.</p>        
 
 
+       </div>
+
+
+
+
+
+       
     
     <div class="footer">
         <p>© 2026 - Dự án t500hb - Chien500hb</p>
