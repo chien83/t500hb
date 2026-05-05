@@ -152,9 +152,6 @@
         }
 
 
-
-
-
         svg {
             display: block; 
             background-color: #ffffff; 
@@ -201,6 +198,59 @@
             z-index: 30000; background: white; padding: 25px; border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.4); width: 300px; border-top: 6px solid #1a4694;
         }
+
+
+        /* Đảm bảo thanh footer chiếm hết chiều ngang */
+        .footer-bar {
+            width: 100%;
+            background-color: #1a4694; /* Màu xanh của anh */
+            padding: 10px 0;
+        }
+
+        /* Căn lề hai bên */
+        .footer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            
+            /* THÊM 2 DÒNG QUAN TRỌNG DƯỚI ĐÂY */
+            max-width: 1400px; /* Con số này sẽ giúp nội dung footer thẳng hàng với sơ đồ trên máy tính */
+            margin: 0 auto;    /* Căn giữa toàn bộ khối footer này vào giữa màn hình */
+            
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .footer-left-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        /* Định dạng số điện thoại bên phải */
+        .footer-right-group a {
+            color: yellow; /* Màu vàng cho nổi bật trên nền xanh */
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Khung bộ đếm */
+        .visitor-box {
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -356,8 +406,18 @@
 
 <footer class="footer-bar">
     <div class="footer-info">
-        <span>Edit: Chien500hb</span>
-        <a href="tel:0986362234">SĐT: 0986362234</a>
+        <!-- Khối bên trái: Tên và Bộ đếm -->
+        <div class="footer-left-group">
+            <span>Edit: Chien500hb</span>
+            <div class="visitor-box">
+                <i class="fa-solid fa-eye"></i> <span id="visitor-count">0000</span>
+            </div>
+        </div>
+
+        <!-- Khối bên phải: Số điện thoại -->
+        <div class="footer-right-group">
+            <a href="tel:0986362234">SĐT: 0986362234</a>
+        </div>
     </div>
 </footer>
 
@@ -793,11 +853,35 @@ function viewSchematic(imgName) {
     viewer.style.display = "flex";
 }
 
-    </script>
+</script>
 
    <div id="img-viewer" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center;" onclick="this.style.display='none'">
-    <img id="img-target" src="" style="max-width:95%; max-height:95%; border:2px solid white;">
-    <span style="position:absolute; top:10px; right:20px; color:white; font-size:40px; cursor:pointer;">&times;</span>
-    </div> 
+        <img id="img-target" src="" style="max-width:95%; max-height:95%; border:2px solid white;">
+        <span style="position:absolute; top:10px; right:20px; color:white; font-size:40px; cursor:pointer;">&times;</span>
+   </div> 
+
+<script>
+    // URL Web App anh đã copy từ Google Apps Script (phải có đuôi /exec)
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlpIkYvTH4aRKoVBSTkNhr-79ZNKgHOz_w6V_qtg39v6fWA7JsjdZRiUT65muzvI_D/exec'; 
+
+    function loadVisitorCount() {
+        fetch(SCRIPT_URL)
+            .then(response => response.text())
+            .then(data => {
+                // Tự động thêm các số 0 phía trước để luôn hiện 4 chữ số (ví dụ 0015)
+                const formattedNumber = data.padStart(4, '0');
+                document.getElementById('visitor-count').innerText = formattedNumber;
+            })
+            .catch(error => {
+                console.error('Lỗi kết nối bộ đếm:', error);
+                document.getElementById('visitor-count').innerText = "ERR";
+            });
+    }
+
+    // Gọi hàm chạy ngay khi trang web tải xong
+    window.addEventListener('DOMContentLoaded', loadVisitorCount);
+</script>
+
+
 </body>
 </html>
