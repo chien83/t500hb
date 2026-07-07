@@ -25,6 +25,69 @@
             box-sizing: border-box;
         }
 
+        /* KHU VỰC TOP HEADER CHỨA NÚT QUAY LẠI VÀ TÌM KIẾM */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* NÚT QUAY LẠI - ĐÃ LÀM THÀNH NÚT CÓ MÀU */
+        .back-home {
+            display: inline-block;
+            text-decoration: none;
+            color: #fff;
+            background-color: #00338d; /* Màu xanh đồng bộ với tiêu đề */
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 12pt;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .back-home:hover { 
+            background-color: #001f5c; /* Đậm hơn khi di chuột qua */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* KHUNG TÌM KIẾM CHỖ KHOANH ĐỎ */
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-container input {
+            padding: 8px 12px;
+            font-size: 12pt;
+            font-family: "Times New Roman", Times, serif;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+            width: 220px;
+            transition: border-color 0.3s;
+        }
+        
+        .search-container input:focus {
+            border-color: #00338d;
+        }
+        
+        .search-container button {
+            padding: 8px 15px;
+            font-size: 12pt;
+            font-family: "Times New Roman", Times, serif;
+            background-color: #dc3545; /* Màu đỏ nổi bật cho nút Tìm */
+            color: white;
+            border: 1px solid #dc3545;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .search-container button:hover {
+            background-color: #c82333;
+        }
+
         /* TIÊU ĐỀ */
         h1 {
             color: #00338d;
@@ -72,23 +135,24 @@
             font-weight: bold;
         }
 
-        /* NÚT QUAY LẠI */
-        .back-home {
-            display: inline-block;
-            margin-bottom: 20px;
-            text-decoration: none;
-            color: #666;
-            font-size: 12pt;
-            font-style: italic;
-        }
-        .back-home:hover { color: #00338d; }
-
         /* TỐI ƯU CHO ĐIỆN THOẠI */
         @media (max-width: 600px) {
             body { padding: 0; }
             .document-container {
                 padding: 30px 15px;
                 box-shadow: none;
+            }
+            /* Đẩy thanh tìm kiếm xuống dòng trên Mobile để tránh đè giao diện */
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px; 
+            }
+            .search-container {
+                width: 100%;
+            }
+            .search-container input {
+                width: 100%; 
             }
             h1 { font-size: 18pt; }
             h2 { font-size: 14pt; }
@@ -99,7 +163,14 @@
 <body>
 
 <div class="document-container">
-    <a href="index.html" class="back-home">← Quay lại trang chủ</a>
+    <div class="top-header">
+        <a href="index.html" class="back-home">← Quay lại trang chủ</a>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm câu hỏi..." onkeyup="filterQuestions()">
+            <button onclick="filterQuestions()">Tìm</button>
+        </div>
+    </div>
     
     <h1>Tổng quan về Nội dung Vấn đáp</h1>
     
@@ -268,6 +339,26 @@
     </div>
 
 </div>
+
+<script>
+    function filterQuestions() {
+        // Lấy giá trị từ ô tìm kiếm và chuyển thành chữ thường
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        
+        // Lấy tất cả các thẻ chứa câu hỏi
+        let questionItems = document.querySelectorAll('.question-item');
+        
+        // Lặp qua từng câu hỏi, ẩn đi nếu không khớp từ khóa
+        questionItems.forEach(function(item) {
+            let text = item.textContent.toLowerCase();
+            if (text.includes(input)) {
+                item.style.display = "";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    }
+</script>
 
 </body>
 </html>
