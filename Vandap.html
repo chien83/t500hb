@@ -7,19 +7,19 @@
     <style>
         /* PHẦN ĐỊNH DẠNG GIỐNG WORD */
         body {
-            font-family: "Times New Roman", Times, serif; /* Font chuẩn văn bản */
-            line-height: 1.5; /* Độ giãn dòng chuẩn Word */
+            font-family: "Times New Roman", Times, serif;
+            line-height: 1.5;
             color: #000;
-            background-color: #e9ecef; /* Màu nền phía sau trang giấy */
+            background-color: #e9ecef;
             margin: 0;
             padding: 40px 20px;
         }
 
         .document-container {
-            max-width: 850px; /* Khổ giấy A4 tương đối */
+            max-width: 850px;
             margin: 0 auto;
             background: #fff;
-            padding: 60px 80px; /* Lề giấy rộng */
+            padding: 60px 80px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             min-height: 100vh;
             box-sizing: border-box;
@@ -33,12 +33,12 @@
             margin-bottom: 30px;
         }
 
-        /* NÚT QUAY LẠI - ĐÃ LÀM THÀNH NÚT CÓ MÀU */
+        /* NÚT QUAY LẠI CÓ MÀU */
         .back-home {
             display: inline-block;
             text-decoration: none;
             color: #fff;
-            background-color: #00338d; /* Màu xanh đồng bộ với tiêu đề */
+            background-color: #00338d;
             padding: 8px 16px;
             border-radius: 5px;
             font-size: 12pt;
@@ -47,11 +47,11 @@
         }
         
         .back-home:hover { 
-            background-color: #001f5c; /* Đậm hơn khi di chuột qua */
+            background-color: #001f5c;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* KHUNG TÌM KIẾM CHỖ KHOANH ĐỎ */
+        /* KHUNG TÌM KIẾM */
         .search-container {
             display: flex;
             align-items: center;
@@ -76,7 +76,7 @@
             padding: 8px 15px;
             font-size: 12pt;
             font-family: "Times New Roman", Times, serif;
-            background-color: #dc3545; /* Màu đỏ nổi bật cho nút Tìm */
+            background-color: #dc3545;
             color: white;
             border: 1px solid #dc3545;
             border-radius: 0 4px 4px 0;
@@ -105,7 +105,7 @@
             margin-top: 35px;
             margin-bottom: 15px;
             font-weight: bold;
-            text-decoration: underline; /* Gạch chân tiêu đề mục */
+            text-decoration: underline;
         }
 
         /* ĐỊNH DẠNG CÂU HỎI */
@@ -118,7 +118,7 @@
             text-decoration: none;
             color: #000;
             display: block;
-            font-size: 14pt; /* Cỡ chữ văn bản chuẩn */
+            font-size: 14pt;
             padding: 4px 8px;
             border-radius: 4px;
             transition: 0.2s;
@@ -130,9 +130,17 @@
             text-decoration: underline;
         }
 
-        /* Làm đậm số thứ tự câu */
         .question-link b {
             font-weight: bold;
+        }
+
+        /* HIỆU ỨNG NỔI BẬT KHI NHẢY ĐẾN KẾT QUẢ (ẤN ENTER) */
+        .question-item.active-focus .question-link {
+            background-color: #fff3cd; 
+            border-left: 5px solid #ffc107; 
+            padding-left: 12px; 
+            color: #00338d;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.4);
         }
 
         /* TỐI ƯU CHO ĐIỆN THOẠI */
@@ -142,7 +150,6 @@
                 padding: 30px 15px;
                 box-shadow: none;
             }
-            /* Đẩy thanh tìm kiếm xuống dòng trên Mobile để tránh đè giao diện */
             .top-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -163,12 +170,13 @@
 <body>
 
 <div class="document-container">
+    
     <div class="top-header">
         <a href="index.html" class="back-home">← Quay lại trang chủ</a>
         
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Tìm kiếm câu hỏi..." onkeyup="filterQuestions()">
-            <button onclick="filterQuestions()">Tìm</button>
+            <input type="text" id="searchInput" placeholder="Tìm kiếm câu hỏi..." oninput="filterQuestions()">
+            <button onclick="jumpToNextResult()">Tìm</button>
         </div>
     </div>
     
@@ -341,23 +349,100 @@
 </div>
 
 <script>
+    // Hàm loại bỏ dấu tiếng Việt
+    function removeVietnameseTones(str) {
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
+        str = str.replace(/đ/g,"d");
+        str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+        str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+        str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+        str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+        str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+        str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+        str = str.replace(/Đ/g, "D");
+        str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); 
+        str = str.replace(/\u02C6|\u0306|\u031B/g, ""); 
+        return str;
+    }
+
+    let currentFocusIndex = -1;
+    let visibleItems = [];      
+
     function filterQuestions() {
-        // Lấy giá trị từ ô tìm kiếm và chuyển thành chữ thường
-        let input = document.getElementById('searchInput').value.toLowerCase();
-        
-        // Lấy tất cả các thẻ chứa câu hỏi
+        let rawInput = document.getElementById('searchInput').value.toLowerCase();
+        let input = removeVietnameseTones(rawInput);
         let questionItems = document.querySelectorAll('.question-item');
         
-        // Lặp qua từng câu hỏi, ẩn đi nếu không khớp từ khóa
+        visibleItems = []; 
+        currentFocusIndex = -1;
+
         questionItems.forEach(function(item) {
-            let text = item.textContent.toLowerCase();
-            if (text.includes(input)) {
+            item.classList.remove('active-focus');
+            
+            let text = removeVietnameseTones(item.textContent.toLowerCase());
+            if (input === "") {
+                item.style.display = ""; 
+            } else if (text.includes(input)) {
                 item.style.display = "";
+                visibleItems.push(item); 
             } else {
                 item.style.display = "none";
             }
         });
+
+        let headers = document.querySelectorAll('h2');
+        headers.forEach(function(header) {
+            let nextSibling = header.nextElementSibling;
+            let hasVisibleQuestion = false;
+            
+            while(nextSibling && nextSibling.classList.contains('question-item')) {
+                if (nextSibling.style.display !== "none") {
+                    hasVisibleQuestion = true;
+                    break;
+                }
+                nextSibling = nextSibling.nextElementSibling;
+            }
+            
+            if (hasVisibleQuestion || input === "") {
+                header.style.display = "";
+            } else {
+                header.style.display = "none";
+            }
+        });
     }
+
+    function jumpToNextResult() {
+        if (visibleItems.length === 0) return;
+
+        if (currentFocusIndex >= 0 && currentFocusIndex < visibleItems.length) {
+            visibleItems[currentFocusIndex].classList.remove('active-focus');
+        }
+
+        currentFocusIndex = (currentFocusIndex + 1) % visibleItems.length;
+
+        let targetItem = visibleItems[currentFocusIndex];
+        targetItem.classList.add('active-focus');
+
+        targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    document.getElementById('searchInput').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); 
+            
+            if (document.getElementById('searchInput').value.trim() !== "") {
+                if (visibleItems.length === 0 && currentFocusIndex === -1) {
+                    filterQuestions();
+                }
+                jumpToNextResult();
+            }
+        }
+    });
 </script>
 
 </body>
