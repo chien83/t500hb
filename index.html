@@ -451,7 +451,9 @@
                 lightningVolt: "1550kV", 
                 shortCircuitCur: "63kA",  
                 sf6Press: "6,0 bar",
-                opSequence: "O-0.3s-CO-3min-CO" 
+                sf6Alarm: "5,2 bar",   // Tín hiệu cấp 1 (Alarm)
+                sf6Lockout: "5,0 bar", // Tín hiệu cấp 2 (Lockout)
+                opSequence: "O-0.3s-CO-3min-CO", 
             },
         "572": { 
             name: "Máy cắt 572", 
@@ -463,6 +465,8 @@
             switchingVolt: "1325kV", 
             shortCircuitCur: "63kA",  
             sf6Press: "6,0 bar", 
+            sf6Alarm: "5,2 bar",   // Tín hiệu cấp 1 (Alarm)
+            sf6Lockout: "5,0 bar", // Tín hiệu cấp 2 (Lockout)
             opSequence: "O-0.3s-CO-3min-CO",
         },
         "573": { 
@@ -630,7 +634,9 @@
                     ${item.lightningVolt ? `<tr><td style="padding:4px 0; color:#666;">U chịu xung sét:</td><td><b>${item.lightningVolt}</b></td></tr>` : ''}
                     ${item.switchingVolt ? `<tr><td style="padding:4px 0; color:#666;">U xung đóng cắt:</td><td><b>${item.switchingVolt}</b></td></tr>` : ''}
                     ${item.shortCircuitCur ? `<tr><td style="padding:4px 0; color:#666;">Dòng cắt NM:</td><td><b>${item.shortCircuitCur}</b></td></tr>` : ''}
-                    ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp suất SF6 ĐM:</td><td><b style="color: #d32f2f;">${item.sf6Press}</b></td></tr>` : ''}
+                    ${item.sf6Press ? `<tr><td style="padding:4px 0; color:#666;">Áp suất SF6 ĐM:</td><td><b style="color: #43a047;">${item.sf6Press}</b></td></tr>` : ''}
+                    ${item.sf6Alarm ? `<tr><td style="padding:4px 0; color:#666;">SF6 Tín hiệu cấp 1:</td><td><b style="color: #f57c00;">${item.sf6Alarm}</b></td></tr>` : ''}
+                    ${item.sf6Lockout ? `<tr><td style="padding:4px 0; color:#666;">SF6 Tín hiệu cấp 2:</td><td><b style="color: #d32f2f;">${item.sf6Lockout}</b></td></tr>` : ''}
                     ${item.opSequence ? `<tr><td style="padding:4px 0; color:#666;">Chu trình ĐC:</td><td><b style="font-size:12px;">${item.opSequence}</b></td></tr>` : ''}
                     ${item.controlVolt ? `<tr><td style="padding:4px 0; color:#666;">U điều khiển:</td><td><b>${item.controlVolt}</b></td></tr>` : ''}
                     ${item.cap ? `<tr><td style="padding:4px 0; color:#666;">Công suất:</td><td><b>${item.cap}</b></td></tr>` : ''}
