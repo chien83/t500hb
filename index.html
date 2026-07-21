@@ -713,6 +713,17 @@
         document.getElementById('popup-qua-tai').style.display = 'block'; 
     }
     function closeQuaTai() { document.getElementById('popup-qua-tai').style.display = 'none'; }
+    // --- HÀM PHÓNG TO ẢNH TOÀN MÀN HÌNH ---
+    function zoomImage(src) {
+        const viewer = document.getElementById('img-viewer');
+        const target = document.getElementById('img-target');
+        
+        target.src = src; 
+        // Ép z-index lên cao nhất để đè lên mọi popup hiện tại
+        viewer.style.zIndex = "40000"; 
+        viewer.style.display = "flex";
+    }
+
 
     // --- XỬ LÝ MẬT KHẨU ---
     function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
