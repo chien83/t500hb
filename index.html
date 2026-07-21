@@ -695,22 +695,22 @@
 
     function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
     
-    // --- HÀM MỚI: XỬ LÝ NÚT QUÁ ÁP / QUÁ TẢI (HIỂN THỊ ẢNH) ---
+// --- HÀM MỚI: XỬ LÝ NÚT QUÁ ÁP / QUÁ TẢI (HIỂN THỊ ẢNH) ---
     function openQuaAp(id) {
-        closePopup(); // Tắt bảng chính
+        closePopup(); 
         const imgSrc = deviceData[id].quaApImg;
-        // Chèn thẻ <img> vào trong popup
-        document.getElementById('content-qua-ap').innerHTML = `<img src="${imgSrc}" style="width:100%; border-radius:6px; border:1px solid #ccc; display:block;">`;
-        document.getElementById('popup-qua-ap').style.display = 'block'; // Mở bảng Quá Áp
+        // Thêm con trỏ kính lúp và sự kiện click để phóng to ảnh
+        document.getElementById('content-qua-ap').innerHTML = `<img src="${imgSrc}" style="width:100%; border-radius:6px; border:1px solid #ccc; display:block; cursor: zoom-in;" onclick="zoomImage('${imgSrc}')" title="Nhấn để phóng to toàn màn hình">`;
+        document.getElementById('popup-qua-ap').style.display = 'block'; 
     }
     function closeQuaAp() { document.getElementById('popup-qua-ap').style.display = 'none'; }
 
     function openQuaTai(id) {
-        closePopup(); // Tắt bảng chính
+        closePopup(); 
         const imgSrc = deviceData[id].quaTaiImg;
-        // Chèn thẻ <img> vào trong popup
-        document.getElementById('content-qua-tai').innerHTML = `<img src="${imgSrc}" style="width:100%; border-radius:6px; border:1px solid #ccc; display:block;">`;
-        document.getElementById('popup-qua-tai').style.display = 'block'; // Mở bảng Quá Tải
+        // Thêm con trỏ kính lúp và sự kiện click để phóng to ảnh
+        document.getElementById('content-qua-tai').innerHTML = `<img src="${imgSrc}" style="width:100%; border-radius:6px; border:1px solid #ccc; display:block; cursor: zoom-in;" onclick="zoomImage('${imgSrc}')" title="Nhấn để phóng to toàn màn hình">`;
+        document.getElementById('popup-qua-tai').style.display = 'block'; 
     }
     function closeQuaTai() { document.getElementById('popup-qua-tai').style.display = 'none'; }
 
