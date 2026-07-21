@@ -666,12 +666,12 @@
                     ${item.year ? `<tr><td style="padding:4px 0; color:#666;">Năm SX:</td><td><b>${item.year}</b></td></tr>` : ''}
                 </table>`;   
             
-            // 2. Thêm 2 nút Quá Áp & Quá Tải nếu thiết bị có dữ liệu (AT1, AT2)
-            if (item.quaApData || item.quaTaiData) {
+// 2. Thêm 2 nút Quá Áp & Quá Tải nếu thiết bị có link ảnh
+            if (item.quaApImg || item.quaTaiImg) {
                 htmlContent += `
                 <div style="display:flex; gap:10px; margin-top:15px;">
-                    <button onclick="openQuaAp('${id}')" style="flex:1; padding:8px; background:#f57c00; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">QUÁ ÁP</button>
-                    <button onclick="openQuaTai('${id}')" style="flex:1; padding:8px; background:#d32f2f; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">QUÁ TẢI</button>
+                    ${item.quaApImg ? `<button onclick="openQuaAp('${id}')" style="flex:1; padding:8px; background:#f57c00; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">QUÁ ÁP</button>` : ''}
+                    ${item.quaTaiImg ? `<button onclick="openQuaTai('${id}')" style="flex:1; padding:8px; background:#d32f2f; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">QUÁ TẢI</button>` : ''}
                 </div>`;
             }
 
@@ -681,17 +681,21 @@
 
     function closePopup() { document.getElementById('info-popup').style.display = 'none'; }
     
-    // --- HÀM MỚI: XỬ LÝ NÚT QUÁ ÁP / QUÁ TẢI ---
+    // --- HÀM MỚI: XỬ LÝ NÚT QUÁ ÁP / QUÁ TẢI (HIỂN THỊ ẢNH) ---
     function openQuaAp(id) {
         closePopup(); // Tắt bảng chính
-        document.getElementById('content-qua-ap').innerHTML = deviceData[id].quaApData || "Đang cập nhật...";
+        const imgSrc = deviceData[id].quaApImg;
+        // Chèn thẻ <img> vào trong popup
+        document.getElementById('content-qua-ap').innerHTML = `<img src="${imgSrc}" style="width:100%; border-radius:6px; border:1px solid #ccc; display:block;">`;
         document.getElementById('popup-qua-ap').style.display = 'block'; // Mở bảng Quá Áp
     }
     function closeQuaAp() { document.getElementById('popup-qua-ap').style.display = 'none'; }
 
     function openQuaTai(id) {
         closePopup(); // Tắt bảng chính
-        document.getElementById('content-qua-tai').innerHTML = deviceData[id].quaTaiData || "Đang cập nhật...";
+        const imgSrc = deviceData[id].quaTaiImg;
+        // Chèn thẻ <img> vào trong popup
+        document.getElementById('content-qua-tai').innerHTML = `<img src="${imgSrc}" style="width:100%; border-radius:6px; border:1px solid #ccc; display:block;">`;
         document.getElementById('popup-qua-tai').style.display = 'block'; // Mở bảng Quá Tải
     }
     function closeQuaTai() { document.getElementById('popup-qua-tai').style.display = 'none'; }
