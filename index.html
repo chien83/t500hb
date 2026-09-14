@@ -733,6 +733,18 @@
         viewer.style.display = "flex";
     }
 
+    // HÀM MỚI CHO NÚT NHIỆT ĐỘ
+    function openNhietDo(id) {
+        closePopup(); // Tắt bảng chính
+        const imgSrc = deviceData[id].nhietDoImg;
+        // Chèn thẻ <img> vào trong popup nhiệt độ, có sẵn chức năng click để zoom
+        document.getElementById('content-nhiet-do').innerHTML = `<img src="${imgSrc}" style="width:100%; border-radius:6px; border:1px solid #ccc; display:block; cursor: zoom-in;" onclick="zoomImage('${imgSrc}')" title="Nhấn để phóng to">`;
+        document.getElementById('popup-nhiet-do').style.display = 'block'; // Mở bảng Nhiệt Độ
+    }
+    
+    function closeNhietDo() { 
+        document.getElementById('popup-nhiet-do').style.display = 'none'; 
+    }
 
     // --- XỬ LÝ MẬT KHẨU ---
     function openPassModal() { document.getElementById('passwordModal').style.display = 'block'; document.getElementById('passInput').focus(); }
