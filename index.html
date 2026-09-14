@@ -688,12 +688,13 @@
                     ${item.year ? `<tr><td style="padding:4px 0; color:#666;">Năm SX:</td><td><b>${item.year}</b></td></tr>` : ''}
                 </table>`;   
             
-            // 2. Thêm 2 nút Quá Áp & Quá Tải nếu thiết bị có link ảnh
+            // 2. Thêm 3 nút Quá Áp, Quá Tải & Nhiệt Độ nếu thiết bị có link ảnh
             if (item.quaApImg || item.quaTaiImg) {
                 htmlContent += `
                 <div style="display:flex; gap:10px; margin-top:15px;">
                     ${item.quaApImg ? `<button onclick="openQuaAp('${id}')" style="flex:1; padding:8px; background:#f57c00; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">QUÁ ÁP</button>` : ''}
                     ${item.quaTaiImg ? `<button onclick="openQuaTai('${id}')" style="flex:1; padding:8px; background:#d32f2f; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">QUÁ TẢI</button>` : ''}
+                    ${item.nhietDoImg ? `<button onclick="openNhietDo('${id}')" style="flex:1; padding:8px 0; background:#1976d2; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">NHIỆT ĐỘ</button>` : ''}
                 </div>`;
             }
 
