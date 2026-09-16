@@ -119,7 +119,12 @@
     @media (max-width: 768px) {
         .container { padding: 20px 15px; margin: 10px; }
         .header h1 { font-size: 1.4em; }
-        .font-controls { position: static; justify-content: center; margin-bottom: 15px; }
+        
+        /* Chỉnh lại 2 cụm nút trên điện thoại cho thẳng hàng */
+        .back-home { position: static; display: inline-block; margin-bottom: 15px; }
+        .font-controls { position: static; display: inline-flex; justify-content: center; margin-bottom: 15px; }
+        .header { display: flex; flex-direction: column; align-items: center; }
+        .header > div:first-child, .header > div:nth-child(2) { width: 100%; text-align: center; justify-content: center; display: flex; gap: 10px; }
     }
 </style>
 </head>
