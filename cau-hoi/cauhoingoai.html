@@ -38,6 +38,7 @@
         border-bottom: 3px double var(--primary-color);
         margin-bottom: 30px;
         padding-bottom: 10px;
+        position: relative; /* Quan trọng để neo 2 nút 2 bên */
     }
 
     .header h1 { color: var(--primary-color); text-transform: uppercase; margin: 0; font-size: 1.8em; }
@@ -80,13 +81,11 @@
         overflow-x: auto; 
         overflow-y: hidden;
         max-width: 100%;
-        /* Chỉ hiện thanh cuộn khi thực sự dài hơn màn hình */
         display: inline-block !important; 
         vertical-align: middle;
         padding: 0;
     }
 
-    /* Ép công thức nhỏ nằm cùng dòng và không bị dãn chữ */
     p mjx-container, li mjx-container {
         display: inline-block !important;
         vertical-align: middle;
@@ -96,13 +95,88 @@
 
     .nowrap { white-space: nowrap; }
 
-    /* THIẾT LẬP RIÊNG CHO DI ĐỘNG (Dưới cùng để đè lên tất cả) */
+    /* ========================================= */
+    /* CỤM NÚT ĐIỀU KHIỂN (HOME & CỠ CHỮ)        */
+    /* ========================================= */
+    
+    /* Nút Quay lại trang chủ (Góc trái) */
+    .back-home {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .back-home a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: white;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        padding: 5px 12px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+
+    .back-home a:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    /* Nút tăng giảm cỡ chữ (Góc phải) */
+    .font-controls {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        gap: 8px;
+    }
+
+    .font-controls button {
+        background: white;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        padding: 5px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s;
+        font-size: 14px;
+    }
+
+    .font-controls button:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    /* Ẩn nút khi in tài liệu */
+    @media print {
+        .font-controls, .back-home { display: none; }
+    }
+
+    /* THIẾT LẬP RIÊNG CHO DI ĐỘNG */
     @media (max-width: 600px) {
         .container {
             padding: 15px 10px !important;
             margin: 0 !important;
             width: 100% !important;
             border-radius: 0;
+        }
+
+        /* Chỉnh lại Header và các nút trên điện thoại */
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .back-home, .font-controls {
+            position: static; /* Gỡ bỏ ghim góc */
+            justify-content: center;
+            margin-bottom: 15px;
         }
 
         .header h1 { font-size: 1.3em !important; }
@@ -125,51 +199,6 @@
             padding: 8px 10px;
         }
     }
-
-            /* Định vị cụm nút tăng giảm chữ */
-        .header {
-            position: relative; /* Để các nút căn theo khung header */
-        }
-
-        .font-controls {
-            position: absolute;
-            top: 0;
-            right: 0;
-            display: flex;
-            gap: 8px;
-        }
-
-        .font-controls button {
-            background: white;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            padding: 5px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-            font-size: 14px;
-        }
-
-        .font-controls button:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Ẩn nút khi in tài liệu */
-        @media print {
-            .font-controls { display: none; }
-        }
-
-        /* Tối ưu cho điện thoại */
-        @media (max-width: 600px) {
-            .font-controls {
-                position: static; /* Đẩy xuống dưới tiêu đề nếu màn hình quá hẹp */
-                justify-content: center;
-                margin-bottom: 10px;
-            }
-        }
-
 </style>
 </head>
 <body>
