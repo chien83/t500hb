@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Câu khó nhớ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+<style>
+    :root {
+        --primary-color: #00558f; 
+        --bg-color: #f4f7f9;
+        --text-color: #2c3e50;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0; padding: 0;
+    }
+
+    /* KHUNG HIỂN THỊ DẠNG TRANG WORD */
+    .container {
+        max-width: 900px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 40px 50px; /* Padding rộng 2 bên giống trang giấy */
+        border-radius: 4px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .header {
+        text-align: center;
+        border-bottom: 2px solid var(--primary-color);
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        position: relative;
+    }
+
+    .header h1 { color: var(--primary-color); text-transform: uppercase; margin: 0; font-size: 1.8em; }
+
+    /* ĐỊNH DẠNG TỪNG PHẦN TÀI LIỆU (CHỨA ẢNH) */
+    .doc-section {
+        margin-bottom: 40px;
+    }
+
+    .doc-section h3 {
+        color: #d32f2f;
+        font-size: 1.2em;
+        border-bottom: 1px dashed #ccc;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+
+    .doc-section p {
+        margin-bottom: 10px;
+        text-align: justify;
+    }
+
+    .doc-section img {
+        width: 100%;
+        max-width: 800px;
+        height: auto;
+        display: block;
+        margin: 0 auto; /* Căn giữa ảnh */
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        cursor: zoom-in; /* Con trỏ hình kính lúp */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .doc-section img:hover {
+        transform: scale(1.01);
+        border-color: var(--primary-color);
+    }
+
+    /* Nút chỉnh cỡ chữ */
+    .font-controls {
+        position: absolute;
+        top: 0; right: 0;
+        display: flex; gap: 8px;
+    }
+    .font-controls button {
+        background: white; color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        padding: 5px 10px; border-radius: 4px;
+        cursor: pointer; font-weight: bold; font-size: 14px;
+    }
+    .font-controls button:hover { background: var(--primary-color); color: white; }
+
+    /* Responsive Mobile */
+    @media (max-width: 768px) {
+        .container { padding: 20px 15px; margin: 10px; }
+        .header h1 { font-size: 1.4em; }
+        .font-controls { position: static; justify-content: center; margin-bottom: 15px; }
+    }
+</style>
+</head>
+<body>
+
+<div id="wrapper" style="display: none;">
+
+    <div class="container">
+        <div class="header">
+            <div class="font-controls">
+                <button onclick="changeFontSize(1)" title="Tăng cỡ chữ">A+ <i class="fa-solid fa-plus"></i></button>
+                <button onclick="changeFontSize(-1)" title="Giảm cỡ chữ">A- <i class="fa-solid fa-minus"></i></button>
+            </div>
+            <h1>CÁC TRƯỜNG HỢP VẬN HÀNH KHÓ NHỚ</h1>
+            <p style="margin:5px 0 0 0; color:#666;">Tài liệu tóm tắt dạng hình ảnh</p>
+        </div>
+
+        <div class="content">
+            
+            <!-- Phần 1 -->
+            <div class="doc-section">
+                <h3>1. Dao động điện áp</h3>
+                <p>Chi tiết quy định và hướng dẫn xử lý khi xảy ra hiện tượng dao động điện áp trên lưới điện.</p>
+                <!-- Đường dẫn ../image/ vì file này nằm trong folder data, phải lùi 1 cấp để vào thư mục image -->
+                <img src="../image/1.dao động điện áp.jpg" onclick="zoomImage(this.src)" title="Nhấn để phóng to">
+            </div>
+
+            <!-- Phần 2 -->
+            <div class="doc-section">
+                <h3>2. Thời gian</h3>
+                <img src="../image/2.thời gian.jpg" onclick="zoomImage(this.src)" title="Nhấn để phóng to">
+            </div>
+
+            <!-- Phần 3 -->
+            <div class="doc-section">
+                <h3>3. Vùng điện áp làm việc</h3>
+                <img src="../image/3.vùng điện áp làm việc.jpg" onclick="zoomImage(this.src)" title="Nhấn để phóng to">
+            </div>
+
+            <!-- Phần 4 -->
+            <div class="doc-section">
+                <h3>4. Vùng tần số</h3>
+                <img src="../image/4.vùng tần số.jpg" onclick="zoomImage(this.src)" title="Nhấn để phóng to">
+            </div>
+
+            <!-- Phần 5 -->
+            <div class="doc-section">
+                <h3>5. Dao cách ly (DCL)</h3>
+                <img src="../image/5.DCL.jpg" onclick="zoomImage(this.src)" title="Nhấn để phóng to">
+            </div>
+
+            <!-- Phần 6 -->
+            <div class="doc-section">
+                <h3>6. Quá tải Máy biến áp (MBA)</h3>
+                <img src="../image/6. quá tải MBA.jpg" onclick="zoomImage(this.src)" title="Nhấn để phóng to">
+            </div>
+
+            <!-- Phần 7 -->
+            <div class="doc-section">
+                <h3>7. MBA - Chế độ làm việc lâu dài</h3>
+                <img src="../image/7.MBA-lâu dài.jpg" onclick="zoomImage(this.src)" title="Nhấn để phóng to">
+            </div>
+
+            <!-- Phần 8 -->
+            <div class="doc-section">
+                <h3>8. Phương thức vận hành</h3>
+                <img src="../image/8. Phuong thuc van hanh.jpg" onclick="zoomImage(this.src)" title="Nhấn để phóng to">
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- KHUNG XEM ẢNH PHÓNG TO TOÀN MÀN HÌNH -->
+<div id="img-viewer" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:99999; align-items:center; justify-content:center;" onclick="this.style.display='none'">
+    <img id="img-target" src="" style="max-width:95%; max-height:95%; border:2px solid white; border-radius:4px;">
+    <span style="position:absolute; top:15px; right:25px; color:white; font-size:40px; cursor:pointer; font-weight:bold;">&times;</span>
+</div> 
+
+<script>
+    // 1. CHỨC NĂNG BẢO VỆ BẰNG MẬT KHẨU
+    (function() {
+        const passwordChuan = "hchien83"; // Mật khẩu truy cập
+        let nhapPass = prompt("Vui lòng nhập mật khẩu để xem tài liệu:");
+
+        if (nhapPass === passwordChuan) {
+            document.getElementById("wrapper").style.display = "block";
+        } else {
+            alert("Mật khẩu không chính xác!");
+            // Quay lại trang chủ (từ folder data lùi ra 1 cấp)
+            window.location.href = "../index.html"; 
+        }
+    })();
+
+    // 2. CHỨC NĂNG PHÓNG TO ẢNH
+    function zoomImage(src) {
+        const viewer = document.getElementById('img-viewer');
+        const target = document.getElementById('img-target');
+        target.src = src; 
+        viewer.style.display = "flex";
+    }
+
+    // 3. CHỨC NĂNG TĂNG GIẢM CỠ CHỮ
+    let currentZoom = 100; 
+    function changeFontSize(direction) {
+        currentZoom += direction * 10;
+        if (currentZoom < 70) currentZoom = 70;
+        if (currentZoom > 150) currentZoom = 150;
+        
+        const content = document.querySelector('.content');
+        if (content) {
+            content.style.fontSize = currentZoom + "%";
+        }
+    }
+</script>
+
+</body>
+</html>
