@@ -125,6 +125,25 @@
         .form-row { display: flex; margin-bottom: 10px; align-items: baseline; }
         .form-label { white-space: nowrap; margin-right: 5px; }
         .dotted-line { flex-grow: 1; border-bottom: 1px dotted #000; position: relative; top: -4px; }
+        /* Bố cục chia 2 cột cho phần Người ký trên cùng 1 hàng */
+        .two-columns-row { margin-top: 15px; }
+        .form-row-2col {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .form-row-2col .col-left {
+            width: 55%; 
+            display: flex;
+            align-items: baseline;
+            padding-right: 20px; 
+        }
+        .form-row-2col .col-right {
+            width: 45%; 
+            display: flex;
+            align-items: baseline;
+        }
         .table-thaotac { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .table-thaotac th, .table-thaotac td { border: 1px solid #000; padding: 8px; text-align: center; }
         .page-break { margin-top: 20px; } /* Trong layout này không cần gạch đứt vì đã lật trang */
