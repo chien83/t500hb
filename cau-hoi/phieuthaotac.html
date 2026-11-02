@@ -910,6 +910,68 @@
             closeModal();
         }
     };
+
+    // ===== 4. CHỨC NĂNG TÌM KIẾM NỘI DUNG =====
+    function searchText() {
+        const input = document.getElementById('searchInput').value.trim();
+        const contentDiv = document.querySelector('.content');
+        
+        // B1: Xóa các highlight cũ trước khi tìm kiếm mới
+        clearSearchHighlight();
+
+        if (input === "") {
+            alert("Vui lòng nhập từ khóa cần tìm!");
+            return;
+        }
+
+        // B2: Dùng biểu thức chính quy để tìm và bôi vàng từ khóa
+        // (?![^<]*>) giúp bỏ qua các thẻ HTML, chỉ tìm text hiển thị
+        const regex = new RegExp(`(${escapeRegExp(input)})(?![^<]*>)`, 'gi');
+        
+        // Lưu trữ lại nội dung gốc (để có thể khôi phục khi nhấn Xóa)
+        if (!contentDiv.dataset.originalContent) {
+            contentDiv.dataset.originalContent = contentDiv.innerHTML;
+        }
+
+        const originalHTML = contentDiv.dataset.originalContent;
+        const newHTML = originalHTML.replace(regex, '<span class="highlight-search">$1</span>');
+        
+        contentDiv.innerHTML = newHTML;
+
+        // Tự động cuộn trang đến vị trí từ khóa đầu tiên tìm thấy
+        const firstMatch = document.querySelector('.highlight-search');
+        if (firstMatch) {
+            firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            alert("Không tìm thấy kết quả nào!");
+        }
+    }
+
+    function clearSearchHighlight() {
+        const contentDiv = document.querySelector('.content');
+        if (contentDiv.dataset.originalContent) {
+            contentDiv.innerHTML = contentDiv.dataset.originalContent;
+        }
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = "";
+        clearSearchHighlight();
+    }
+
+    // Hàm phụ trợ để tránh lỗi khi người dùng gõ ký tự đặc biệt (VD: [, *, ?)
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // Cho phép nhấn Enter trong ô input để tìm kiếm luôn
+    document.getElementById('searchInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            searchText();
+        }
+    });
+
+
 </script>
 
 </body>
