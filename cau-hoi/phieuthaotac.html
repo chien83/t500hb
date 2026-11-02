@@ -678,14 +678,36 @@
         const modal = document.getElementById("imageModal");
         const modalImg = document.getElementById("zoomedImg");
         
-        modal.style.display = "flex"; // Hiển thị nền đen
-        modalImg.src = src; // Gán đường dẫn ảnh đang click vào khung phóng to
+        modal.style.display = "block"; // Hiển thị khung
+        modalImg.src = src; 
+        
+        // Luôn trả ảnh về trạng thái vừa màn hình mỗi lần mở lại
+        modalImg.style.maxWidth = "95%"; 
+        modalImg.style.width = "auto";
+        modalImg.style.cursor = "zoom-in";
     }
 
     function closeModal() {
         const modal = document.getElementById("imageModal");
-        modal.style.display = "none"; // Ẩn nền đen khi click ra ngoài hoặc click dấu X
+        modal.style.display = "none"; // Ẩn khung
     }
+
+    // TÍNH NĂNG: CLICK TRỰC TIẾP VÀO ẢNH ĐỂ PHÓNG TO / THU NHỎ
+    document.getElementById("zoomedImg").onclick = function(e) {
+        e.stopPropagation(); // Ngăn chặn việc click vào ảnh bị hiểu nhầm là tắt khung
+        
+        if (this.style.maxWidth === "95%") {
+            // Đang ở chế độ vừa màn hình -> Kích hoạt Zoom to
+            this.style.maxWidth = "none"; // Xóa giới hạn màn hình
+            this.style.width = "250%"; // Phóng to ảnh lên gấp 2.5 lần màn hình
+            this.style.cursor = "zoom-out"; // Đổi con trỏ chuột thành kính lúp dấu trừ
+        } else {
+            // Đang ở chế độ Zoom to -> Kích hoạt thu nhỏ
+            this.style.maxWidth = "95%"; // Trả lại giới hạn màn hình
+            this.style.width = "auto";
+            this.style.cursor = "zoom-in"; // Đổi con trỏ chuột thành kính lúp dấu cộng
+        }
+    };
 
 
 </script>
