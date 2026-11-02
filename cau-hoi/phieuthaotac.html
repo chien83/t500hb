@@ -678,6 +678,22 @@
             content.style.fontSize = currentZoom + "%";
         }
     }
+
+    // 3. CHỨC NĂNG ZOOM ẢNH SƠ ĐỒ
+    function zoomImage(src) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("zoomedImg");
+        
+        modal.style.display = "flex"; // Hiển thị nền đen
+        modalImg.src = src; // Gán đường dẫn ảnh đang click vào khung phóng to
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("imageModal");
+        modal.style.display = "none"; // Ẩn nền đen khi click ra ngoài hoặc click dấu X
+    }
+
+
 </script>
 
 <!-- Khung Modal để phóng to ảnh -->
