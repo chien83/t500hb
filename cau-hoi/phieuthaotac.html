@@ -228,7 +228,53 @@
                 <p>6. Kiểm tra, điều chỉnh lại công suất, điện áp, chuyển phụ tải phù hợp sau khi đưa đường dây vào vận hành</p>
             </div>
 
+            <!-- Phần 4 -->
+            <div class="doc-section">
+                <h3 style="color: blue; border-bottom: 1px dashed blue;">4. Trình tự thao tác dao cách ly hai phía máy cắt như sau:</h3>
+                
+                <p style="text-align: center;"><strong>a) Trường hợp một phía máy cắt có điện áp, một phía không có điện áp <br> ( U1 > , U2 = 0 )</strong></p>
 
+                <p>
+                    MC thường gắn với DCL 2 phía<br>
+                    - MC cắt trước DCL ( DCL cắt sau MC)<br>
+                    - MC đóng sau DCL ( DCL đóng trước MC)
+                </p>
+
+                <!-- Sơ đồ SVG được vẽ trực tiếp bằng code để bạn không cần tải file ảnh -->
+                <svg viewBox="0 0 400 120" style="width: 100%; max-width: 450px; display: block; margin: 20px auto;">
+                    <text x="20" y="30" font-family="sans-serif" font-size="16" font-weight="bold" fill="#333">U1</text>
+                    <text x="360" y="30" font-family="sans-serif" font-size="16" font-weight="bold" fill="#333">U2</text>
+                    <text x="188" y="25" font-family="sans-serif" font-size="14" font-weight="bold" fill="#333">MC</text>
+                    <text x="70" y="100" font-family="sans-serif" font-size="14" fill="#333">DCL-1</text>
+                    <text x="280" y="100" font-family="sans-serif" font-size="14" fill="#333">DCL-2</text>
+                    
+                    <!-- Đường dọc hai bên -->
+                    <line x1="30" y1="40" x2="30" y2="85" stroke="#000" stroke-width="1.5" /> 
+                    <line x1="370" y1="40" x2="370" y2="85" stroke="#000" stroke-width="1.5" /> 
+                    
+                    <!-- Đường ngang -->
+                    <line x1="30" y1="65" x2="90" y2="65" stroke="#000" stroke-width="1.5" />
+                    <line x1="120" y1="65" x2="160" y2="65" stroke="#000" stroke-width="1.5" />
+                    <line x1="240" y1="65" x2="280" y2="65" stroke="#000" stroke-width="1.5" />
+                    <line x1="310" y1="65" x2="370" y2="65" stroke="#000" stroke-width="1.5" />
+                    
+                    <!-- Lưỡi dao cách ly (đường xéo) -->
+                    <line x1="90" y1="65" x2="115" y2="45" stroke="#000" stroke-width="1.5" />
+                    <line x1="280" y1="65" x2="305" y2="45" stroke="#000" stroke-width="1.5" />
+                    
+                    <!-- Hộp Máy Cắt (MC) -->
+                    <rect x="160" y="50" width="80" height="30" fill="#22628a" />
+                </svg>
+
+                <p>- Khi thao tác <strong style="color: blue;">mở</strong> dao cách ly: Mở dao cách ly phía không có điện áp trước, mở dao cách ly phía có điện áp sau; ( DCL -2 cắt trước ( cắt ko điện) )</p>
+                
+                <p>- Khi thao tác <strong style="color: red;">đóng</strong> dao cách ly: Đóng dao cách ly phía có điện áp trước, đóng dao cách ly phía không có điện áp sau. ( DCL - 1 đóng trước ( đóng đẳng áp) )</p>
+                
+                <div style="margin-left: 30px; margin-top: 15px;">
+                    <p>- ƯU TIÊN <strong style="color: blue;">ĐÓNG</strong> ĐẲNG ÁP TRƯỚC ( ĐÓNG CÓ ĐIỆN)</p>
+                    <p>- ƯU TIÊN <strong style="color: red;">CẮT</strong> KHÔNG ĐIỆN TRƯỚC</p>
+                </div>
+            </div>
 
            
         </div>
