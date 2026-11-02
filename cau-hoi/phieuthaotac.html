@@ -204,25 +204,24 @@
             
             <h1>PHIẾU THAO TÁC</h1>
             <p style="margin:5px 0 0 0; color:#666;">các vấn đề liên quan đến viết phiếu</p>
+    </div> <!-- ĐÂY LÀ THẺ ĐÓNG CỦA HEADER -->
 
-            <!-- ===== Ô TÌM KIẾM MỚI THÊM VÀO ===== -->
-            <div style="position: absolute; right: 0; bottom: -45px; display: flex; gap: 5px;">
-                <input type="text" id="searchInput" placeholder="Nhập từ khóa tìm kiếm..." 
-                       style="padding: 5px 10px; border: 1px solid var(--primary-color); border-radius: 4px; outline: none; width: 200px;">
-                <button onclick="searchText()" 
-                        style="background: var(--primary-color); color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">
-                    Tìm
-                </button>
-                <button onclick="clearSearch()" 
-                        style="background: #ccc; color: #333; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
-                    Xóa
-                </button>
-            </div>
-            <!-- ===================================== -->
+        <!-- ===== Ô TÌM KIẾM (ĐÃ SỬA LỖI ĐÈ CHỮ TRÊN ĐIỆN THOẠI) ===== -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 25px; gap: 5px; width: 100%;">
+            <input type="text" id="searchInput" placeholder="Nhập từ khóa tìm kiếm..." 
+                   style="padding: 5px 10px; border: 1px solid var(--primary-color); border-radius: 4px; outline: none; flex-grow: 1; max-width: 250px;">
+            <button onclick="searchText()" 
+                    style="background: var(--primary-color); color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                Tìm
+            </button>
+            <button onclick="clearSearch()" 
+                    style="background: #ccc; color: #333; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                Xóa
+            </button>
         </div>
+        <!-- ========================================================== -->
 
         <div class="content">
-            
             <!-- Phần 1 -->
             <div class="doc-section">
                 <h3>1. THAO TÁC CẮT MBA RA SỬA CHỮA:</h3>
