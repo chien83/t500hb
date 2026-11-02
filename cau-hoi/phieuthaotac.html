@@ -180,18 +180,35 @@
 <div id="wrapper" style="display: none;">
 
     <div class="container">
-        <div class="header">
-            <!-- ĐÂY CHÍNH LÀ PHẦN HTML CỦA NÚT HOME BẠN CẦN THÊM VÀO -->
+    <div class="header">
+            <!-- NÚT HOME -->
             <div class="back-home">
                 <a href="../index.html"><i class="fa-solid fa-house-chimney"></i> Home</a>
             </div>
-            <!-- KẾT THÚC PHẦN NÚT HOME -->
+            
+            <!-- TĂNG GIẢM CỠ CHỮ -->
             <div class="font-controls">
                 <button onclick="changeFontSize(1)" title="Tăng cỡ chữ">A+ <i class="fa-solid fa-plus"></i></button>
                 <button onclick="changeFontSize(-1)" title="Giảm cỡ chữ">A- <i class="fa-solid fa-minus"></i></button>
             </div>
+            
             <h1>PHIẾU THAO TÁC</h1>
             <p style="margin:5px 0 0 0; color:#666;">các vấn đề liên quan đến viết phiếu</p>
+
+            <!-- ===== Ô TÌM KIẾM MỚI THÊM VÀO ===== -->
+            <div style="position: absolute; right: 0; bottom: -45px; display: flex; gap: 5px;">
+                <input type="text" id="searchInput" placeholder="Nhập từ khóa tìm kiếm..." 
+                       style="padding: 5px 10px; border: 1px solid var(--primary-color); border-radius: 4px; outline: none; width: 200px;">
+                <button onclick="searchText()" 
+                        style="background: var(--primary-color); color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                    Tìm
+                </button>
+                <button onclick="clearSearch()" 
+                        style="background: #ccc; color: #333; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                    Xóa
+                </button>
+            </div>
+            <!-- ===================================== -->
         </div>
 
         <div class="content">
