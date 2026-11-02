@@ -650,6 +650,12 @@
 </div>
 
 
+<!-- KHUNG MODAL PHẢI NẰM TRÊN THẺ SCRIPT -->
+<div id="imageModal" class="modal">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="zoomedImg">
+</div>
+
 <script>
     // 1. CHỨC NĂNG BẢO VỆ BẰNG MẬT KHẨU
     (function() {
@@ -660,7 +666,6 @@
             document.getElementById("wrapper").style.display = "block";
         } else {
             alert("Mật khẩu không chính xác!");
-            // Quay lại trang chủ (từ folder data lùi ra 1 cấp)
             window.location.href = "../index.html"; 
         }
     })();
@@ -678,50 +683,84 @@
         }
     }
 
-    // 3. CHỨC NĂNG ZOOM ẢNH SƠ ĐỒ
+    // ===== 3. CHỨC NĂNG ZOOM VÀ KÉO THẢ ẢNH NÂNG CAO =====
+    const modal = document.getElementById("imageModal");
+    const img = document.getElementById("zoomedImg");
+    
+    let scale = 1;      // Mức độ zoom hiện tại
+    let panning = false; // Trạng thái đang kéo chuột
+    let pointX = 0;      // Tọa độ X của ảnh
+    let pointY = 0;      // Tọa độ Y của ảnh
+    let startX = 0;      // Tọa độ X của chuột khi bắt đầu nhấn
+    let startY = 0;      // Tọa độ Y của chuột khi bắt đầu nhấn
+
+    // Hàm gọi khi nhấn vào ảnh gốc trên web
     function zoomImage(src) {
-        const modal = document.getElementById("imageModal");
-        const modalImg = document.getElementById("zoomedImg");
+        modal.style.display = "flex";
+        modal.style.alignItems = "center"; 
+        modal.style.justifyContent = "center";
+        img.src = src;
         
-        modal.style.display = "block"; // Hiển thị khung
-        modalImg.src = src; 
-        
-        // Luôn trả ảnh về trạng thái vừa màn hình mỗi lần mở lại
-        modalImg.style.maxWidth = "95%"; 
-        modalImg.style.width = "auto";
-        modalImg.style.cursor = "zoom-in";
+        // Reset lại các thông số về mặc định mỗi khi mở ảnh mới
+        scale = 1;
+        pointX = 0;
+        pointY = 0;
+        setTransform();
     }
 
+    // Hàm đóng ảnh
     function closeModal() {
-        const modal = document.getElementById("imageModal");
-        modal.style.display = "none"; // Ẩn khung
+        modal.style.display = "none";
     }
 
-    // TÍNH NĂNG: CLICK TRỰC TIẾP VÀO ẢNH ĐỂ PHÓNG TO / THU NHỎ
-    document.getElementById("zoomedImg").onclick = function(e) {
-        e.stopPropagation(); // Ngăn chặn việc click vào ảnh bị hiểu nhầm là tắt khung
+    // Cập nhật vị trí và độ thu phóng của ảnh
+    function setTransform() {
+        img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+    }
+
+    // SỰ KIỆN LĂN CHUỘT (ZOOM TO/NHỎ)
+    img.onwheel = function(e) {
+        e.preventDefault(); 
         
-        if (this.style.maxWidth === "95%") {
-            // Đang ở chế độ vừa màn hình -> Kích hoạt Zoom to
-            this.style.maxWidth = "none"; // Xóa giới hạn màn hình
-            this.style.width = "250%"; // Phóng to ảnh lên gấp 2.5 lần màn hình
-            this.style.cursor = "zoom-out"; // Đổi con trỏ chuột thành kính lúp dấu trừ
-        } else {
-            // Đang ở chế độ Zoom to -> Kích hoạt thu nhỏ
-            this.style.maxWidth = "95%"; // Trả lại giới hạn màn hình
-            this.style.width = "auto";
-            this.style.cursor = "zoom-in"; // Đổi con trỏ chuột thành kính lúp dấu cộng
-        }
+        let zoomAmount = e.deltaY * -0.001; 
+        scale += zoomAmount;
+        scale = Math.min(Math.max(0.5, scale), 5); // Giới hạn zoom từ 0.5x đến 5x
+        
+        setTransform();
     };
 
+    // SỰ KIỆN KÉO THẢ (PANNING)
+    img.onmousedown = function(e) {
+        e.preventDefault();
+        startX = e.clientX - pointX;
+        startY = e.clientY - pointY;
+        panning = true;
+    };
 
+    img.onmouseup = function(e) {
+        panning = false;
+    };
+
+    img.onmouseleave = function(e) {
+        panning = false;
+    };
+
+    img.onmousemove = function(e) {
+        e.preventDefault();
+        if (!panning) return;
+        
+        pointX = e.clientX - startX;
+        pointY = e.clientY - startY;
+        setTransform();
+    };
+
+    // Đóng ảnh khi click ra ngoài vùng nền đen
+    modal.onclick = function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    };
 </script>
-
-<!-- Khung Modal để phóng to ảnh -->
-<div id="imageModal" class="modal" onclick="closeModal()">
-    <span class="close-btn">&times;</span>
-    <img class="modal-content" id="zoomedImg">
-</div>
 
 </body>
 </html>
