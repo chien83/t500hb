@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư viện Phiếu Thao Tác Mẫu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #00558f; 
+            --bg-color: #e5e9f0; /* Nền tối hơn chút để làm nổi bật tờ giấy trắng */
+            --text-color: #000;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0; padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden; /* Cố định toàn màn hình, chỉ cuộn bên trong */
+        }
+
+        /* ===== 1. CỘT MỤC LỤC (SIDEBAR) ===== */
+        .sidebar {
+            width: 300px;
+            background: #fff;
+            border-right: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .sidebar-header h2 { margin: 0; font-size: 1.2em; text-transform: uppercase; }
+
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto; /* Cho phép cuộn danh sách */
+            flex-grow: 1;
+        }
+
+        .menu-list li {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .menu-list li:hover { background: #f0f7ff; color: var(--primary-color); }
+        .menu-list li.active { background: var(--primary-color); color: #fff; font-weight: bold; border-left: 5px solid #ff9800; }
+
+        /* ===== 2. KHU VỰC ĐỌC TÀI LIỆU (MAIN CONTENT) ===== */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Thanh điều khiển lật trang */
+        .reader-controls {
+            background: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .reader-controls button {
+            background: var(--primary-color); color: #fff; border: none;
+            padding: 8px 20px; border-radius: 4px; cursor: pointer;
+            font-weight: bold; font-size: 14px;
+        }
+        .reader-controls button:disabled { background: #ccc; cursor: not-allowed; }
+
+        #page-indicator { font-weight: bold; color: var(--primary-color); }
+
+        /* Khu vực cuộn chứa giấy A4 */
+        .viewer {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* Mỗi tài liệu (1 file word) - Ẩn mặc định */
+        .document { display: none; }
+        .document.active { display: block; }
+
+        /* Khung giấy A4 - CSS giữ nguyên từ bài trước */
+        .page {
+            max-width: 850px;
+            min-height: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px 60px;
+            border-radius: 4px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 16px;
+            line-height: 1.5;
+            display: none; /* Các trang bị ẩn, chỉ hiện trang đang đọc */
+            animation: fadeIn 0.4s ease; /* Hiệu ứng lật trang */
+        }
+        .page.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Các định dạng bảng, dòng chấm chấm cho trang A4... (Copy nguyên từ code bài trước) */
+        .page-header-a4 { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .header-left, .header-center, .header-right { text-align: center; font-weight: bold; }
+        .form-row { display: flex; margin-bottom: 10px; align-items: baseline; }
+        .form-label { white-space: nowrap; margin-right: 5px; }
+        .dotted-line { flex-grow: 1; border-bottom: 1px dotted #000; position: relative; top: -4px; }
+        .table-thaotac { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .table-thaotac th, .table-thaotac td { border: 1px solid #000; padding: 8px; text-align: center; }
+        .page-break { margin-top: 20px; } /* Trong layout này không cần gạch đứt vì đã lật trang */
+    </style>
+</head>
+<body>
+
+    <!-- ===== CỘT TRÁI: MỤC LỤC ===== -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Mục lục phiếu mẫu</h2>
+        </div>
+        <div style="padding: 10px; text-align:center;"><a href="../index.html" style="text-decoration:none; color:var(--primary-color); font-weight:bold;"><i class="fa-solid fa-house"></i> Về trang chủ</a></div>
+        
+        <ul class="menu-list" id="toc">
+            <!-- Thêm onClick="openDoc('id_của_doc')" -->
+            <li class="active" onclick="openDoc('doc-1-1')">1.1 Cắt điện MBA AT1</li>
+            <li onclick="openDoc('doc-1-2')">1.2 Đóng điện MBA AT1</li>
+            <li onclick="openDoc('doc-2-1')">2.1 Cắt điện MBA AT1 và các MC...</li>
+            <li onclick="openDoc('doc-5-1')">5.1 Cắt điện TC C51</li>
+            <!-- Thêm tiếp các file khác vào đây... -->
+        </ul>
+    </div>
+
+    <!-- ===== CỘT PHẢI: KHUNG ĐỌC ===== -->
+    <div class="main-content">
+        <!-- Thanh lật trang -->
+        <div class="reader-controls">
+            <button id="btnPrev" onclick="prevPage()"><i class="fa-solid fa-chevron-left"></i> Trang trước</button>
+            <span id="page-indicator">Trang 1 / 4</span>
+            <button id="btnNext" onclick="nextPage()">Trang tiếp <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <!-- Khung chứa giấy -->
+        <div class="viewer">
+            
+            <!-- TÀI LIỆU SỐ 1: 1.1 CẮT ĐIỆN MBA AT1 -->
+            <div id="doc-1-1" class="document active">
+                
+                <!-- Dán thẻ <div class="page"> Trang 1 vào đây -->
+                <div class="page active">
+                    <h2 style="text-align:center;">Trang 1 của 1.1 Cắt điện MBA AT1</h2>
+                    <p>Bạn copy nguyên phần code HTML từ thẻ div class="page" trang 1 của bài trước dán vào chỗ này.</p>
+                </div>
+
+                <!-- Dán thẻ <div class="page"> Trang 2 vào đây -->
+                <div class="page">
+                    <h2 style="text-align:center;">Trang 2 của 1.1 Cắt điện MBA AT1 (Bảng thao tác)</h2>
+                    <p>Dán mã HTML của bảng vào đây...</p>
+                </div>
+
+                <div class="page">
+                    <h2 style="text-align:center;">Trang 3 của 1.1 (Chữ ký & Sơ đồ)</h2>
+                    <p>Nội dung trang 3...</p>
+                </div>
+            </div>
+
+            <!-- TÀI LIỆU SỐ 2: 1.2 ĐÓNG ĐIỆN MBA AT1 -->
+            <div id="doc-1-2" class="document">
+                <div class="page active">
+                    <h2 style="text-align:center;">Trang 1 của 1.2 Đóng điện MBA AT1</h2>
+                    <p>Nội dung phiếu đóng điện...</p>
+                </div>
+                <div class="page">
+                    <h2 style="text-align:center;">Trang 2 của 1.2 Đóng điện</h2>
+                </div>
+            </div>
+
+            <!-- TIẾP TỤC TẠO CÁC <div id="doc-..." class="document"> CHO CÁC FILE CÒN LẠI -->
+
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT XỬ LÝ LẬT TRANG VÀ MỤC LỤC ===== -->
+    <script>
+        let currentDocId = 'doc-1-1'; // Tài liệu mặc định khi mở web
+        let currentPageIndex = 0;     // Trang mặc định (Trang 1 có index là 0)
+        let totalPagesInDoc = 0;
+
+        // Khởi tạo hiển thị lần đầu
+        updateReader();
+
+        // 1. Hàm mở một Tài Liệu mới từ Mục Lục
+        function openDoc(docId) {
+            // Đổi màu mục lục
+            const listItems = document.querySelectorAll('.menu-list li');
+            listItems.forEach(li => li.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Ẩn tài liệu cũ, hiện tài liệu mới
+            document.getElementById(currentDocId).classList.remove('active');
+            currentDocId = docId;
+            document.getElementById(currentDocId).classList.add('active');
+
+            // Đưa về trang 1
+            currentPageIndex = 0;
+            
+            // Cập nhật lại số trang và hiển thị
+            updateReader();
+            
+            // Cuộn khung đọc lên trên cùng
+            document.querySelector('.viewer').scrollTop = 0;
+        }
+
+        // 2. Hàm Lật sang trang tiếp
+        function nextPage() {
+            if (currentPageIndex < totalPagesInDoc - 1) {
+                currentPageIndex++;
+                updateReader();
+                document.querySelector('.viewer').scrollTop = 0;
+            }
+        }
+
+        // 3. Hàm Lùi về trang trước
+        function prevPage() {
+            if (currentPageIndex > 0) {
+                currentPageIndex--;
+                updateReader();
+                document.querySelector('.viewer').scrollTop = 0;
+            }
+        }
+
+        // 4. Hàm cập nhật giao diện (Hiện đúng trang giấy, cập nhật số, khóa nút)
+        function updateReader() {
+            const currentDoc = document.getElementById(currentDocId);
+            const pages = currentDoc.querySelectorAll('.page');
+            totalPagesInDoc = pages.length;
+
+            // Ẩn tất cả các trang, chỉ bật lớp 'active' cho trang hiện tại
+            pages.forEach((page, index) => {
+                if (index === currentPageIndex) {
+                    page.classList.add('active');
+                } else {
+                    page.classList.remove('active');
+                }
+            });
+
+            // Cập nhật chữ "Trang X / Y"
+            document.getElementById('page-indicator').innerText = `Trang ${currentPageIndex + 1} / ${totalPagesInDoc}`;
+
+            // Vô hiệu hóa nút bấm nếu đang ở trang đầu hoặc trang cuối
+            document.getElementById('btnPrev').disabled = (currentPageIndex === 0);
+            document.getElementById('btnNext').disabled = (currentPageIndex === totalPagesInDoc - 1);
+        }
+    </script>
+</body>
+</html>
