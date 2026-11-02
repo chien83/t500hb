@@ -232,6 +232,7 @@
             <div class="doc-section">
                 <h3 style="color: blue; border-bottom: 1px dashed blue;">4. Trình tự thao tác dao cách ly hai phía máy cắt như sau:</h3>
                 
+                <!-- MỤC A -->
                 <p style="text-align: center;"><strong>a) Trường hợp một phía máy cắt có điện áp, một phía không có điện áp <br> ( U1 > , U2 = 0 )</strong></p>
 
                 <p>
@@ -240,7 +241,7 @@
                     - MC đóng sau DCL ( DCL đóng trước MC)
                 </p>
 
-                <!-- Sơ đồ SVG được vẽ trực tiếp bằng code để bạn không cần tải file ảnh -->
+                <!-- Sơ đồ SVG mục A -->
                 <svg viewBox="0 0 400 120" style="width: 100%; max-width: 450px; display: block; margin: 20px auto;">
                     <text x="20" y="30" font-family="sans-serif" font-size="16" font-weight="bold" fill="#333">U1</text>
                     <text x="360" y="30" font-family="sans-serif" font-size="16" font-weight="bold" fill="#333">U2</text>
@@ -248,32 +249,73 @@
                     <text x="70" y="100" font-family="sans-serif" font-size="14" fill="#333">DCL-1</text>
                     <text x="280" y="100" font-family="sans-serif" font-size="14" fill="#333">DCL-2</text>
                     
-                    <!-- Đường dọc hai bên -->
                     <line x1="30" y1="40" x2="30" y2="85" stroke="#000" stroke-width="1.5" /> 
                     <line x1="370" y1="40" x2="370" y2="85" stroke="#000" stroke-width="1.5" /> 
-                    
-                    <!-- Đường ngang -->
                     <line x1="30" y1="65" x2="90" y2="65" stroke="#000" stroke-width="1.5" />
                     <line x1="120" y1="65" x2="160" y2="65" stroke="#000" stroke-width="1.5" />
                     <line x1="240" y1="65" x2="280" y2="65" stroke="#000" stroke-width="1.5" />
                     <line x1="310" y1="65" x2="370" y2="65" stroke="#000" stroke-width="1.5" />
-                    
-                    <!-- Lưỡi dao cách ly (đường xéo) -->
                     <line x1="90" y1="65" x2="115" y2="45" stroke="#000" stroke-width="1.5" />
                     <line x1="280" y1="65" x2="305" y2="45" stroke="#000" stroke-width="1.5" />
-                    
-                    <!-- Hộp Máy Cắt (MC) -->
                     <rect x="160" y="50" width="80" height="30" fill="#22628a" />
                 </svg>
 
                 <p>- Khi thao tác <strong style="color: blue;">mở</strong> dao cách ly: Mở dao cách ly phía không có điện áp trước, mở dao cách ly phía có điện áp sau; ( DCL -2 cắt trước ( cắt ko điện) )</p>
-                
                 <p>- Khi thao tác <strong style="color: red;">đóng</strong> dao cách ly: Đóng dao cách ly phía có điện áp trước, đóng dao cách ly phía không có điện áp sau. ( DCL - 1 đóng trước ( đóng đẳng áp) )</p>
                 
                 <div style="margin-left: 30px; margin-top: 15px;">
                     <p>- ƯU TIÊN <strong style="color: blue;">ĐÓNG</strong> ĐẲNG ÁP TRƯỚC ( ĐÓNG CÓ ĐIỆN)</p>
                     <p>- ƯU TIÊN <strong style="color: red;">CẮT</strong> KHÔNG ĐIỆN TRƯỚC</p>
                 </div>
+                
+                <br>
+
+                <!-- MỤC B (NỘI DUNG MỚI THÊM) -->
+                <p style="text-align: center; margin-top: 20px;"><strong>b) Trường hợp hai phía máy cắt đều có điện áp <br> ( U1 > , U2 > 0 )</strong></p>
+
+                <p>- Khi thao tác <strong style="color: blue;">mở</strong> dao cách ly: Mở dao cách ly phía nếu có sự cố xảy ra ít ảnh hưởng đến chế độ vận hành của hệ thống điện trước, mở dao cách ly kia sau; ( mở DCL phía ít sự cố ảnh hưởng hơn)</p>
+                <p>- Khi thao tác <strong style="color: red;">đóng</strong> dao cách ly: Đóng dao cách ly phía nếu có sự cố xảy ra ảnh hưởng nhiều đến chế độ vận hành của hệ thống điện trước, đóng dao cách ly kia sau.( đóng DCL phía ảnh hưởng lớn trước)</p>
+
+                <!-- Sơ đồ SVG mục B -->
+                <svg viewBox="0 0 500 230" style="width: 100%; max-width: 550px; display: block; margin: 20px auto;">
+                    <!-- Trục dọc ngoài cùng bên trái -->
+                    <line x1="50" y1="70" x2="50" y2="170" stroke="#000" stroke-width="1.5" />
+                    
+                    <!-- Các đoạn thẳng ngang trục chính -->
+                    <line x1="50" y1="120" x2="100" y2="120" stroke="#000" stroke-width="1.5" />
+                    <line x1="100" y1="120" x2="130" y2="120" stroke="#000" stroke-width="1.5" />
+                    <line x1="160" y1="120" x2="200" y2="120" stroke="#000" stroke-width="1.5" />
+                    <line x1="260" y1="120" x2="300" y2="120" stroke="#000" stroke-width="1.5" />
+                    <line x1="330" y1="120" x2="420" y2="120" stroke="#000" stroke-width="1.5" />
+                    
+                    <!-- Mũi tên và chữ TẢI bên phải -->
+                    <polygon points="420,116 428,120 420,124" fill="#000" />
+                    <text x="440" y="125" font-family="sans-serif" font-size="14" fill="#333">TẢI</text>
+
+                    <!-- Trục dọc mũi tên đi qua giữa DCL1 -->
+                    <line x1="100" y1="50" x2="100" y2="190" stroke="#000" stroke-width="1.5" />
+                    <polygon points="96,50 100,42 104,50" fill="#000" /> <!-- Mũi tên lên -->
+                    <polygon points="96,190 100,198 104,190" fill="#000" /> <!-- Mũi tên xuống -->
+                    
+                    <!-- Chữ TẢI trên và dưới trục dọc -->
+                    <text x="85" y="30" font-family="sans-serif" font-size="14" fill="#333">TẢI</text>
+                    <text x="85" y="220" font-family="sans-serif" font-size="14" fill="#333">TẢI</text>
+
+                    <!-- Lưỡi dao DCL1 và DCL2 -->
+                    <line x1="130" y1="120" x2="155" y2="95" stroke="#000" stroke-width="1.5" />
+                    <line x1="300" y1="120" x2="325" y2="95" stroke="#000" stroke-width="1.5" />
+                    
+                    <!-- Hộp Máy cắt đen -->
+                    <rect x="200" y="105" width="60" height="30" fill="#000" />
+
+                    <!-- Nhãn DCL1, DCL2 và ghi chú -->
+                    <text x="110" y="90" font-family="sans-serif" font-size="14" fill="#333">DCL1</text>
+                    <text x="280" y="90" font-family="sans-serif" font-size="14" fill="#333">DCL2</text>
+                    <text x="280" y="195" font-family="sans-serif" font-size="15" fill="#333">DCL 1 ảnh hưởng nhiều</text>
+                </svg>
+
+                <p>4. Thao tác tại chỗ dao cách ly phải thực hiện nhanh chóng và dứt khoát, nhưng không được gây hư hỏng dao cách ly. Nghiêm cấm cắt (hoặc đóng) lưỡi dao trở lại khi thấy xuất hiện hồ quang trong quá trình đóng (hoặc cắt) dao cách ly.</p>
+                <p>5. Ngay sau khi kết thúc thao tác, dao cách ly cần được kiểm tra vị trí các lưỡi dao đã đóng cắt hết hành trình hoặc tiếp xúc tốt trừ trường hợp thao tác xa đối với trạm điện, nhà máy điện không người trực vận hành.</p>
             </div>
 
            
