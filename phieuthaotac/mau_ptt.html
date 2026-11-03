@@ -166,6 +166,20 @@
         .btn-print { background-color: #2ecc71; }
         .btn-save { background-color: #9b59b6; display: none; }
 
+        /* === CSS CHO TÍNH NĂNG GỘP / TÁCH Ô (MERGE CELLS) === */
+        td.cell-selected {
+            background-color: #ffe0b2 !important;
+            box-shadow: inset 0 0 0 2px #e65100 !important;
+        }
+        td.merged-hidden {
+            display: none !important;
+        }
+        .btn-merge { background-color: #f39c12; display: none; }
+        .btn-merge:hover { background-color: #d68910; }
+        .btn-split { background-color: #e74c3c; display: none; }
+        .btn-split:hover { background-color: #c0392b; }
+
+
         /* === CSS KHI IN ẤN (PDF) === */
         @media print {
             /* Lệnh @page margin: 0 sẽ "giết" toàn bộ Tiêu đề, Ngày giờ, URL thừa của trình duyệt */
@@ -193,6 +207,8 @@
             .control-panel { display: none; }
             [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
         }
+
+
     </style>
 </head>
 <body>
