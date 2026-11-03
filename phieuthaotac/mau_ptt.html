@@ -717,6 +717,65 @@
             }
             clearCellSelection();
         }
+
+
+
+        // =========================================================
+        // TÍNH NĂNG DÁN DỮ LIỆU TỪ PDF/EXCEL/WORD VÀO BẢNG
+        // =========================================================
+        
+        document.addEventListener('paste', function(e) {
+            // Chỉ kích hoạt khi đang ở chế độ Edit
+            if (!isEditing) return;
+
+            // Tìm xem người dùng đang click chuột (focus) vào ô nào trong bảng
+            let targetCell = e.target.closest('td.editable-field');
+            if (!targetCell) return; // Nếu không click vào bảng thì bỏ qua, cho paste bình thường
+
+            // Lấy dữ liệu văn bản thô từ khay nhớ tạm (Clipboard)
+            let pasteData = (e.clipboardData || window.clipboardData).getData('text');
+            if (!pasteData) return;
+
+            // Ngăn chặn trình duyệt tự động dán (vì nó sẽ nhét tất cả vào 1 ô)
+            e.preventDefault();
+
+            // Tách dữ liệu thành các DÒNG (dựa vào ký tự xuống dòng \n)
+            let rowsData = pasteData.trim().split(/\r\n|\n|\r/);
+            
+            // Lấy thẻ <tbody> hiện tại và danh sách các hàng (tr) trong đó
+            let tbody = targetCell.closest('tbody');
+            let tableRows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Xác định tọa độ (hàng, cột) của ô đang được click
+            let startRowIndex = tableRows.indexOf(targetCell.closest('tr'));
+            let startColIndex = Array.from(targetCell.parentElement.children).indexOf(targetCell);
+
+            // Duyệt qua từng dòng dữ liệu copy được
+            for (let i = 0; i < rowsData.length; i++) {
+                // Tách dòng thành các CỘT (dựa vào ký tự Tab \t)
+                let colsData = rowsData[i].split('\t');
+                
+                // Kiểm tra xem hàng đích trên web có tồn tại không
+                if (startRowIndex + i < tableRows.length) {
+                    let targetRow = tableRows[startRowIndex + i];
+                    
+                    // Duyệt qua từng cột dữ liệu
+                    for (let j = 0; j < colsData.length; j++) {
+                        // Kiểm tra xem cột đích trên web có tồn tại không
+                        if (startColIndex + j < targetRow.children.length) {
+                            let cell = targetRow.children[startColIndex + j];
+                            
+                            // Chỉ ghi đè dữ liệu nếu ô đó được phép sửa và không bị ẩn (do gộp ô)
+                            if (cell.classList.contains('editable-field') && !cell.classList.contains('merged-hidden')) {
+                                cell.innerText = colsData[j].trim();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
     </script>
 </body>
 </html>
