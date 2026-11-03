@@ -165,9 +165,30 @@
         .btn-print { background-color: #2ecc71; }
         .btn-save { background-color: #9b59b6; display: none; }
 
+        /* === CSS KHI IN ẤN (PDF) === */
         @media print {
-            body { background: none; margin: 0; padding: 0; }
-            .page { box-shadow: none; margin: 0; border: none; page-break-after: always; padding: 15mm;}
+            /* Lệnh @page margin: 0 sẽ "giết" toàn bộ Tiêu đề, Ngày giờ, URL thừa của trình duyệt */
+            @page {
+                size: A4;
+                margin: 0; 
+            }
+            body, html { 
+                background: none; 
+                margin: 0; 
+                padding: 0; 
+            }
+            .page { 
+                box-shadow: none; 
+                margin: 0; 
+                border: none; 
+                page-break-after: always; /* Luôn ngắt trang sau mỗi form A4 */
+                min-height: auto; /* Bỏ chiều cao cố định để nội dung không ép sinh ra trang trắng */
+                padding: 15mm 15mm 20mm 15mm;
+            }
+            /* Lệnh này chặn việc sinh thêm 1 trang trắng vô duyên ở ngay cuối file PDF */
+            .page:last-child {
+                page-break-after: auto;
+            }
             .control-panel { display: none; }
             [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
         }
