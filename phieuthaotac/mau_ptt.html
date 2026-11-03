@@ -406,10 +406,15 @@
         </div>
 
         <!-- ================= TRANG 3 ================= -->
-        <div class="page">
-            <div class="header-right-page2">
-                 <div>Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 03/04</div>
+        <div class="page step-page">
+            <div class="page-controls">
+                <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang thao tác phía dưới">➕</button>
+                <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang thao tác này">🗑️</button>
             </div>
+
+            <div class="header-right-page2">
+                 <div>Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 03/04</span></div>
+            </div>  
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
                 <colgroup>
