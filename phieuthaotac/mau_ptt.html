@@ -23,7 +23,8 @@
             background: white;
             width: 210mm;
             min-height: 297mm;
-            padding: 15mm 20mm 20mm 25mm;
+            /* Đã giảm lề trái/phải xuống 15mm để bảng có không gian rộng tối đa giống hệ thống cũ */
+            padding: 15mm 15mm 20mm 15mm; 
             margin-bottom: 20px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             position: relative;
@@ -39,35 +40,19 @@
             font-weight: bold;
             line-height: 1.2;
         }
-        .header-left { 
-            text-align: center; 
-            width: 38%; /* Tăng độ rộng để không bị ngắt dòng */
-            font-size: 13pt; 
-        }
-        .header-center { 
-            text-align: center; 
-            width: 24%; 
-            font-size: 15pt; 
-            margin-top: 10px; 
-        }
-        .header-right { 
-            text-align: left; 
-            width: 38%; 
-            font-weight: normal; 
-            font-size: 13pt; 
-            padding-left: 15px; /* Điều chỉnh khoảng cách */
-        }
+        .header-left { text-align: center; width: 38%; font-size: 13pt; }
+        .header-center { text-align: center; width: 24%; font-size: 15pt; margin-top: 10px; }
+        .header-right { text-align: left; width: 38%; font-weight: normal; font-size: 13pt; padding-left: 20px;}
+        
         .header-right-page2 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end; /* Đẩy nội dung sang phải */
+            text-align: right; /* Đẩy cụm số phiếu sang phải giống file word */
             margin-bottom: 10px;
             font-size: 13pt;
         }
         .header-right-page2 > div {
-             text-align: left; /* Giữ chữ căn trái trong khối */
+             display: inline-block;
+             text-align: left;
         }
-
 
         /* === FORM NHẬP LIỆU === */
         .form-row { display: flex; align-items: flex-end; margin-bottom: 10px; line-height: 1.6; }
@@ -77,11 +62,9 @@
             flex-grow: 1;
             border-bottom: 1px dotted #000;
             min-height: 20px;
-            position: relative;
             display: flex;
             align-items: flex-end;
         }
-
         .inline-dotted {
             border-bottom: 1px dotted #000;
             display: inline-block;
@@ -89,7 +72,7 @@
             margin: 0 5px;
         }
 
-        /* Dùng CSS Grid cho phần chữ ký */
+        /* Lưới chữ ký */
         .signature-grid {
             display: grid;
             grid-template-columns: 55% 45%;
@@ -97,11 +80,7 @@
             margin-bottom: 10px;
             margin-top: 15px;
         }
-        .sig-item {
-            display: flex;
-            align-items: flex-end;
-            padding-right: 15px;
-        }
+        .sig-item { display: flex; align-items: flex-end; padding-right: 15px; }
 
         ol.numbered-list { padding-left: 25px; margin-top: 5px; line-height: 1.8; }
         ol.numbered-list li { padding-left: 5px; }
@@ -112,7 +91,7 @@
             border-collapse: collapse;
             margin-top: 10px;
             font-size: 12pt;
-            table-layout: fixed;
+            table-layout: fixed; /* Khóa độ rộng để colgroup hoạt động */
         }
         th, td {
             border: 1px solid #000;
@@ -122,17 +101,6 @@
             word-wrap: break-word;
         }
         th { font-weight: bold; }
-        
-        /* Chỉnh lại tỷ lệ cột sao cho giống file Word nhất */
-        .col-muc { width: 6%; }
-        .col-diadiem { width: 11%; }
-        .col-buoc { width: 4.5%; } /* Cột bước rất hẹp */
-        .col-noidung { width: 48%; } /* Mở rộng tối đa cột Nội dung */
-        .col-dathuchien { width: 6.5%; }
-        .col-batdau { width: 6%; }
-        .col-ketthuc { width: 6%; }
-        .col-ralenh { width: 6%; }
-        .col-nhanlenh { width: 6%; }
 
         /* === CSS CHẾ ĐỘ CHỈNH SỬA (WYSIWYG) === */
         .editable-field {
@@ -180,12 +148,11 @@
         .btn-edit { background-color: #3498db; }
         .btn-edit.active { background-color: #e67e22; }
         .btn-print { background-color: #2ecc71; }
-        .btn-print:hover { background-color: #27ae60; }
         .btn-save { background-color: #9b59b6; display: none; }
 
         @media print {
             body { background: none; margin: 0; padding: 0; }
-            .page { box-shadow: none; margin: 0; border: none; page-break-after: always; padding: 15mm 20mm 20mm 25mm;}
+            .page { box-shadow: none; margin: 0; border: none; page-break-after: always; padding: 15mm;}
             .control-panel { display: none; }
             [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
         }
@@ -193,14 +160,12 @@
 </head>
 <body>
 
-    <!-- THANH CÔNG CỤ -->
     <div class="control-panel">
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Mở Khóa Chỉnh Sửa</button>
-        <button id="btnSave" class="btn btn-save" onclick="alert('Chức năng lưu sẽ được bổ sung sau')">💾 Lưu Phiếu</button>
+        <button id="btnSave" class="btn btn-save" onclick="alert('Tính năng lưu đang phát triển')">💾 Lưu Phiếu</button>
         <button class="btn btn-print" onclick="window.print()">🖨️ In / Xuất PDF</button>
     </div>
 
-    <!-- KHUNG TÀI LIỆU -->
     <div id="document-container">
         
         <!-- ================= TRANG 1 ================= -->
@@ -266,12 +231,13 @@
 
             <div style="font-weight: bold; margin-top: 10px;">Giao nhận, nghiệm thu đường dây, thiết bị điện trước khi thao tác (nếu có):</div>
             <table>
-                <tr>
-                    <th style="width: 15%;">Thời gian</th>
-                    <th style="width: 20%;">Đơn vị</th>
-                    <th style="width: 25%;">Họ tên</th>
-                    <th style="width: 40%;">Nội dung</th>
-                </tr>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                    <col style="width: 40%;">
+                </colgroup>
+                <tr><th>Thời gian</th><th>Đơn vị</th><th>Họ tên</th><th>Nội dung</th></tr>
                 <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
                 <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
             </table>
@@ -284,22 +250,34 @@
             </div>
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
+                <!-- SỬ DỤNG COLGROUP ĐỂ CHỐT TỶ LỆ 9 CỘT, KHÔNG BỊ PHỤ THUỘC VÀO THEAD -->
+                <colgroup>
+                    <col style="width: 5%;">  <!-- Mục -->
+                    <col style="width: 10%;"> <!-- Địa điểm -->
+                    <col style="width: 5%;">  <!-- Bước -->
+                    <col style="width: 46%;"> <!-- Nội dung (RỘNG NHẤT TỚI 46%) -->
+                    <col style="width: 7%;">  <!-- Đã thực hiện -->
+                    <col style="width: 6.5%;"><!-- Bắt đầu -->
+                    <col style="width: 6.5%;"><!-- Kết thúc -->
+                    <col style="width: 7%;">  <!-- Ra lệnh -->
+                    <col style="width: 7%;">  <!-- Nhận lệnh -->
+                </colgroup>
                 <thead>
                     <tr>
-                        <th rowspan="2" class="col-muc">Mục</th>
-                        <th rowspan="2" class="col-diadiem">Địa điểm</th>
+                        <th rowspan="2">Mục</th>
+                        <th rowspan="2">Địa điểm</th>
                         <th colspan="2">Trình tự thao tác</th>
-                        <th rowspan="2" class="col-dathuchien">Đã<br>thực<br>hiện</th>
+                        <th rowspan="2">Đã<br>thực<br>hiện</th>
                         <th colspan="2">Thời gian</th>
                         <th colspan="2">Người</th>
                     </tr>
                     <tr>
-                        <th class="col-buoc">Bước</th>
-                        <th class="col-noidung">Nội dung</th>
-                        <th class="col-batdau">Bắt<br>đầu</th>
-                        <th class="col-ketthuc">Kết<br>thúc</th>
-                        <th class="col-ralenh">Ra<br>lệnh</th>
-                        <th class="col-nhanlenh">Nhận<br>lệnh</th>
+                        <th>Bước</th>
+                        <th>Nội dung</th>
+                        <th>Bắt<br>đầu</th>
+                        <th>Kết<br>thúc</th>
+                        <th>Ra<br>lệnh</th>
+                        <th>Nhận<br>lệnh</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -326,22 +304,34 @@
             </div>
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
+                <!-- CŨNG PHẢI ĐẶT COLGROUP Ở ĐÂY ĐỂ ĐỒNG BỘ VỚI TRANG 2 -->
+                <colgroup>
+                    <col style="width: 5%;"> 
+                    <col style="width: 10%;">
+                    <col style="width: 5%;"> 
+                    <col style="width: 46%;">
+                    <col style="width: 7%;"> 
+                    <col style="width: 6.5%;">
+                    <col style="width: 6.5%;">
+                    <col style="width: 7%;"> 
+                    <col style="width: 7%;"> 
+                </colgroup>
                 <thead>
-                    <tr>
-                        <th rowspan="2" class="col-muc">Mục</th>
-                        <th rowspan="2" class="col-diadiem">Địa điểm</th>
+                     <tr>
+                        <th rowspan="2">Mục</th>
+                        <th rowspan="2">Địa điểm</th>
                         <th colspan="2">Trình tự thao tác</th>
-                        <th rowspan="2" class="col-dathuchien">Đã<br>thực<br>hiện</th>
+                        <th rowspan="2">Đã<br>thực<br>hiện</th>
                         <th colspan="2">Thời gian</th>
                         <th colspan="2">Người</th>
                     </tr>
                     <tr>
-                        <th class="col-buoc">Bước</th>
-                        <th class="col-noidung">Nội dung</th>
-                        <th class="col-batdau">Bắt<br>đầu</th>
-                        <th class="col-ketthuc">Kết<br>thúc</th>
-                        <th class="col-ralenh">Ra<br>lệnh</th>
-                        <th class="col-nhanlenh">Nhận<br>lệnh</th>
+                        <th>Bước</th>
+                        <th>Nội dung</th>
+                        <th>Bắt<br>đầu</th>
+                        <th>Kết<br>thúc</th>
+                        <th>Ra<br>lệnh</th>
+                        <th>Nhận<br>lệnh</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -369,12 +359,13 @@
             
             <div style="font-weight: bold; margin-bottom: 5px;">Giao nhận, nghiệm thu đường dây, thiết bị điện sau khi thao tác:</div>
             <table>
-                <tr>
-                    <th style="width: 15%;">Thời gian</th>
-                    <th style="width: 20%;">Đơn vị</th>
-                    <th style="width: 25%;">Họ tên</th>
-                    <th style="width: 40%;">Nội dung</th>
-                </tr>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                    <col style="width: 40%;">
+                </colgroup>
+                <tr><th>Thời gian</th><th>Đơn vị</th><th>Họ tên</th><th>Nội dung</th></tr>
                 <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
                 <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
             </table>
