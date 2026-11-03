@@ -10,7 +10,7 @@
         body {
             background-color: #525659;
             font-family: "Times New Roman", Times, serif;
-            font-size: 13pt; /* Chỉnh lại font chuẩn giống file word */
+            font-size: 13pt;
             color: #000;
             display: flex;
             flex-direction: column;
@@ -23,11 +23,11 @@
             background: white;
             width: 210mm;
             min-height: 297mm;
-            padding: 15mm 20mm 20mm 25mm; /* Căn lề chuẩn: Trên 1.5, Dưới 2, Phải 2, Trái 2.5 */
+            padding: 15mm 20mm 20mm 25mm;
             margin-bottom: 20px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             position: relative;
-            overflow: hidden; /* Ngăn chặn tuyệt đối nội dung văng ra ngoài */
+            overflow: hidden;
         }
 
         /* === HEADER PHIẾU === */
@@ -39,9 +39,35 @@
             font-weight: bold;
             line-height: 1.2;
         }
-        .header-left { text-align: center; width: 33%; font-size: 12pt; }
-        .header-center { text-align: center; width: 34%; font-size: 15pt; margin-top: 10px; }
-        .header-right { text-align: left; width: 33%; font-weight: normal; font-size: 12pt; padding-left: 10px;}
+        .header-left { 
+            text-align: center; 
+            width: 38%; /* Tăng độ rộng để không bị ngắt dòng */
+            font-size: 13pt; 
+        }
+        .header-center { 
+            text-align: center; 
+            width: 24%; 
+            font-size: 15pt; 
+            margin-top: 10px; 
+        }
+        .header-right { 
+            text-align: left; 
+            width: 38%; 
+            font-weight: normal; 
+            font-size: 13pt; 
+            padding-left: 15px; /* Điều chỉnh khoảng cách */
+        }
+        .header-right-page2 {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* Đẩy nội dung sang phải */
+            margin-bottom: 10px;
+            font-size: 13pt;
+        }
+        .header-right-page2 > div {
+             text-align: left; /* Giữ chữ căn trái trong khối */
+        }
+
 
         /* === FORM NHẬP LIỆU === */
         .form-row { display: flex; align-items: flex-end; margin-bottom: 10px; line-height: 1.6; }
@@ -63,7 +89,7 @@
             margin: 0 5px;
         }
 
-        /* KHẮC PHỤC LỖI TRÀN CHỮ: Dùng CSS Grid thay cho Flexbox */
+        /* Dùng CSS Grid cho phần chữ ký */
         .signature-grid {
             display: grid;
             grid-template-columns: 55% 45%;
@@ -86,23 +112,37 @@
             border-collapse: collapse;
             margin-top: 10px;
             font-size: 12pt;
-            table-layout: fixed; /* Khóa chiều rộng cột, không bị co giãn khi gõ */
+            table-layout: fixed;
         }
         th, td {
             border: 1px solid #000;
             padding: 5px;
             vertical-align: middle;
             text-align: center;
-            word-wrap: break-word; /* Tự động xuống dòng nếu chữ quá dài */
+            word-wrap: break-word;
         }
         th { font-weight: bold; }
+        
+        /* Chỉnh lại tỷ lệ cột cho bảng thao tác theo yêu cầu */
+        .col-muc { width: 5%; }
+        .col-diadiem { width: 10%; }
+        .col-buoc { width: 5%; } /* Thu hẹp cột Bước */
+        .col-noidung { width: 44%; } /* Mở rộng cột Nội dung */
+        .col-dathuchien { width: 8%; }
+        .col-batdau { width: 7%; }
+        .col-ketthuc { width: 7%; }
+        .col-ralenh { width: 7%; }
+        .col-nhanlenh { width: 7%; }
+
 
         /* === CSS CHẾ ĐỘ CHỈNH SỬA (WYSIWYG) === */
         .editable-field {
             width: 100%;
             min-height: 20px;
-            outline: none; /* Tắt viền xanh mặc định của trình duyệt */
+            outline: none;
+            display: inline-block;
         }
+        td.editable-field { display: table-cell; }
 
         [contenteditable="true"] {
             background-color: #e3f2fd;
@@ -142,6 +182,7 @@
         .btn-edit.active { background-color: #e67e22; }
         .btn-print { background-color: #2ecc71; }
         .btn-print:hover { background-color: #27ae60; }
+        .btn-save { background-color: #9b59b6; display: none; }
 
         @media print {
             body { background: none; margin: 0; padding: 0; }
@@ -156,6 +197,7 @@
     <!-- THANH CÔNG CỤ -->
     <div class="control-panel">
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Mở Khóa Chỉnh Sửa</button>
+        <button id="btnSave" class="btn btn-save" onclick="alert('Chức năng lưu sẽ được bổ sung sau')">💾 Lưu Phiếu</button>
         <button class="btn btn-print" onclick="window.print()">🖨️ In / Xuất PDF</button>
     </div>
 
@@ -167,16 +209,15 @@
             <div class="page-header-a4">
                 <div class="header-left">TRUYỀN TẢI ĐIỆN HÒA BÌNH<br><br><strong>TRẠM 500 KV HÒA BÌNH</strong></div>
                 <div class="header-center">PHIẾU THAO TÁC</div>
-                <div class="header-right">Số phiếu: <span class="inline-dotted editable-field" style="width: 100px;">...../....../...../T500HB</span><br>Trang số : 01/04</div>
+                <div class="header-right">Số phiếu: <span class="inline-dotted editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 01/04</div>
             </div>
             
             <div class="form-row">
                 <span class="form-label">Tên phiếu thao tác:</span>
-                <div class="dotted-line"><span class="editable-field"></span></div>
+                <div class="dotted-line"><span class="editable-field" style="padding-left: 10px;"></span></div>
             </div>
             <div class="form-row"><div class="dotted-line"><span class="editable-field"></span></div></div>
 
-            <!-- CHUYỂN SANG DÙNG GRID ĐỂ KHÔNG BỊ VỠ LAYOUT -->
             <div class="signature-grid">
                 <div class="sig-item"><span class="form-label">Người viết phiếu:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
                 <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
@@ -239,29 +280,27 @@
 
         <!-- ================= TRANG 2 ================= -->
         <div class="page">
-            <div class="page-header-a4" style="margin-bottom: 20px;">
-                <div class="header-left" style="visibility: hidden;">TRẠM 500 KV HÒA BÌNH</div>
-                <div class="header-center" style="visibility: hidden;">PHIẾU THAO TÁC</div>
-                <div class="header-right">Số phiếu:<br><span class="inline-dotted editable-field" style="width: 100px;">...../....../...../T500HB</span><br>Trang số : 02/04</div>
+            <div class="header-right-page2">
+                <div>Số phiếu: <span class="inline-dotted editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 02/04</div>
             </div>
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
                 <thead>
                     <tr>
-                        <th rowspan="2" style="width: 6%;">Mục</th>
-                        <th rowspan="2" style="width: 12%;">Địa điểm</th>
-                        <th colspan="2" style="width: 44%;">Trình tự thao tác</th>
-                        <th rowspan="2" style="width: 9%;">Đã thực<br>hiện</th>
-                        <th colspan="2" style="width: 13%;">Thời gian</th>
-                        <th colspan="2" style="width: 16%;">Người</th>
+                        <th rowspan="2" class="col-muc">Mục</th>
+                        <th rowspan="2" class="col-diadiem">Địa điểm</th>
+                        <th colspan="2">Trình tự thao tác</th>
+                        <th rowspan="2" class="col-dathuchien">Đã<br>thực<br>hiện</th>
+                        <th colspan="2">Thời gian</th>
+                        <th colspan="2">Người</th>
                     </tr>
                     <tr>
-                        <th style="width: 6%;">Bước</th>
-                        <th>Nội dung</th>
-                        <th style="width: 6.5%;">Bắt<br>đầu</th>
-                        <th style="width: 6.5%;">Kết<br>thúc</th>
-                        <th style="width: 8%;">Ra<br>lệnh</th>
-                        <th style="width: 8%;">Nhận<br>lệnh</th>
+                        <th class="col-buoc">Bước</th>
+                        <th class="col-noidung">Nội dung</th>
+                        <th class="col-batdau">Bắt<br>đầu</th>
+                        <th class="col-ketthuc">Kết<br>thúc</th>
+                        <th class="col-ralenh">Ra<br>lệnh</th>
+                        <th class="col-nhanlenh">Nhận<br>lệnh</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -283,29 +322,27 @@
 
         <!-- ================= TRANG 3 ================= -->
         <div class="page">
-            <div class="page-header-a4" style="margin-bottom: 20px;">
-                <div class="header-left" style="visibility: hidden;">TRẠM 500 KV HÒA BÌNH</div>
-                <div class="header-center" style="visibility: hidden;">PHIẾU THAO TÁC</div>
-                <div class="header-right">Số phiếu:<br><span class="inline-dotted editable-field" style="width: 100px;">...../....../...../T500HB</span><br>Trang số : 03/04</div>
+            <div class="header-right-page2">
+                 <div>Số phiếu: <span class="inline-dotted editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 03/04</div>
             </div>
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
                 <thead>
-                    <tr>
-                        <th rowspan="2" style="width: 6%;">Mục</th>
-                        <th rowspan="2" style="width: 12%;">Địa điểm</th>
-                        <th colspan="2" style="width: 44%;">Trình tự thao tác</th>
-                        <th rowspan="2" style="width: 9%;">Đã thực<br>hiện</th>
-                        <th colspan="2" style="width: 13%;">Thời gian</th>
-                        <th colspan="2" style="width: 16%;">Người</th>
+                     <tr>
+                        <th rowspan="2" class="col-muc">Mục</th>
+                        <th rowspan="2" class="col-diadiem">Địa điểm</th>
+                        <th colspan="2">Trình tự thao tác</th>
+                        <th rowspan="2" class="col-dathuchien">Đã<br>thực<br>hiện</th>
+                        <th colspan="2">Thời gian</th>
+                        <th colspan="2">Người</th>
                     </tr>
                     <tr>
-                        <th style="width: 6%;">Bước</th>
-                        <th>Nội dung</th>
-                        <th style="width: 6.5%;">Bắt<br>đầu</th>
-                        <th style="width: 6.5%;">Kết<br>thúc</th>
-                        <th style="width: 8%;">Ra<br>lệnh</th>
-                        <th style="width: 8%;">Nhận<br>lệnh</th>
+                        <th class="col-buoc">Bước</th>
+                        <th class="col-noidung">Nội dung</th>
+                        <th class="col-batdau">Bắt<br>đầu</th>
+                        <th class="col-ketthuc">Kết<br>thúc</th>
+                        <th class="col-ralenh">Ra<br>lệnh</th>
+                        <th class="col-nhanlenh">Nhận<br>lệnh</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -327,10 +364,8 @@
 
         <!-- ================= TRANG 4 ================= -->
         <div class="page">
-            <div class="page-header-a4" style="margin-bottom: 20px;">
-                <div class="header-left" style="visibility: hidden;">TRẠM 500 KV HÒA BÌNH</div>
-                <div class="header-center" style="visibility: hidden;">PHIẾU THAO TÁC</div>
-                <div class="header-right">Số phiếu:<br><span class="inline-dotted editable-field" style="width: 100px;">...../....../...../T500HB</span><br>Trang số : 04/04</div>
+             <div class="header-right-page2">
+                 <div>Số phiếu: <span class="inline-dotted editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 04/04</div>
             </div>
             
             <div style="font-weight: bold; margin-bottom: 5px;">Giao nhận, nghiệm thu đường dây, thiết bị điện sau khi thao tác:</div>
