@@ -462,10 +462,12 @@
             });
 
             if (isEditing) {
-                btnEdit.innerHTML = "🔓 Khóa Lại (Đang sửa...)";
+                // ĐANG MỞ SỬA
+                btnEdit.innerHTML = "🔓 Khóa"; // Text ngắn gọn
                 btnEdit.classList.add('active');
             } else {
-                btnEdit.innerHTML = "🔒 Mở Khóa Chỉnh Sửa";
+                // ĐÃ KHÓA
+                btnEdit.innerHTML = "🔒 Edit"; // Text ngắn gọn
                 btnEdit.classList.remove('active');
             }
         }
