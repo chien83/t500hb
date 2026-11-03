@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa Phiếu Thao Tác Trực Quan</title>
+    <style>
+        /* === RESET & CƠ BẢN === */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #525659;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 13pt;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        /* === GIAO DIỆN TRANG A4 === */
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            /* Đã giảm lề trái/phải xuống 15mm để bảng có không gian rộng tối đa giống hệ thống cũ */
+            padding: 15mm 15mm 20mm 15mm; 
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* === HEADER PHIẾU === */
+        .page-header-a4 {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        .header-left { 
+            text-align: center; 
+            width: 35%; /* Đã chỉnh lại tỷ lệ */
+            font-size: 12pt; /* Đưa về cỡ chữ chuẩn giống file Word */
+        }
+        .header-center { 
+            text-align: center; 
+            width: 30%; /* Mở rộng không gian để không bị rớt dòng */
+            font-size: 14pt; /* Thu nhỏ cỡ chữ lại một chút */
+            margin-top: 10px; 
+        }
+        .header-right { 
+            text-align: left; 
+            width: 35%; /* Đã chỉnh lại tỷ lệ */
+            font-weight: normal; 
+            font-size: 12pt; /* Đưa về cỡ chữ chuẩn giống file Word */
+            padding-left: 15px; 
+        }
+
+        .header-right-page2 {
+            text-align: right; /* Đẩy cụm số phiếu sang phải giống file word */
+            margin-bottom: 10px;
+            font-size: 13pt;
+        }
+        .header-right-page2 > div {
+             display: inline-block;
+             text-align: left;
+        }
+
+        /* === FORM NHẬP LIỆU === */
+        .form-row { display: flex; align-items: flex-end; margin-bottom: 10px; line-height: 1.6; }
+        .form-label { white-space: nowrap; margin-right: 5px; }
+        
+        .dotted-line {
+            flex-grow: 1;
+            border-bottom: 1px dotted #000;
+            min-height: 20px;
+            display: flex;
+            align-items: flex-end;
+        }
+        .inline-dotted {
+            border-bottom: 1px dotted #000;
+            display: inline-block;
+            min-height: 20px;
+            margin: 0 5px;
+        }
+
+        /* Lưới chữ ký */
+        .signature-grid {
+            display: grid;
+            grid-template-columns: 55% 45%;
+            row-gap: 15px;
+            margin-bottom: 10px;
+            margin-top: 15px;
+        }
+        .sig-item { display: flex; align-items: flex-end; padding-right: 15px; }
+
+        ol.numbered-list { padding-left: 25px; margin-top: 5px; line-height: 1.8; }
+        ol.numbered-list li { padding-left: 5px; }
+
+        /* === BẢNG BIỂU === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12pt;
+            table-layout: fixed; /* Khóa độ rộng để colgroup hoạt động */
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 5px;
+            vertical-align: middle;
+            text-align: center;
+            word-wrap: break-word;
+        }
+        th { font-weight: bold; }
+
+        /* === CSS CHẾ ĐỘ CHỈNH SỬA (WYSIWYG) === */
+        .editable-field {
+            width: 100%;
+            min-height: 20px;
+            outline: none;
+            display: inline-block;
+        }
+        td.editable-field { display: table-cell; }
+
+        [contenteditable="true"] {
+            background-color: #e3f2fd;
+            border-radius: 2px;
+            cursor: text;
+        }
+        [contenteditable="true"]:hover { background-color: #bbdefb; }
+        [contenteditable="true"]:focus {
+            background-color: #fff8e1;
+            box-shadow: inset 0 0 0 1px #ff9800;
+        }
+
+        /* === THANH CÔNG CỤ === */
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2c3e50;
+            padding: 12px; /* Thu gọn padding */
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; /* Xếp dọc các nút */
+            gap: 10px; /* Khoảng cách giữa các nút */
+        }
+        .btn {
+            cursor: pointer;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 11pt;
+            color: white;
+            transition: 0.3s;
+        }
+        .btn-edit { background-color: #3498db; }
+        .btn-edit.active { background-color: #e67e22; }
+        .btn-print { background-color: #2ecc71; }
+        .btn-save { background-color: #9b59b6; display: none; }
+
+        /* === CSS KHI IN ẤN (PDF) === */
+        @media print {
+            /* Lệnh @page margin: 0 sẽ "giết" toàn bộ Tiêu đề, Ngày giờ, URL thừa của trình duyệt */
+            @page {
+                size: A4;
+                margin: 0; 
+            }
+            body, html { 
+                background: none; 
+                margin: 0; 
+                padding: 0; 
+            }
+            .page { 
+                box-shadow: none; 
+                margin: 0; 
+                border: none; 
+                page-break-after: always; /* Luôn ngắt trang sau mỗi form A4 */
+                min-height: auto; /* Bỏ chiều cao cố định để nội dung không ép sinh ra trang trắng */
+                padding: 15mm 15mm 20mm 15mm;
+            }
+            /* Lệnh này chặn việc sinh thêm 1 trang trắng vô duyên ở ngay cuối file PDF */
+            .page:last-child {
+                page-break-after: auto;
+            }
+            .control-panel { display: none; }
+            [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="control-panel">
+        <!-- Đã rút gọn tên nút -->
+        <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
+        <button id="btnSave" class="btn btn-save" onclick="alert('Tính năng lưu đang phát triển')">💾 Lưu Phiếu</button>
+        <button class="btn btn-print" onclick="window.print()">🖨️ In / Xuất PDF</button>
+    </div>
+
+    <div id="document-container">
+        
+        <!-- ================= TRANG 1 ================= -->
+        <div class="page">
+            <div class="page-header-a4">
+                <div class="header-left">TRUYỀN TẢI ĐIỆN HÒA BÌNH<br><br><strong>TRẠM 500 KV HÒA BÌNH</strong></div>
+                <div class="header-center">PHIẾU THAO TÁC</div>
+                <div class="header-right">Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 01/04</div>
+            </div>
+            
+            <div class="form-row">
+                <span class="form-label">Tên phiếu thao tác:</span>
+                <div class="dotted-line"><span class="editable-field" style="padding-left: 10px;"></span></div>
+            </div>
+            <div class="form-row"><div class="dotted-line"><span class="editable-field"></span></div></div>
+
+            <div class="signature-grid">
+                <div class="sig-item"><span class="form-label">Người viết phiếu:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                
+                <div class="sig-item"><span class="form-label">Người duyệt phiếu:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                
+                <div class="sig-item"><span class="form-label">Người giám sát:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                
+                <div class="sig-item"><span class="form-label">Người thao tác:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+            </div>
+
+            <div class="form-row"><span class="form-label">Mục đích thao tác:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+            <div class="form-row"><div class="dotted-line"><span class="editable-field"></span></div></div>
+            
+            <div style="margin-top: 10px;">Thời gian dự kiến:</div>
+            <div class="form-row" style="margin-left: 40px; margin-top: 5px;">
+                <span class="form-label">- Bắt đầu:</span> <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> h <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span>
+                <span class="form-label" style="margin-left: 40px;">ngày</span> <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 60px; text-align: center;"></span></span>
+            </div>
+            <div class="form-row" style="margin-left: 40px;">
+                <span class="form-label">- Kết thúc:</span> <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> h <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span>
+                <span class="form-label" style="margin-left: 40px;">ngày</span> <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 60px; text-align: center;"></span></span>
+            </div>
+
+            <div class="form-row" style="margin-top: 10px;"><span class="form-label">Đơn vị đề nghị thao tác:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+            
+            <div style="margin-top: 10px; font-weight: bold;">Điều kiện cần có để thực hiện:</div>
+            <ol class="numbered-list">
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+            </ol>
+            
+            <div style="margin-top: 5px; font-weight: bold;">Lưu ý:</div>
+            <ol class="numbered-list">
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+            </ol>
+
+            <div style="font-weight: bold; margin-top: 10px;">Giao nhận, nghiệm thu đường dây, thiết bị điện trước khi thao tác (nếu có):</div>
+            <table>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                    <col style="width: 40%;">
+                </colgroup>
+                <tr><th>Thời gian</th><th>Đơn vị</th><th>Họ tên</th><th>Nội dung</th></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+            </table>
+        </div>
+
+        <!-- ================= TRANG 2 ================= -->
+        <div class="page">
+            <div class="header-right-page2">
+                <div>Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 02/04</div>
+            </div>
+            <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
+            <table>
+                <colgroup>
+                    <col style="width: 6.5%;">  <!-- Mục (Tăng lên 6.5% để không rớt chữ) -->
+                    <col style="width: 10%;">   <!-- Địa điểm -->
+                    <col style="width: 7.5%;">  <!-- Bước (Tăng lên 7.5% để không rớt chữ) -->
+                    <col style="width: 41.5%;"> <!-- Nội dung (Thu lại 2% bù cho 2 cột trên) -->
+                    <col style="width: 7%;">    <!-- Đã thực hiện -->
+                    <col style="width: 6.5%;">  <!-- Bắt đầu -->
+                    <col style="width: 6.5%;">  <!-- Kết thúc -->
+                    <col style="width: 7%;">    <!-- Ra lệnh -->
+                    <col style="width: 7.5%;">  <!-- Nhận lệnh -->
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Mục</th>
+                        <th rowspan="2">Địa điểm</th>
+                        <th colspan="2">Trình tự thao tác</th>
+                        <th rowspan="2">Đã<br>thực<br>hiện</th>
+                        <th colspan="2">Thời gian</th>
+                        <th colspan="2">Người</th>
+                    </tr>
+                    <tr>
+                        <th>Bước</th>
+                        <th>Nội dung</th>
+                        <th>Bắt<br>đầu</th>
+                        <th>Kết<br>thúc</th>
+                        <th>Ra<br>lệnh</th>
+                        <th>Nhận<br>lệnh</th>
+                    </tr>
+                    <!-- Bổ sung dòng đánh số thứ tự -->
+                    <tr>
+                        <!-- Mới: Dùng thẻ td và căn giữa -->
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: center;">3</td>
+                        <td style="text-align: center;">4</td>
+                        <td style="text-align: center;">5</td>
+                        <td style="text-align: center;">6</td>
+                        <td style="text-align: center;">7</td>
+                        <td style="text-align: center;">8</td>
+                        <td style="text-align: center;">9</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <script>
+                        for(let i=1; i<=25; i++) { /* Đã giảm xuống 25 dòng vì thêm dòng số 1-9 */
+                            document.write(`
+                            <tr>
+                                <td class="editable-field" style="font-weight:bold; height: 28px;">${i===1 ? 'I' : ''}</td>
+                                <td class="editable-field"></td>
+                                <td class="editable-field">${i}</td>
+                                <td class="editable-field" style="text-align: left;"></td>
+                                <td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td>
+                            </tr>`);
+                        }
+                    </script>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= TRANG 3 ================= -->
+        <div class="page">
+            <div class="header-right-page2">
+                 <div>Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 03/04</div>
+            </div>
+            <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
+            <table>
+                <colgroup>
+                    <col style="width: 6.5%;">  <!-- Mục (Tăng lên 6.5% để không rớt chữ) -->
+                    <col style="width: 10%;">   <!-- Địa điểm -->
+                    <col style="width: 7.5%;">  <!-- Bước (Tăng lên 7.5% để không rớt chữ) -->
+                    <col style="width: 41.5%;"> <!-- Nội dung (Thu lại 2% bù cho 2 cột trên) -->
+                    <col style="width: 7%;">    <!-- Đã thực hiện -->
+                    <col style="width: 6.5%;">  <!-- Bắt đầu -->
+                    <col style="width: 6.5%;">  <!-- Kết thúc -->
+                    <col style="width: 7%;">    <!-- Ra lệnh -->
+                    <col style="width: 7.5%;">  <!-- Nhận lệnh -->
+                </colgroup>
+                <thead>
+                     <tr>
+                        <th rowspan="2">Mục</th>
+                        <th rowspan="2">Địa điểm</th>
+                        <th colspan="2">Trình tự thao tác</th>
+                        <th rowspan="2">Đã<br>thực<br>hiện</th>
+                        <th colspan="2">Thời gian</th>
+                        <th colspan="2">Người</th>
+                    </tr>
+                    <tr>
+                        <th>Bước</th>
+                        <th>Nội dung</th>
+                        <th>Bắt<br>đầu</th>
+                        <th>Kết<br>thúc</th>
+                        <th>Ra<br>lệnh</th>
+                        <th>Nhận<br>lệnh</th>
+                    </tr>
+                    <!-- Bổ sung dòng đánh số thứ tự -->
+                    <tr>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                        <th>8</th>
+                        <th>9</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <script>
+                        for(let i=26; i<=50; i++) {
+                            document.write(`
+                            <tr>
+                                <td class="editable-field" style="font-weight:bold; height: 28px;"></td>
+                                <td class="editable-field"></td>
+                                <td class="editable-field"></td>
+                                <td class="editable-field" style="text-align: left;"></td>
+                                <td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td>
+                            </tr>`);
+                        }
+                    </script>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= TRANG 4 ================= -->
+        <div class="page">
+             <div class="header-right-page2">
+                 <div>Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 04/04</div>
+            </div>
+            
+            <div style="font-weight: bold; margin-bottom: 5px;">Giao nhận, nghiệm thu đường dây, thiết bị điện sau khi thao tác:</div>
+            <table>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                    <col style="width: 40%;">
+                </colgroup>
+                <tr><th>Thời gian</th><th>Đơn vị</th><th>Họ tên</th><th>Nội dung</th></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+            </table>
+
+            <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 30px; font-weight: bold;">
+                <div>Ngày <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 30px;"></span></span><br>Người viết phiếu<br><span style="font-weight: normal; font-style: italic;">(Ký và ghi rõ họ tên)</span></div>
+                <div>Ngày <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 30px;"></span></span><br>Người duyệt phiếu<br><span style="font-weight: normal; font-style: italic;">(Ký và ghi rõ họ tên)</span></div>
+            </div>
+            
+            <div style="font-weight: bold; margin-top: 60px;">Các sự kiện bất thường trong thao tác:</div>
+            <div class="dotted-line" style="margin-top: 15px;"><span class="editable-field"></span></div>
+            <div class="dotted-line" style="margin-top: 25px;"><span class="editable-field"></span></div>
+            
+            <div style="text-align: center; margin-top: 50px; font-weight: bold;">Người thực hiện thao tác<br>Ngày <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 30px;"></span></span></div>
+            <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 15px; font-weight: bold;">
+                <div>Người giám sát<br><span style="font-weight: normal; font-style: italic;">(Ký và ghi rõ họ tên)</span></div>
+                <div>Người thao tác<br><span style="font-weight: normal; font-style: italic;">(Ký và ghi rõ họ tên)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT XỬ LÝ -->
+    <script>
+        let isEditing = false;
+
+        function toggleEditMode() {
+            isEditing = !isEditing;
+            const btnEdit = document.getElementById('btnEdit');
+            
+            const editableFields = document.querySelectorAll('.editable-field');
+            editableFields.forEach(field => {
+                field.setAttribute('contenteditable', isEditing);
+            });
+
+            if (isEditing) {
+                // ĐANG MỞ SỬA
+                btnEdit.innerHTML = "🔓 Khóa"; // Text ngắn gọn
+                btnEdit.classList.add('active');
+            } else {
+                // ĐÃ KHÓA
+                btnEdit.innerHTML = "🔒 Edit"; // Text ngắn gọn
+                btnEdit.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
