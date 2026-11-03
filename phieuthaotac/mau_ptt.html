@@ -465,13 +465,18 @@
         </div>
     </div>
 
-    <!-- SCRIPT XỬ LÝ -->
+    <!-- SCRIPT XỬ LÝ CHỈNH SỬA & GỘP/TÁCH Ô -->
     <script>
         let isEditing = false;
+        let isDraggingCells = false;
+        let startCell = null;
+        let focusedCell = null;
 
         function toggleEditMode() {
             isEditing = !isEditing;
             const btnEdit = document.getElementById('btnEdit');
+            const btnMerge = document.getElementById('btnMerge');
+            const btnSplit = document.getElementById('btnSplit');
             
             const editableFields = document.querySelectorAll('.editable-field');
             editableFields.forEach(field => {
@@ -479,14 +484,168 @@
             });
 
             if (isEditing) {
-                // ĐANG MỞ SỬA
-                btnEdit.innerHTML = "🔓 Khóa"; // Text ngắn gọn
+                btnEdit.innerHTML = "🔓 Khóa";
                 btnEdit.classList.add('active');
+                btnMerge.style.display = "block";
+                btnSplit.style.display = "block";
             } else {
-                // ĐÃ KHÓA
-                btnEdit.innerHTML = "🔒 Edit"; // Text ngắn gọn
+                btnEdit.innerHTML = "🔒 Edit";
                 btnEdit.classList.remove('active');
+                btnMerge.style.display = "none";
+                btnSplit.style.display = "none";
+                clearCellSelection();
             }
+        }
+
+        // Lấy vị trí cột chính xác của ô trong hàng (0 -> 8)
+        function getColIndex(td) {
+            return Array.from(td.parentElement.children).indexOf(td);
+        }
+
+        // Lấy vị trí hàng trong tbody
+        function getRowIndex(td) {
+            return Array.from(td.closest('tbody').children).indexOf(td.parentElement);
+        }
+
+        // Xóa vùng chọn hiện tại
+        function clearCellSelection() {
+            document.querySelectorAll('td.cell-selected').forEach(td => {
+                td.classList.remove('cell-selected');
+            });
+        }
+
+        // Tô sáng các ô cùng cột từ cellA đến cellB
+        function selectColumnRange(cellA, cellB) {
+            if (!cellA || !cellB) return;
+            const tbodyA = cellA.closest('tbody');
+            const tbodyB = cellB.closest('tbody');
+            if (!tbodyA || tbodyA !== tbodyB) return;
+
+            const colA = getColIndex(cellA);
+            const colB = getColIndex(cellB);
+            if (colA !== colB) return; // Chỉ gộp theo chiều dọc cùng cột
+
+            clearCellSelection();
+            const rows = Array.from(tbodyA.children);
+            const r1 = getRowIndex(cellA);
+            const r2 = getRowIndex(cellB);
+            const minRow = Math.min(r1, r2);
+            const maxRow = Math.max(r1, r2);
+
+            for (let r = minRow; r <= maxRow; r++) {
+                const cell = rows[r].children[colA];
+                if (cell && !cell.classList.contains('merged-hidden')) {
+                    cell.classList.add('cell-selected');
+                }
+            }
+        }
+
+        // Lắng nghe sự kiện chuột trên các ô bảng
+        document.addEventListener('mousedown', (e) => {
+            if (!isEditing) return;
+            const td = e.target.closest('tbody td.editable-field');
+            if (!td) {
+                if (!e.target.closest('.control-panel')) clearCellSelection();
+                return;
+            }
+
+            focusedCell = td;
+
+            // Nếu giữ phím Shift + Click để chọn dải ô
+            if (e.shiftKey && startCell && td !== startCell) {
+                e.preventDefault();
+                window.getSelection().removeAllRanges();
+                selectColumnRange(startCell, td);
+            } else {
+                clearCellSelection();
+                startCell = td;
+                isDraggingCells = true;
+            }
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            if (!isEditing || !isDraggingCells || !startCell) return;
+            const td = e.target.closest('tbody td.editable-field');
+            if (td && td !== startCell) {
+                window.getSelection().removeAllRanges(); // Bỏ bôi đen văn bản khi đang kéo chọn nhiều ô
+                selectColumnRange(startCell, td);
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDraggingCells = false;
+        });
+
+        // HÀM GỘP Ô (MERGE CELLS)
+        function mergeSelectedCells() {
+            const selected = Array.from(document.querySelectorAll('td.cell-selected'));
+            if (selected.length < 2) {
+                alert('Hãy kéo chuột quét chọn (hoặc giữ Shift + Click) ít nhất 2 ô theo chiều dọc để gộp!');
+                return;
+            }
+
+            const firstCell = selected[0];
+            const tbody = firstCell.closest('tbody');
+            const rows = Array.from(tbody.children);
+            const colIndex = getColIndex(firstCell);
+
+            const startRow = getRowIndex(firstCell);
+            const lastSelected = selected[selected.length - 1];
+            const endRow = getRowIndex(lastSelected) + (lastSelected.rowSpan || 1) - 1;
+            const totalSpan = endRow - startRow + 1;
+
+            // Gom nội dung chữ của các ô lại (nếu có) để không bị mất chữ
+            let combinedText = [];
+            for (let r = startRow; r <= endRow; r++) {
+                const cell = rows[r].children[colIndex];
+                const text = cell.innerText.trim();
+                if (text) combinedText.push(text);
+            }
+
+            // Gán rowspan cho ô đầu tiên và ẩn các ô bên dưới
+            firstCell.rowSpan = totalSpan;
+            firstCell.innerText = combinedText.join(' ');
+
+            for (let r = startRow + 1; r <= endRow; r++) {
+                const cell = rows[r].children[colIndex];
+                cell.rowSpan = 1;
+                cell.innerText = '';
+                cell.classList.add('merged-hidden');
+            }
+
+            clearCellSelection();
+        }
+
+        // HÀM TÁCH Ô (SPLIT CELLS)
+        function splitSelectedCell() {
+            const targetCell = document.querySelector('td.cell-selected') || focusedCell;
+            if (!targetCell || !targetCell.closest('tbody')) {
+                alert('Hãy click chuột vào ô đã gộp cần tách!');
+                return;
+            }
+
+            const span = targetCell.rowSpan || 1;
+            if (span <= 1) {
+                alert('Ô này chưa được gộp!');
+                return;
+            }
+
+            const tbody = targetCell.closest('tbody');
+            const rows = Array.from(tbody.children);
+            const colIndex = getColIndex(targetCell);
+            const startRow = getRowIndex(targetCell);
+
+            // Đưa ô đầu về 1 dòng và bật hiển thị lại các ô bên dưới
+            targetCell.rowSpan = 1;
+            for (let r = startRow + 1; r < startRow + span; r++) {
+                const cell = rows[r].children[colIndex];
+                if (cell) {
+                    cell.classList.remove('merged-hidden');
+                    cell.rowSpan = 1;
+                }
+            }
+
+            clearCellSelection();
         }
     </script>
 </body>
