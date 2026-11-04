@@ -544,6 +544,7 @@
         function toggleEditMode() {
             isEditing = !isEditing;
             const btnEdit = document.getElementById('btnEdit');
+            const btnUndo = document.getElementById('btnUndo'); // Bổ sung khai báo nút Undo
             const btnMerge = document.getElementById('btnMerge');
             const btnSplit = document.getElementById('btnSplit');
             const btnAddRow = document.getElementById('btnAddRow'); // Khai báo nút thêm dòng
@@ -560,6 +561,7 @@
             if (isEditing) {
                 btnEdit.innerHTML = "🔓 Khóa";
                 btnEdit.classList.add('active');
+                if (btnUndo) btnUndo.style.display = "block"; // Hiện nút Undo
                 btnMerge.style.display = "block";
                 btnSplit.style.display = "block";
                 if (btnAddRow) btnAddRow.style.display = "block"; // Hiện nút thêm dòng
@@ -569,6 +571,8 @@
             } else {
                 btnEdit.innerHTML = "🔒 Edit";
                 btnEdit.classList.remove('active');
+                if (btnUndo) btnUndo.style.display = "none"; // Ẩn nút Undo
+                undoStack = []; // XÓA SẠCH BỘ NHỚ UNDO KHI KHÓA CHỈNH SỬA
                 btnMerge.style.display = "none";
                 btnSplit.style.display = "none";
                 if (btnAddRow) btnAddRow.style.display = "none"; // Ẩn nút thêm dòng
