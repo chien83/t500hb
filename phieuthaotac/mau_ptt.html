@@ -504,6 +504,8 @@
             const btnEdit = document.getElementById('btnEdit');
             const btnMerge = document.getElementById('btnMerge');
             const btnSplit = document.getElementById('btnSplit');
+            const btnAddRow = document.getElementById('btnAddRow'); // Khai báo nút thêm dòng
+            const btnDelRow = document.getElementById('btnDelRow'); // Khai báo nút xóa dòng
             const btnSave = document.getElementById('btnSave');
             
             const editableFields = document.getElementById('document-container').querySelectorAll('.editable-field');
@@ -518,6 +520,8 @@
                 btnEdit.classList.add('active');
                 btnMerge.style.display = "block";
                 btnSplit.style.display = "block";
+                if (btnAddRow) btnAddRow.style.display = "block"; // Hiện nút thêm dòng
+                if (btnDelRow) btnDelRow.style.display = "block"; // Hiện nút xóa dòng
                 if (btnSave) btnSave.style.display = "block";
                 pageControls.forEach(ctrl => ctrl.style.display = "flex");
             } else {
@@ -525,9 +529,46 @@
                 btnEdit.classList.remove('active');
                 btnMerge.style.display = "none";
                 btnSplit.style.display = "none";
+                if (btnAddRow) btnAddRow.style.display = "none"; // Ẩn nút thêm dòng
+                if (btnDelRow) btnDelRow.style.display = "none"; // Ẩn nút xóa dòng
                 if (btnSave) btnSave.style.display = "none";
                 pageControls.forEach(ctrl => ctrl.style.display = "none");
                 clearCellSelection();
+            }
+        }
+
+        // TÍNH NĂNG THÊM DÒNG VÀO BẢNG ĐANG CLICK
+        function addRow() {
+            if (!focusedCell) return alert("Hãy click chuột vào bảng mà bạn muốn thêm dòng!");
+            const tbody = focusedCell.closest('tbody');
+            if (!tbody) return;
+            
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="editable-field" contenteditable="true" style="font-weight:bold; height: 28px;"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true" style="text-align: left;"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+
+        // TÍNH NĂNG XÓA DÒNG CUỐI CỦA BẢNG ĐANG CLICK
+        function removeRow() {
+            if (!focusedCell) return alert("Hãy click chuột vào bảng mà bạn muốn xóa dòng!");
+            const tbody = focusedCell.closest('tbody');
+            if (!tbody) return;
+            
+            const rows = tbody.querySelectorAll('tr');
+            if (rows.length > 1) { // Giữ lại ít nhất 1 dòng
+                tbody.removeChild(rows[rows.length - 1]);
+            } else {
+                alert("Không thể xóa dòng cuối cùng của bảng!");
             }
         }
 
