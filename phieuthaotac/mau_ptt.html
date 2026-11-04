@@ -646,6 +646,7 @@
                 return;
             }
             if (confirm("Bạn có chắc muốn xóa trang thao tác này?")) {
+                saveState(); // <--- THÊM DÒNG NÀY VÀO ĐÂY (Lưu trước khi xóa trang)
                 const currentPage = btn.closest('.page');
                 currentPage.remove();
                 updatePageNumbers();
