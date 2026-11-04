@@ -620,6 +620,7 @@
 
         // NHÂN BẢN TRANG
         function duplicatePage(btn) {
+            saveState(); // <--- THÊM DÒNG NÀY VÀO ĐÂY (Lưu trước khi thêm trang mới)
             const currentPage = btn.closest('.page');
             const newPage = currentPage.cloneNode(true);
             
@@ -770,7 +771,7 @@
             
             const span = targetCell.rowSpan || 1;
             if (span <= 1) return alert('Ô này chưa được gộp!');
-
+            saveState(); // <--- THÊM DÒNG NÀY VÀO ĐÂY (Lưu trước khi tách)
             const tbody = targetCell.closest('tbody');
             const rows = Array.from(tbody.children);
             const colIndex = getColIndex(targetCell);
