@@ -501,21 +501,50 @@
 
         // KHO LƯU TRỮ TRẠNG THÁI CHO TÍNH NĂNG UNDO
         let undoStack = [];
-        const MAX_UNDO_STEPS = 20;
+        const MAX_UNDO_STEPS = 50; // Tăng lên 50 bước để thoải mái Undo cả gõ chữ và thao tác bảng
+        let isTyping = false;
+        let typingTimer = null;
 
         function saveState() {
             if (!isEditing) return;
             const container = document.getElementById('document-container');
-            undoStack.push(container.innerHTML);
+            const currentHTML = container.innerHTML;
+            
+            // Tránh lưu trùng lặp nếu nội dung không thay đổi so với bước ngay trước đó
+            const lastState = undoStack.slice().pop();
+            if (lastState === currentHTML) return;
+
+            undoStack.push(currentHTML);
             if (undoStack.length > MAX_UNDO_STEPS) {
                 undoStack.shift();
             }
         }
 
+        // TỰ ĐỘNG GHI NHỚ TRƯỚC KHI NGƯỜI DÙNG GÕ CHỮ HOẶC XÓA KÝ TỰ ĐƠN LẺ
+        document.getElementById('document-container').addEventListener('beforeinput', function() {
+            if (!isEditing) return;
+            if (!isTyping) {
+                saveState(); // Chụp lại màn hình ngay trước khi ký tự đầu tiên được gõ vào
+                isTyping = true;
+            }
+            // Nếu ngừng gõ quá 0.8 giây thì tách thành một bước Undo mới cho lần gõ tiếp theo
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(function() {
+                isTyping = false;
+            }, 800);
+        });
+
+        // Khi click chuột chuyển sang ô khác, tự động ngắt nhịp để tính là bước Undo mới
+        document.getElementById('document-container').addEventListener('focusin', function() {
+            isTyping = false;
+        });
+
         function undoAction() {
             if (!isEditing || undoStack.length === 0) return;
+            isTyping = false;
+            clearTimeout(typingTimer);
+
             const container = document.getElementById('document-container');
-            
             const previousState = undoStack.pop();
             container.innerHTML = previousState;
             
