@@ -894,6 +894,300 @@
                 }
             }
         });
+
+        // =========================================================
+        // TÍNH NĂNG TỰ ĐỘNG ĐỌC FILE WORD (.DOCX) & EXCEL (.XLSX)
+        // =========================================================
+
+        async function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Lưu trạng thái vào Undo trước khi import
+            if (isEditing) saveState();
+
+            const fileName = file.name.toLowerCase();
+            try {
+                if (fileName.endsWith('.docx')) {
+                    await importFromDocx(file);
+                } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+                    await importFromExcel(file);
+                } else {
+                    alert('Vui lòng chọn file định dạng .docx hoặc .xlsx!');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Có lỗi khi đọc file: ' + err.message);
+            }
+            // Reset input để có thể chọn lại cùng 1 file nếu muốn
+            event.target.value = '';
+        }
+
+        // --- 1. ĐỌC FILE WORD (.DOCX) TỪ NITRO PRO ---
+        async function importFromDocx(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const zip = await JSZip.loadAsync(arrayBuffer);
+            const docXmlFile = zip.file("word/document.xml");
+            if (!docXmlFile) throw new Error("Không tìm thấy cấu trúc word/document.xml trong file Word.");
+
+            const xmlText = await docXmlFile.async("string");
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+
+            const tables = Array.from(xmlDoc.getElementsByTagName("w:tbl"));
+            if (tables.length === 0) {
+                alert("Không tìm thấy bảng thao tác nào trong file Word!");
+                return;
+            }
+
+            const pagesData = [];
+
+            tables.forEach(tbl => {
+                const trs = Array.from(tbl.getElementsByTagName("w:tr"));
+                const pageRows = [];
+
+                trs.forEach(tr => {
+                    const tcs = Array.from(tr.children).filter(el => el.tagName === "w:tc");
+                    const rowCells = [];
+
+                    tcs.forEach(tc => {
+                        // Nối các đoạn văn <w:p> trong cùng 1 ô bằng dấu cách để không bị dính chữ khi xuống dòng
+                        const paragraphs = Array.from(tc.getElementsByTagName("w:p"));
+                        const pTexts = paragraphs.map(p => {
+                            return Array.from(p.getElementsByTagName("w:t"))
+                                .map(t => t.textContent)
+                                .join("");
+                        }).filter(txt => txt.trim() !== "");
+                        const cellText = pTexts.join(" ").replace(/\s+/g, " ").trim();
+
+                        // Kiểm tra gộp ngang (gridSpan) và gộp dọc (vMerge)
+                        let colspan = 1;
+                        let vMerge = null;
+                        const tcPr = Array.from(tc.children).find(el => el.tagName === "w:tcPr");
+                        if (tcPr) {
+                            const gridSpanEl = Array.from(tcPr.children).find(el => el.tagName === "w:gridSpan");
+                            if (gridSpanEl) {
+                                colspan = parseInt(gridSpanEl.getAttribute("w:val") || "1", 10);
+                            }
+                            const vMergeEl = Array.from(tcPr.children).find(el => el.tagName === "w:vMerge");
+                            if (vMergeEl) {
+                                vMerge = vMergeEl.getAttribute("w:val") || "continue";
+                            }
+                        }
+
+                        rowCells.push({ text: cellText, colspan, vMerge });
+                    });
+
+                    // Bỏ qua 3 dòng tiêu đề bảng (Mục, Địa điểm... và dòng đánh số 1 -> 9)
+                    if (isHeaderRow(rowCells.map(c => c.text))) return;
+
+                    pageRows.push(rowCells);
+                });
+
+                if (pageRows.length > 0) {
+                    pagesData.push(pageRows);
+                }
+            });
+
+            renderImportedStepPages(pagesData);
+        }
+
+        // --- 2. ĐỌC FILE EXCEL (.XLSX) TỪ NITRO PRO ---
+        async function importFromExcel(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+            const pagesData = [];
+
+            workbook.SheetNames.forEach(sheetName => {
+                const ws = workbook.Sheets[sheetName];
+                const rawRows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
+                const merges = ws['!merges'] || [];
+
+                let currentPageRows = [];
+
+                for (let r = 0; r < rawRows.length; r++) {
+                    const row = rawRows[r].map(v => String(v || "").replace(/\s+/g, " ").trim());
+                    if (row.every(cell => cell === "")) continue;
+
+                    // Nhận diện dòng đánh số cột 1 -> 9 để ngắt sang trang thao tác mới
+                    if (row[0] === "1" && row[1] === "2" && row[2] === "3" && row[3] === "4") {
+                        if (currentPageRows.length > 0) {
+                            pagesData.push(currentPageRows);
+                            currentPageRows = [];
+                        }
+                        continue;
+                    }
+
+                    // Bỏ qua các dòng tiêu đề đầu trang của Nitro Pro
+                    if (
+                        row[0].includes("Trình tự hạng mục") ||
+                        (row[0] === "Mục" && row[1] === "Địa điểm") ||
+                        (row[2] === "Bước" && row[3] === "Nội dung")
+                    ) {
+                        continue;
+                    }
+
+                    // Kiểm tra xem dòng này có phải dòng tiêu đề phụ gộp ngang ở cột C (index 2) không
+                    const isSectionHeader = merges.some(m => m.s.r === r && m.s.c === 2 && m.e.c >= 4);
+
+                    // Kiểm tra gộp dọc ở cột Bước (index 2)
+                    const vMergeStart = merges.some(m => m.s.r === r && m.s.c === 2 && m.e.r > r);
+                    const vMergeCont = merges.some(m => r > m.s.r && r <= m.e.r && m.s.c === 2);
+
+                    // Ánh xạ 10 cột của Excel Nitro Pro (do cột Nội dung chiếm D:E) về 9 cột chuẩn
+                    const mapped9Cols = [
+                        row[0] || "", // 1. Mục
+                        row[1] || "", // 2. Địa điểm
+                        row[2] || "", // 3. Bước
+                        row[3] || row[4] || "", // 4. Nội dung
+                        row[5] || "", // 5. Đã thực hiện
+                        row[6] || "", // 6. Bắt đầu
+                        row[7] || "", // 7. Kết thúc
+                        row[8] || "", // 8. Ra lệnh
+                        row[9] || ""  // 9. Nhận lệnh
+                    ];
+
+                    if (isSectionHeader) {
+                        currentPageRows.push([
+                            { text: mapped9Cols[0], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[1], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[2] || mapped9Cols[3], colspan: 3, vMerge: null },
+                            { text: mapped9Cols[5], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[6], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[7], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[8], colspan: 1, vMerge: null }
+                        ]);
+                    } else {
+                        currentPageRows.push(mapped9Cols.map((txt, idx) => ({
+                            text: txt,
+                            colspan: 1,
+                            vMerge: idx === 2 ? (vMergeStart ? "restart" : (vMergeCont ? "continue" : null)) : null
+                        })));
+                    }
+                }
+
+                if (currentPageRows.length > 0) {
+                    pagesData.push(currentPageRows);
+                }
+            });
+
+            if (pagesData.length === 0) {
+                alert("Không tìm thấy dữ liệu bước thao tác hợp lệ trong file Excel!");
+                return;
+            }
+
+            renderImportedStepPages(pagesData);
+        }
+
+        // Hàm nhận diện dòng tiêu đề bảng để lọc bỏ
+        function isHeaderRow(texts) {
+            const joined = texts.join("|");
+            if (joined.includes("Trình tự thao tác") || joined.includes("Địa điểm")) return true;
+            if (joined.includes("Nội dung") && joined.includes("Nhận lệnh")) return true;
+            if (texts[0] === "1" && texts[1] === "2" && texts[2] === "3" && texts[3] === "4") return true;
+            return false;
+        }
+
+        // --- 3. DỰNG LẠI CÁC TRANG THAO TÁC TRÊN GIAO DIỆN WEB ---
+        function renderImportedStepPages(pagesData) {
+            const container = document.getElementById('document-container');
+            const existingStepPages = Array.from(container.querySelectorAll('.page.step-page'));
+            if (existingStepPages.length === 0) return;
+
+            // Lấy trang thao tác đầu tiên làm mẫu khung (Template)
+            const templatePage = existingStepPages[0].cloneNode(true);
+            templatePage.querySelectorAll('script').forEach(s => s.remove());
+
+            // Tìm Trang cuối (Trang nghiệm thu) để chèn các trang thao tác vào ngay trước nó
+            const allPages = Array.from(container.querySelectorAll('.page'));
+            const lastPage = allPages[allPages.length - 1];
+
+            // Xóa các trang thao tác cũ
+            existingStepPages.forEach(p => p.remove());
+
+            // Sinh từng trang thao tác mới theo đúng phân trang của file tải lên
+            pagesData.forEach(pageRows => {
+                const newPage = templatePage.cloneNode(true);
+                const tbody = newPage.querySelector('tbody');
+                tbody.innerHTML = '';
+
+                // Điều chỉnh hiển thị nút +/- trang theo chế độ Edit hiện tại
+                const ctrl = newPage.querySelector('.page-controls');
+                if (ctrl) ctrl.style.display = isEditing ? "flex" : "none";
+
+                pageRows.forEach(rowCells => {
+                    const tr = document.createElement('tr');
+
+                    // Trường hợp dòng tiêu đề phụ gộp 3 cột (Bước + Nội dung + Đã thực hiện)
+                    if (rowCells.length === 7 && rowCells[2].colspan === 3) {
+                        for (let c = 0; c < 9; c++) {
+                            const td = document.createElement('td');
+                            td.className = 'editable-field';
+                            td.setAttribute('contenteditable', isEditing);
+                            if (c === 0) {
+                                td.style.fontWeight = 'bold';
+                                td.style.height = '28px';
+                                td.innerText = rowCells[0].text;
+                            } else if (c === 1) {
+                                td.innerText = rowCells[1].text;
+                            } else if (c === 2) {
+                                td.colSpan = 3;
+                                td.style.fontWeight = 'bold';
+                                td.style.textAlign = 'left';
+                                td.innerText = rowCells[2].text;
+                            } else if (c === 3 || c === 4) {
+                                td.classList.add('merged-hidden');
+                            } else {
+                                const mappedIdx = c - 2;
+                                td.innerText = rowCells[mappedIdx] ? rowCells[mappedIdx].text : '';
+                            }
+                            tr.appendChild(td);
+                        }
+                    } else {
+                        // Dòng 9 cột tiêu chuẩn
+                        for (let c = 0; c < 9; c++) {
+                            const cellData = rowCells[c] || { text: '', colspan: 1, vMerge: null };
+                            const td = document.createElement('td');
+                            td.className = 'editable-field';
+                            td.setAttribute('contenteditable', isEditing);
+
+                            if (c === 0) {
+                                td.style.fontWeight = 'bold';
+                                td.style.height = '28px';
+                            }
+                            if (c === 3) {
+                                td.style.textAlign = 'left';
+                            }
+
+                            // Xử lý gộp dọc (vMerge) cho các bước như Bước 40, 58, 63
+                            if (cellData.vMerge === 'continue') {
+                                td.classList.add('merged-hidden');
+                                const prevTr = tbody.lastElementChild;
+                                if (prevTr && prevTr.children[c]) {
+                                    prevTr.children[c].rowSpan = (prevTr.children[c].rowSpan || 1) + 1;
+                                }
+                            } else {
+                                td.innerText = cellData.text;
+                            }
+
+                            tr.appendChild(td);
+                        }
+                    }
+
+                    tbody.appendChild(tr);
+                });
+
+                container.insertBefore(newPage, lastPage);
+            });
+
+            // Cập nhật lại số trang tự động (01/05, 02/05...)
+            updatePageNumbers();
+            alert(`Đã nhập thành công ${pagesData.length} trang trình tự thao tác!`);
+        }
+
+
+
     </script>
 </body>
 </html>
