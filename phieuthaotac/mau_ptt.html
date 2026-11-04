@@ -231,7 +231,7 @@
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
         <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
         <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()" title="Click vào ô đã gộp rồi bấm để tách ra">✂️ Tách ô</button>
-        
+        <button id="btnUndo" class="btn btn-edit" style="background-color: #95a5a6; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
         <!-- THÊM 2 NÚT NÀY VÀO ĐÂY -->
         <button id="btnAddRow" class="btn btn-merge" style="background-color: #34495e; display: none;" onclick="addRow()" title="Thêm 1 dòng mới vào cuối bảng">⬇️ Thêm dòng</button>
         <button id="btnDelRow" class="btn btn-split" style="background-color: #7f8c8d; display: none;" onclick="removeRow()" title="Xóa dòng cuối cùng của bảng">⬆️ Xóa dòng</button>
@@ -497,6 +497,48 @@
         let isDraggingCells = false;
         let startCell = null;
         let focusedCell = null;
+        // KHO LƯU TRỮ TRẠNG THÁI CHO TÍNH NĂNG UNDO
+        let undoStack = [];
+        const MAX_UNDO_STEPS = 20; // Nhớ tối đa 20 thao tác gần nhất
+
+        // HÀM CHỤP LẠI TRẠNG THÁI HIỆN TẠI (Gọi hàm này TRƯỚC mỗi khi làm gì đó)
+        function saveState() {
+            if (!isEditing) return;
+            const container = document.getElementById('document-container');
+            undoStack.push(container.innerHTML);
+            if (undoStack.length > MAX_UNDO_STEPS) {
+                undoStack.shift(); // Xóa bản ghi cũ nhất nếu vượt quá giới hạn
+            }
+        }
+
+        // HÀM HOÀN TÁC (UNDO)
+        function undoAction() {
+            if (!isEditing || undoStack.length === 0) return;
+            const container = document.getElementById('document-container');
+            
+            // Lấy trạng thái gần nhất ra và đập lại vào màn hình
+            const previousState = undoStack.pop();
+            container.innerHTML = previousState;
+            
+            // Phục hồi lại các sự kiện (vì HTML bị đập lại nên các DOM bị làm mới)
+            clearCellSelection();
+            const editableFields = container.querySelectorAll('.editable-field');
+            editableFields.forEach(field => {
+                field.setAttribute('contenteditable', 'true');
+            });
+            // Ẩn/hiện nút điều khiển trang tương ứng với chế độ Edit
+            const pageControls = document.querySelectorAll('.page-controls');
+            pageControls.forEach(ctrl => ctrl.style.display = "flex");
+            updatePageNumbers();
+        }
+
+        // LẮNG NGHE TỔ HỢP PHÍM CTRL + Z
+        document.addEventListener('keydown', function(e) {
+            if (isEditing && (e.ctrlKey || e.metaKey) && e.key === 'z') {
+                e.preventDefault();
+                undoAction();
+            }
+        });
 
         // BẬT / TẮT CHẾ ĐỘ CHỈNH SỬA
         function toggleEditMode() {

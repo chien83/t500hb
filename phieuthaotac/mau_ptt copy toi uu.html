@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa Phiếu Thao Tác Trực Quan</title>
+    <style>
+        /* === RESET & CƠ BẢN === */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #525659;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 13pt;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        /* === GIAO DIỆN TRANG A4 === */
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 15mm 20mm 15mm; 
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: visible !important; /* Đảm bảo các nút điều khiển không bị che */
+        }
+
+        /* === HEADER PHIẾU === */
+        .page-header-a4 {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        .header-left { 
+            text-align: center; 
+            width: 35%; 
+            font-size: 12pt; 
+        }
+        .header-center { 
+            text-align: center; 
+            width: 30%; 
+            font-size: 14pt; 
+            margin-top: 10px; 
+        }
+        .header-right { 
+            text-align: left; 
+            width: 35%; 
+            font-weight: normal; 
+            font-size: 12pt; 
+            padding-left: 15px; 
+        }
+        .header-right-page2 {
+            text-align: right; 
+            margin-bottom: 10px;
+            font-size: 13pt;
+        }
+        .header-right-page2 > div {
+             display: inline-block;
+             text-align: left;
+             white-space: nowrap; 
+        }
+
+        /* === FORM NHẬP LIỆU === */
+        .form-row { display: flex; align-items: flex-end; margin-bottom: 10px; line-height: 1.6; }
+        .form-label { white-space: nowrap; margin-right: 5px; }
+        
+        .dotted-line {
+            flex-grow: 1;
+            border-bottom: 1px dotted #000;
+            min-height: 20px;
+            display: flex;
+            align-items: flex-end;
+        }
+        .inline-dotted {
+            border-bottom: 1px dotted #000;
+            display: inline-block;
+            min-height: 20px;
+            margin: 0 5px;
+        }
+
+        .signature-grid {
+            display: grid;
+            grid-template-columns: 55% 45%;
+            row-gap: 15px;
+            margin-bottom: 10px;
+            margin-top: 15px;
+        }
+        .sig-item { display: flex; align-items: flex-end; padding-right: 15px; }
+
+        ol.numbered-list { padding-left: 25px; margin-top: 5px; line-height: 1.8; }
+        ol.numbered-list li { padding-left: 5px; }
+
+        /* === BẢNG BIỂU === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12pt;
+            table-layout: fixed; 
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 5px;
+            vertical-align: middle;
+            text-align: center;
+            word-wrap: break-word;
+        }
+        th { font-weight: bold; }
+
+        /* === CSS CHẾ ĐỘ CHỈNH SỬA (WYSIWYG) === */
+        .editable-field {
+            width: 100%;
+            min-height: 20px;
+            outline: none;
+            display: inline-block;
+        }
+        td.editable-field { display: table-cell; }
+
+        [contenteditable="true"] {
+            background-color: #e3f2fd;
+            border-radius: 2px;
+            cursor: text;
+        }
+        [contenteditable="true"]:hover { background-color: #bbdefb; }
+        [contenteditable="true"]:focus {
+            background-color: #fff8e1;
+            box-shadow: inset 0 0 0 1px #ff9800;
+        }
+
+        /* === TÍNH NĂNG GỘP / TÁCH Ô === */
+        td.cell-selected {
+            background-color: #ffe0b2 !important;
+            box-shadow: inset 0 0 0 2px #e65100 !important;
+        }
+        td.merged-hidden {
+            display: none !important;
+        }
+
+        /* === THANH CÔNG CỤ === */
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2c3e50;
+            padding: 12px; 
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; 
+            gap: 10px; 
+        }
+        .btn {
+            cursor: pointer;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 11pt;
+            color: white;
+            transition: 0.3s;
+        }
+        .btn-edit { background-color: #3498db; }
+        .btn-edit.active { background-color: #e67e22; }
+        .btn-print { background-color: #2ecc71; }
+        .btn-save { background-color: #9b59b6; display: none; }
+        .btn-merge { background-color: #f39c12; display: none; }
+        .btn-merge:hover { background-color: #d68910; }
+        .btn-split { background-color: #e74c3c; display: none; }
+        .btn-split:hover { background-color: #c0392b; }
+
+        /* === NÚT ĐIỀU KHIỂN TRANG (THÊM / XÓA TRANG) === */
+        .page-controls {
+            position: absolute;
+            top: 20px;
+            right: -50px; 
+            display: none; 
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+        .btn-page {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            transition: 0.2s;
+        }
+        .btn-add-page { background-color: #2ecc71; }
+        .btn-add-page:hover { background-color: #27ae60; transform: scale(1.1); }
+        .btn-del-page { background-color: #e74c3c; }
+        .btn-del-page:hover { background-color: #c0392b; transform: scale(1.1); }
+
+        /* === CSS KHI IN ẤN (PDF) === */
+        @media print {
+            @page { size: A4; margin: 0; }
+            body, html { background: none; margin: 0; padding: 0; }
+            .page { 
+                box-shadow: none; 
+                margin: 0; 
+                border: none; 
+                page-break-after: always; 
+                min-height: auto; 
+                padding: 15mm;
+                overflow: hidden !important;
+            }
+            .page:last-child { page-break-after: auto; }
+            .control-panel, .page-controls { display: none !important; }
+            [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="control-panel">
+        <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
+        <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
+        <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()" title="Click vào ô đã gộp rồi bấm để tách ra">✂️ Tách ô</button>
+        
+        <!-- THÊM 2 NÚT NÀY VÀO ĐÂY -->
+        <button id="btnAddRow" class="btn btn-merge" style="background-color: #34495e; display: none;" onclick="addRow()" title="Thêm 1 dòng mới vào cuối bảng">⬇️ Thêm dòng</button>
+        <button id="btnDelRow" class="btn btn-split" style="background-color: #7f8c8d; display: none;" onclick="removeRow()" title="Xóa dòng cuối cùng của bảng">⬆️ Xóa dòng</button>
+        
+        <button id="btnSave" class="btn btn-save" onclick="alert('Tính năng lưu đang phát triển')">💾 Lưu Phiếu</button>
+        <button class="btn btn-print" onclick="window.print()">🖨️ In / Xuất PDF</button>
+    </div>
+
+    <div id="document-container">
+        
+        <!-- ================= TRANG 1 ================= -->
+        <div class="page">
+            <div class="page-header-a4">
+                <div class="header-left">TRUYỀN TẢI ĐIỆN HÒA BÌNH<br><br><strong>TRẠM 500 KV HÒA BÌNH</strong></div>
+                <div class="header-center">PHIẾU THAO TÁC</div>
+                <div class="header-right">Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 01/04</span></div>
+            </div>
+            
+            <div class="form-row">
+                <span class="form-label">Tên phiếu thao tác:</span>
+                <div class="dotted-line"><span class="editable-field" style="padding-left: 10px;"></span></div>
+            </div>
+            <div class="form-row"><div class="dotted-line"><span class="editable-field"></span></div></div>
+
+            <div class="signature-grid">
+                <div class="sig-item"><span class="form-label">Người viết phiếu:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                
+                <div class="sig-item"><span class="form-label">Người duyệt phiếu:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                
+                <div class="sig-item"><span class="form-label">Người giám sát:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                
+                <div class="sig-item"><span class="form-label">Người thao tác:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+            </div>
+
+            <div class="form-row"><span class="form-label">Mục đích thao tác:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+            <div class="form-row"><div class="dotted-line"><span class="editable-field"></span></div></div>
+            
+            <div style="margin-top: 10px;">Thời gian dự kiến:</div>
+            <div class="form-row" style="margin-left: 40px; margin-top: 5px;">
+                <span class="form-label">- Bắt đầu:</span> <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> h <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span>
+                <span class="form-label" style="margin-left: 40px;">ngày</span> <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 60px; text-align: center;"></span></span>
+            </div>
+            <div class="form-row" style="margin-left: 40px;">
+                <span class="form-label">- Kết thúc:</span> <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> h <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span>
+                <span class="form-label" style="margin-left: 40px;">ngày</span> <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 40px; text-align: center;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 60px; text-align: center;"></span></span>
+            </div>
+
+            <div class="form-row" style="margin-top: 10px;"><span class="form-label">Đơn vị đề nghị thao tác:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+            
+            <div style="margin-top: 10px; font-weight: bold;">Điều kiện cần có để thực hiện:</div>
+            <ol class="numbered-list">
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+            </ol>
+            
+            <div style="margin-top: 5px; font-weight: bold;">Lưu ý:</div>
+            <ol class="numbered-list">
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+            </ol>
+
+            <div style="font-weight: bold; margin-top: 10px;">Giao nhận, nghiệm thu đường dây, thiết bị điện trước khi thao tác (nếu có):</div>
+            <table>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                    <col style="width: 40%;">
+                </colgroup>
+                <tr><th>Thời gian</th><th>Đơn vị</th><th>Họ tên</th><th>Nội dung</th></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+            </table>
+        </div>
+
+        <!-- ================= TRANG 2 ================= -->
+        <div class="page step-page">
+            <div class="page-controls">
+                <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang thao tác phía dưới">➕</button>
+                <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang thao tác này">🗑️</button>
+            </div>
+
+            <div class="header-right-page2">
+                <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 02/04</span></div>
+            </div>      
+            <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
+            <table>
+                <colgroup>
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 10%;">  
+                    <col style="width: 7.5%;"> 
+                    <col style="width: 41.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 7.5%;"> 
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Mục</th>
+                        <th rowspan="2">Địa điểm</th>
+                        <th colspan="2">Trình tự thao tác</th>
+                        <th rowspan="2">Đã<br>thực<br>hiện</th>
+                        <th colspan="2">Thời gian</th>
+                        <th colspan="2">Người</th>
+                    </tr>
+                    <tr>
+                        <th>Bước</th>
+                        <th>Nội dung</th>
+                        <th>Bắt<br>đầu</th>
+                        <th>Kết<br>thúc</th>
+                        <th>Ra<br>lệnh</th>
+                        <th>Nhận<br>lệnh</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: center;">3</td>
+                        <td style="text-align: center;">4</td>
+                        <td style="text-align: center;">5</td>
+                        <td style="text-align: center;">6</td>
+                        <td style="text-align: center;">7</td>
+                        <td style="text-align: center;">8</td>
+                        <td style="text-align: center;">9</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <script>
+                        for(let i=1; i<=27; i++) { 
+                            document.write(`
+                            <tr>
+                                <td class="editable-field" style="font-weight:bold; height: 28px;">${i===1 ? 'I' : ''}</td>
+                                <td class="editable-field"></td>
+                                <td class="editable-field">${i}</td>
+                                <td class="editable-field" style="text-align: left;"></td>
+                                <td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td>
+                            </tr>`);
+                        }
+                    </script>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= TRANG 3 ================= -->
+        <div class="page step-page">
+            <div class="page-controls">
+                <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang thao tác phía dưới">➕</button>
+                <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang thao tác này">🗑️</button>
+            </div>
+
+            <div class="header-right-page2">
+                 <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 03/04</span></div>
+            </div>  
+            <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
+            <table>
+                <colgroup>
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 10%;">  
+                    <col style="width: 7.5%;"> 
+                    <col style="width: 41.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 7.5%;"> 
+                </colgroup>
+                <thead>
+                     <tr>
+                        <th rowspan="2">Mục</th>
+                        <th rowspan="2">Địa điểm</th>
+                        <th colspan="2">Trình tự thao tác</th>
+                        <th rowspan="2">Đã<br>thực<br>hiện</th>
+                        <th colspan="2">Thời gian</th>
+                        <th colspan="2">Người</th>
+                    </tr>
+                    <tr>
+                        <th>Bước</th>
+                        <th>Nội dung</th>
+                        <th>Bắt<br>đầu</th>
+                        <th>Kết<br>thúc</th>
+                        <th>Ra<br>lệnh</th>
+                        <th>Nhận<br>lệnh</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: center;">3</td>
+                        <td style="text-align: center;">4</td>
+                        <td style="text-align: center;">5</td>
+                        <td style="text-align: center;">6</td>
+                        <td style="text-align: center;">7</td>
+                        <td style="text-align: center;">8</td>
+                        <td style="text-align: center;">9</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <script>
+                        for(let i=28; i<=54; i++) {
+                            document.write(`
+                            <tr>
+                                <td class="editable-field" style="font-weight:bold; height: 28px;"></td>
+                                <td class="editable-field"></td>
+                                <td class="editable-field"></td>
+                                <td class="editable-field" style="text-align: left;"></td>
+                                <td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td>
+                            </tr>`);
+                        }
+                    </script>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= TRANG 4 ================= -->
+        <div class="page">
+             <div class="header-right-page2">
+                 <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 04/04</span></div>
+            </div>
+            
+            <div style="font-weight: bold; margin-bottom: 5px;">Giao nhận, nghiệm thu đường dây, thiết bị điện sau khi thao tác:</div>
+            <table>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                    <col style="width: 40%;">
+                </colgroup>
+                <tr><th>Thời gian</th><th>Đơn vị</th><th>Họ tên</th><th>Nội dung</th></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+            </table>
+
+            <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 30px; font-weight: bold;">
+                <div>Ngày <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 30px;"></span></span><br>Người viết phiếu<br><span style="font-weight: normal; font-style: italic;">(Ký và ghi rõ họ tên)</span></div>
+                <div>Ngày <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 30px;"></span></span><br>Người duyệt phiếu<br><span style="font-weight: normal; font-style: italic;">(Ký và ghi rõ họ tên)</span></div>
+            </div>
+            
+            <div style="font-weight: bold; margin-top: 60px;">Các sự kiện bất thường trong thao tác:</div>
+            <div class="dotted-line" style="margin-top: 15px;"><span class="editable-field"></span></div>
+            <div class="dotted-line" style="margin-top: 25px;"><span class="editable-field"></span></div>
+            
+            <div style="text-align: center; margin-top: 50px; font-weight: bold;">Người thực hiện thao tác<br>Ngày <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 30px;"></span></span></div>
+            <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 15px; font-weight: bold;">
+                <div>Người giám sát<br><span style="font-weight: normal; font-style: italic;">(Ký và ghi rõ họ tên)</span></div>
+                <div>Người thao tác<br><span style="font-weight: normal; font-style: italic;">(Ký và ghi rõ họ tên)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT XỬ LÝ -->
+    <script>
+        let isEditing = false;
+        let isDraggingCells = false;
+        let startCell = null;
+        let focusedCell = null;
+
+        // BẬT / TẮT CHẾ ĐỘ CHỈNH SỬA
+        function toggleEditMode() {
+            isEditing = !isEditing;
+            const btnEdit = document.getElementById('btnEdit');
+            const btnMerge = document.getElementById('btnMerge');
+            const btnSplit = document.getElementById('btnSplit');
+            const btnAddRow = document.getElementById('btnAddRow'); // Khai báo nút thêm dòng
+            const btnDelRow = document.getElementById('btnDelRow'); // Khai báo nút xóa dòng
+            const btnSave = document.getElementById('btnSave');
+            
+            const editableFields = document.getElementById('document-container').querySelectorAll('.editable-field');
+            const pageControls = document.querySelectorAll('.page-controls');
+
+            editableFields.forEach(field => {
+                field.setAttribute('contenteditable', isEditing);
+            });
+
+            if (isEditing) {
+                btnEdit.innerHTML = "🔓 Khóa";
+                btnEdit.classList.add('active');
+                btnMerge.style.display = "block";
+                btnSplit.style.display = "block";
+                if (btnAddRow) btnAddRow.style.display = "block"; // Hiện nút thêm dòng
+                if (btnDelRow) btnDelRow.style.display = "block"; // Hiện nút xóa dòng
+                if (btnSave) btnSave.style.display = "block";
+                pageControls.forEach(ctrl => ctrl.style.display = "flex");
+            } else {
+                btnEdit.innerHTML = "🔒 Edit";
+                btnEdit.classList.remove('active');
+                btnMerge.style.display = "none";
+                btnSplit.style.display = "none";
+                if (btnAddRow) btnAddRow.style.display = "none"; // Ẩn nút thêm dòng
+                if (btnDelRow) btnDelRow.style.display = "none"; // Ẩn nút xóa dòng
+                if (btnSave) btnSave.style.display = "none";
+                pageControls.forEach(ctrl => ctrl.style.display = "none");
+                clearCellSelection();
+            }
+        }
+
+        // TÍNH NĂNG THÊM DÒNG VÀO BẢNG ĐANG CLICK
+        function addRow() {
+            if (!focusedCell) return alert("Hãy click chuột vào bảng mà bạn muốn thêm dòng!");
+            const tbody = focusedCell.closest('tbody');
+            if (!tbody) return;
+            
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="editable-field" contenteditable="true" style="font-weight:bold; height: 28px;"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true" style="text-align: left;"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+                <td class="editable-field" contenteditable="true"></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+
+        // TÍNH NĂNG XÓA DÒNG CUỐI CỦA BẢNG ĐANG CLICK
+        function removeRow() {
+            if (!focusedCell) return alert("Hãy click chuột vào bảng mà bạn muốn xóa dòng!");
+            const tbody = focusedCell.closest('tbody');
+            if (!tbody) return;
+            
+            const rows = tbody.querySelectorAll('tr');
+            if (rows.length > 1) { // Giữ lại ít nhất 1 dòng
+                tbody.removeChild(rows[rows.length - 1]);
+            } else {
+                alert("Không thể xóa dòng cuối cùng của bảng!");
+            }
+        }
+
+        // NHÂN BẢN TRANG
+        function duplicatePage(btn) {
+            const currentPage = btn.closest('.page');
+            const newPage = currentPage.cloneNode(true);
+            
+            newPage.querySelectorAll('script').forEach(s => s.remove());
+
+            const newFields = newPage.querySelectorAll('tbody .editable-field');
+            newFields.forEach(field => {
+                field.innerText = '';
+                field.rowSpan = 1;
+                field.classList.remove('merged-hidden', 'cell-selected');
+                field.setAttribute('contenteditable', isEditing);
+            });
+
+            currentPage.parentNode.insertBefore(newPage, currentPage.nextSibling);
+            updatePageNumbers();
+        }
+
+        // XÓA TRANG
+        function deletePage(btn) {
+            const stepPages = document.querySelectorAll('.page.step-page');
+            if (stepPages.length <= 1) {
+                alert("Phiếu thao tác phải giữ lại ít nhất 1 trang trình tự thao tác!");
+                return;
+            }
+            if (confirm("Bạn có chắc muốn xóa trang thao tác này?")) {
+                const currentPage = btn.closest('.page');
+                currentPage.remove();
+                updatePageNumbers();
+            }
+        }
+
+        // ĐÁNH LẠI SỐ TRANG (Ví dụ 02/05)
+        function updatePageNumbers() {
+            const pages = document.querySelectorAll('#document-container .page');
+            const totalPages = pages.length;
+            
+            pages.forEach((page, index) => {
+                const pageNumDisplay = page.querySelector('.page-number-display');
+                if (pageNumDisplay) {
+                    const currentNum = String(index + 1).padStart(2, '0');
+                    const totalNum = String(totalPages).padStart(2, '0');
+                    pageNumDisplay.innerText = `Trang số : ${currentNum}/${totalNum}`;
+                }
+            });
+        }
+
+        // CÁC HÀM HỖ TRỢ BẢNG
+        function getColIndex(td) { return Array.from(td.parentElement.children).indexOf(td); }
+        function getRowIndex(td) { return Array.from(td.closest('tbody').children).indexOf(td.parentElement); }
+        function clearCellSelection() { document.querySelectorAll('td.cell-selected').forEach(td => td.classList.remove('cell-selected')); }
+
+        // QUÉT CHỌN NHIỀU Ô
+        function selectColumnRange(cellA, cellB) {
+            if (!cellA || !cellB) return;
+            const tbodyA = cellA.closest('tbody');
+            const tbodyB = cellB.closest('tbody');
+            if (!tbodyA || tbodyA !== tbodyB) return;
+
+            const colA = getColIndex(cellA);
+            const colB = getColIndex(cellB);
+            if (colA !== colB) return; 
+
+            clearCellSelection();
+            const rows = Array.from(tbodyA.children);
+            const r1 = getRowIndex(cellA);
+            const r2 = getRowIndex(cellB);
+            const minRow = Math.min(r1, r2);
+            const maxRow = Math.max(r1, r2);
+
+            for (let r = minRow; r <= maxRow; r++) {
+                const cell = rows[r].children[colA];
+                if (cell && !cell.classList.contains('merged-hidden')) {
+                    cell.classList.add('cell-selected');
+                }
+            }
+        }
+
+        // SỰ KIỆN CHUỘT
+        document.addEventListener('mousedown', (e) => {
+            if (!isEditing) return;
+            const td = e.target.closest('tbody td.editable-field');
+            if (!td) {
+                if (!e.target.closest('.control-panel') && !e.target.closest('.page-controls')) clearCellSelection();
+                return;
+            }
+            focusedCell = td;
+            if (e.shiftKey && startCell && td !== startCell) {
+                e.preventDefault();
+                window.getSelection().removeAllRanges();
+                selectColumnRange(startCell, td);
+            } else {
+                clearCellSelection();
+                startCell = td;
+                isDraggingCells = true;
+            }
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            if (!isEditing || !isDraggingCells || !startCell) return;
+            const td = e.target.closest('tbody td.editable-field');
+            if (td && td !== startCell) {
+                window.getSelection().removeAllRanges(); 
+                selectColumnRange(startCell, td);
+            }
+        });
+
+        document.addEventListener('mouseup', () => { isDraggingCells = false; });
+
+        // GỘP Ô
+        function mergeSelectedCells() {
+            const selected = Array.from(document.querySelectorAll('td.cell-selected'));
+            if (selected.length < 2) return alert('Hãy kéo chuột chọn ít nhất 2 ô cùng cột để gộp!');
+            
+            const firstCell = selected[0];
+            const tbody = firstCell.closest('tbody');
+            const rows = Array.from(tbody.children);
+            const colIndex = getColIndex(firstCell);
+            const startRow = getRowIndex(firstCell);
+            
+            /* SỬA LỖI TÍNH TOÁN ROWSPAN CỦA BẠN TRƯỚC ĐÂY */
+            const lastSelected = selected[selected.length - 1];
+            const endRow = getRowIndex(lastSelected) + (lastSelected.rowSpan || 1) - 1;
+            const totalSpan = endRow - startRow + 1;
+
+            let combinedText = [];
+            for (let r = startRow; r <= endRow; r++) {
+                const cell = rows[r].children[colIndex];
+                const text = cell.innerText.trim();
+                if (text) combinedText.push(text);
+            }
+
+            firstCell.rowSpan = totalSpan;
+            firstCell.innerText = combinedText.join(' ');
+
+            for (let r = startRow + 1; r <= endRow; r++) {
+                const cell = rows[r].children[colIndex];
+                cell.rowSpan = 1;
+                cell.innerText = '';
+                cell.classList.add('merged-hidden');
+            }
+            clearCellSelection();
+        }
+
+        // TÁCH Ô
+        function splitSelectedCell() {
+            const targetCell = document.querySelector('td.cell-selected') || focusedCell;
+            if (!targetCell || !targetCell.closest('tbody')) return alert('Hãy click vào ô đã gộp cần tách!');
+            
+            const span = targetCell.rowSpan || 1;
+            if (span <= 1) return alert('Ô này chưa được gộp!');
+
+            const tbody = targetCell.closest('tbody');
+            const rows = Array.from(tbody.children);
+            const colIndex = getColIndex(targetCell);
+            const startRow = getRowIndex(targetCell);
+
+            targetCell.rowSpan = 1;
+            for (let r = startRow + 1; r < startRow + span; r++) {
+                const cell = rows[r].children[colIndex];
+                if (cell) {
+                    cell.classList.remove('merged-hidden');
+                    cell.rowSpan = 1;
+                }
+            }
+            clearCellSelection();
+        }
+
+        // DÁN DỮ LIỆU TỪ EXCEL/WORD
+        document.addEventListener('paste', function(e) {
+            if (!isEditing) return;
+            let targetCell = e.target.closest('td.editable-field');
+            if (!targetCell) return; 
+
+            let pasteData = (e.clipboardData || window.clipboardData).getData('text');
+            if (!pasteData) return;
+
+            e.preventDefault();
+
+            let rowsData = pasteData.trim().split(/\r\n|\n|\r/);
+            let tbody = targetCell.closest('tbody');
+            let tableRows = Array.from(tbody.querySelectorAll('tr'));
+            
+            let startRowIndex = tableRows.indexOf(targetCell.closest('tr'));
+            let startColIndex = Array.from(targetCell.parentElement.children).indexOf(targetCell);
+
+            for (let i = 0; i < rowsData.length; i++) {
+                let colsData = rowsData[i].split('\t');
+                
+                if (startRowIndex + i < tableRows.length) {
+                    let targetRow = tableRows[startRowIndex + i];
+                    for (let j = 0; j < colsData.length; j++) {
+                        if (startColIndex + j < targetRow.children.length) {
+                            let cell = targetRow.children[startColIndex + j];
+                            if (cell.classList.contains('editable-field') && !cell.classList.contains('merged-hidden')) {
+                                cell.innerText = colsData[j].trim();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // XÓA (DELETE) HOẶC COPY (CTRL+C) NHIỀU Ô
+        document.addEventListener('keydown', function(e) {
+            if (!isEditing) return;
+            
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                const selectedCells = document.querySelectorAll('td.cell-selected');
+                if (selectedCells.length > 1) {
+                    e.preventDefault(); 
+                    selectedCells.forEach(cell => { cell.innerText = ''; });
+                }
+            }
+        });
+
+        document.addEventListener('copy', function(e) {
+            if (!isEditing) return;
+            const selectedCells = Array.from(document.querySelectorAll('td.cell-selected'));
+            if (selectedCells.length > 1) {
+                e.preventDefault(); 
+                const copiedText = selectedCells.map(cell => cell.innerText).join('\r\n');
+                if (e.clipboardData) {
+                    e.clipboardData.setData('text/plain', copiedText);
+                } else if (window.clipboardData) {
+                    window.clipboardData.setData('Text', copiedText);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
