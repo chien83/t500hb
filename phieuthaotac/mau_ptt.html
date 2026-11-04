@@ -23,12 +23,11 @@
             background: white;
             width: 210mm;
             min-height: 297mm;
-            /* Đã giảm lề trái/phải xuống 15mm để bảng có không gian rộng tối đa giống hệ thống cũ */
             padding: 15mm 15mm 20mm 15mm; 
             margin-bottom: 20px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             position: relative;
-            overflow: hidden;
+            overflow: visible !important; /* Đảm bảo các nút điều khiển không bị che */
         }
 
         /* === HEADER PHIẾU === */
@@ -42,32 +41,31 @@
         }
         .header-left { 
             text-align: center; 
-            width: 35%; /* Đã chỉnh lại tỷ lệ */
-            font-size: 12pt; /* Đưa về cỡ chữ chuẩn giống file Word */
+            width: 35%; 
+            font-size: 12pt; 
         }
         .header-center { 
             text-align: center; 
-            width: 30%; /* Mở rộng không gian để không bị rớt dòng */
-            font-size: 14pt; /* Thu nhỏ cỡ chữ lại một chút */
+            width: 30%; 
+            font-size: 14pt; 
             margin-top: 10px; 
         }
         .header-right { 
             text-align: left; 
-            width: 35%; /* Đã chỉnh lại tỷ lệ */
+            width: 35%; 
             font-weight: normal; 
-            font-size: 12pt; /* Đưa về cỡ chữ chuẩn giống file Word */
+            font-size: 12pt; 
             padding-left: 15px; 
         }
-
         .header-right-page2 {
-            text-align: right; /* Đẩy cụm số phiếu sang phải giống file word */
+            text-align: right; 
             margin-bottom: 10px;
             font-size: 13pt;
         }
         .header-right-page2 > div {
              display: inline-block;
              text-align: left;
-             white-space: nowrap; /* Thêm dòng này để ép không ngắt dòng chữ T500HB */
+             white-space: nowrap; 
         }
 
         /* === FORM NHẬP LIỆU === */
@@ -88,7 +86,6 @@
             margin: 0 5px;
         }
 
-        /* Lưới chữ ký */
         .signature-grid {
             display: grid;
             grid-template-columns: 55% 45%;
@@ -107,7 +104,7 @@
             border-collapse: collapse;
             margin-top: 10px;
             font-size: 12pt;
-            table-layout: fixed; /* Khóa độ rộng để colgroup hoạt động */
+            table-layout: fixed; 
         }
         th, td {
             border: 1px solid #000;
@@ -138,19 +135,28 @@
             box-shadow: inset 0 0 0 1px #ff9800;
         }
 
+        /* === TÍNH NĂNG GỘP / TÁCH Ô === */
+        td.cell-selected {
+            background-color: #ffe0b2 !important;
+            box-shadow: inset 0 0 0 2px #e65100 !important;
+        }
+        td.merged-hidden {
+            display: none !important;
+        }
+
         /* === THANH CÔNG CỤ === */
         .control-panel {
             position: fixed;
             top: 20px;
             right: 20px;
             background: #2c3e50;
-            padding: 12px; /* Thu gọn padding */
+            padding: 12px; 
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             z-index: 1000;
             display: flex;
-            flex-direction: column; /* Xếp dọc các nút */
-            gap: 10px; /* Khoảng cách giữa các nút */
+            flex-direction: column; 
+            gap: 10px; 
         }
         .btn {
             cursor: pointer;
@@ -166,59 +172,17 @@
         .btn-edit.active { background-color: #e67e22; }
         .btn-print { background-color: #2ecc71; }
         .btn-save { background-color: #9b59b6; display: none; }
-
-        /* === CSS CHO TÍNH NĂNG GỘP / TÁCH Ô (MERGE CELLS) === */
-        td.cell-selected {
-            background-color: #ffe0b2 !important;
-            box-shadow: inset 0 0 0 2px #e65100 !important;
-        }
-        td.merged-hidden {
-            display: none !important;
-        }
         .btn-merge { background-color: #f39c12; display: none; }
         .btn-merge:hover { background-color: #d68910; }
         .btn-split { background-color: #e74c3c; display: none; }
         .btn-split:hover { background-color: #c0392b; }
 
-
-        /* === CSS KHI IN ẤN (PDF) === */
-        @media print {
-            /* Lệnh @page margin: 0 sẽ "giết" toàn bộ Tiêu đề, Ngày giờ, URL thừa của trình duyệt */
-            @page {
-                size: A4;
-                margin: 0; 
-            }
-            body, html { 
-                background: none; 
-                margin: 0; 
-                padding: 0; 
-            }
-            .page { 
-                box-shadow: none; 
-                margin: 0; 
-                border: none; 
-                page-break-after: always; /* Luôn ngắt trang sau mỗi form A4 */
-                min-height: auto; /* Bỏ chiều cao cố định để nội dung không ép sinh ra trang trắng */
-                padding: 15mm 15mm 20mm 15mm;
-            }
-            /* Lệnh này chặn việc sinh thêm 1 trang trắng vô duyên ở ngay cuối file PDF */
-            .page:last-child {
-                page-break-after: auto;
-            }
-            .control-panel { display: none; }
-            [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
-        }
-
-
-        /* Cho phép hiển thị nút bấm nằm cạnh lề phải tờ giấy A4 */
-        .page { overflow: visible !important; }
-
         /* === NÚT ĐIỀU KHIỂN TRANG (THÊM / XÓA TRANG) === */
         .page-controls {
             position: absolute;
             top: 20px;
-            right: -50px; /* Nằm gọn bên ngoài lề phải tờ A4 */
-            display: none; /* Mặc định ẩn, chỉ hiện khi bấm Edit */
+            right: -50px; 
+            display: none; 
             flex-direction: column;
             gap: 10px;
             z-index: 100;
@@ -242,10 +206,23 @@
         .btn-del-page { background-color: #e74c3c; }
         .btn-del-page:hover { background-color: #c0392b; transform: scale(1.1); }
 
+        /* === CSS KHI IN ẤN (PDF) === */
         @media print {
-            .page-controls { display: none !important; }
+            @page { size: A4; margin: 0; }
+            body, html { background: none; margin: 0; padding: 0; }
+            .page { 
+                box-shadow: none; 
+                margin: 0; 
+                border: none; 
+                page-break-after: always; 
+                min-height: auto; 
+                padding: 15mm;
+                overflow: hidden !important;
+            }
+            .page:last-child { page-break-after: auto; }
+            .control-panel, .page-controls { display: none !important; }
+            [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
         }
-
     </style>
 </head>
 <body>
@@ -343,20 +320,20 @@
             </div>
 
             <div class="header-right-page2">
-                <div>Số phiếu: <span class="editable-field" style="width: 150px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 02/04</span></div>
+                <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 02/04</span></div>
             </div>      
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
                 <colgroup>
-                    <col style="width: 6.5%;">  <!-- Mục (Tăng lên 6.5% để không rớt chữ) -->
-                    <col style="width: 10%;">   <!-- Địa điểm -->
-                    <col style="width: 7.5%;">  <!-- Bước (Tăng lên 7.5% để không rớt chữ) -->
-                    <col style="width: 41.5%;"> <!-- Nội dung (Thu lại 2% bù cho 2 cột trên) -->
-                    <col style="width: 7%;">    <!-- Đã thực hiện -->
-                    <col style="width: 6.5%;">  <!-- Bắt đầu -->
-                    <col style="width: 6.5%;">  <!-- Kết thúc -->
-                    <col style="width: 7%;">    <!-- Ra lệnh -->
-                    <col style="width: 7.5%;">  <!-- Nhận lệnh -->
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 10%;">  
+                    <col style="width: 7.5%;"> 
+                    <col style="width: 41.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 7.5%;"> 
                 </colgroup>
                 <thead>
                     <tr>
@@ -375,9 +352,7 @@
                         <th>Ra<br>lệnh</th>
                         <th>Nhận<br>lệnh</th>
                     </tr>
-                    <!-- Bổ sung dòng đánh số thứ tự -->
                     <tr>
-                        <!-- Mới: Dùng thẻ td và căn giữa -->
                         <td style="text-align: center;">1</td>
                         <td style="text-align: center;">2</td>
                         <td style="text-align: center;">3</td>
@@ -391,7 +366,7 @@
                 </thead>
                 <tbody>
                     <script>
-                        for(let i=1; i<=25; i++) { /* Đã giảm xuống 25 dòng vì thêm dòng số 1-9 */
+                        for(let i=1; i<=25; i++) { 
                             document.write(`
                             <tr>
                                 <td class="editable-field" style="font-weight:bold; height: 28px;">${i===1 ? 'I' : ''}</td>
@@ -414,20 +389,20 @@
             </div>
 
             <div class="header-right-page2">
-                 <div>Số phiếu: <span class="editable-field" style="width: 150px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 03/04</span></div>
+                 <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 03/04</span></div>
             </div>  
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
                 <colgroup>
-                    <col style="width: 6.5%;">  <!-- Mục (Tăng lên 6.5% để không rớt chữ) -->
-                    <col style="width: 10%;">   <!-- Địa điểm -->
-                    <col style="width: 7.5%;">  <!-- Bước (Tăng lên 7.5% để không rớt chữ) -->
-                    <col style="width: 41.5%;"> <!-- Nội dung (Thu lại 2% bù cho 2 cột trên) -->
-                    <col style="width: 7%;">    <!-- Đã thực hiện -->
-                    <col style="width: 6.5%;">  <!-- Bắt đầu -->
-                    <col style="width: 6.5%;">  <!-- Kết thúc -->
-                    <col style="width: 7%;">    <!-- Ra lệnh -->
-                    <col style="width: 7.5%;">  <!-- Nhận lệnh -->
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 10%;">  
+                    <col style="width: 7.5%;"> 
+                    <col style="width: 41.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 7.5%;"> 
                 </colgroup>
                 <thead>
                      <tr>
@@ -446,17 +421,16 @@
                         <th>Ra<br>lệnh</th>
                         <th>Nhận<br>lệnh</th>
                     </tr>
-                    <!-- Bổ sung dòng đánh số thứ tự -->
                     <tr>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
-                        <td>4</td>
-                        <td>5</td>
-                        <td>6</td>
-                        <td>7</td>
-                        <td>8</td>
-                        <td>9</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: center;">3</td>
+                        <td style="text-align: center;">4</td>
+                        <td style="text-align: center;">5</td>
+                        <td style="text-align: center;">6</td>
+                        <td style="text-align: center;">7</td>
+                        <td style="text-align: center;">8</td>
+                        <td style="text-align: center;">9</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -479,7 +453,7 @@
         <!-- ================= TRANG 4 ================= -->
         <div class="page">
              <div class="header-right-page2">
-                 <div>Số phiếu: <span class="editable-field" style="width: 150px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 04/04</span></div>
+                 <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 04/04</span></div>
             </div>
             
             <div style="font-weight: bold; margin-bottom: 5px;">Giao nhận, nghiệm thu đường dây, thiết bị điện sau khi thao tác:</div>
@@ -512,13 +486,14 @@
         </div>
     </div>
 
-    <!-- SCRIPT XỬ LÝ CHỈNH SỬA, GỘP Ô VÀ THÊM/XÓA TRANG -->
+    <!-- SCRIPT XỬ LÝ -->
     <script>
         let isEditing = false;
         let isDraggingCells = false;
         let startCell = null;
         let focusedCell = null;
 
+        // BẬT / TẮT CHẾ ĐỘ CHỈNH SỬA
         function toggleEditMode() {
             isEditing = !isEditing;
             const btnEdit = document.getElementById('btnEdit');
@@ -551,15 +526,13 @@
             }
         }
 
-        // NHÂN BẢN TRANG THAO TÁC
+        // NHÂN BẢN TRANG
         function duplicatePage(btn) {
             const currentPage = btn.closest('.page');
             const newPage = currentPage.cloneNode(true);
             
-            // Xóa thẻ script sinh dòng cũ bên trong bản sao (vì các dòng <tr> đã được tạo sẵn)
             newPage.querySelectorAll('script').forEach(s => s.remove());
 
-            // Làm sạch dữ liệu và trạng thái gộp ô trong bảng của trang mới
             const newFields = newPage.querySelectorAll('tbody .editable-field');
             newFields.forEach(field => {
                 field.innerText = '';
@@ -568,14 +541,11 @@
                 field.setAttribute('contenteditable', isEditing);
             });
 
-            // Chèn trang mới ngay phía dưới trang hiện tại
             currentPage.parentNode.insertBefore(newPage, currentPage.nextSibling);
-            
-            // Đánh lại số trang tự động
             updatePageNumbers();
         }
 
-        // XÓA TRANG THAO TÁC
+        // XÓA TRANG
         function deletePage(btn) {
             const stepPages = document.querySelectorAll('.page.step-page');
             if (stepPages.length <= 1) {
@@ -589,7 +559,7 @@
             }
         }
 
-        // TỰ ĐỘNG CẬP NHẬT SỐ TRANG (01/05, 02/05...)
+        // ĐÁNH LẠI SỐ TRANG (Ví dụ 02/05)
         function updatePageNumbers() {
             const pages = document.querySelectorAll('#document-container .page');
             const totalPages = pages.length;
@@ -604,11 +574,12 @@
             });
         }
 
-        // --- CÁC HÀM QUÉT CHỌN & GỘP/TÁCH Ô ---
+        // CÁC HÀM HỖ TRỢ BẢNG
         function getColIndex(td) { return Array.from(td.parentElement.children).indexOf(td); }
         function getRowIndex(td) { return Array.from(td.closest('tbody').children).indexOf(td.parentElement); }
         function clearCellSelection() { document.querySelectorAll('td.cell-selected').forEach(td => td.classList.remove('cell-selected')); }
 
+        // QUÉT CHỌN NHIỀU Ô
         function selectColumnRange(cellA, cellB) {
             if (!cellA || !cellB) return;
             const tbodyA = cellA.closest('tbody');
@@ -634,6 +605,7 @@
             }
         }
 
+        // SỰ KIỆN CHUỘT
         document.addEventListener('mousedown', (e) => {
             if (!isEditing) return;
             const td = e.target.closest('tbody td.editable-field');
@@ -664,6 +636,7 @@
 
         document.addEventListener('mouseup', () => { isDraggingCells = false; });
 
+        // GỘP Ô
         function mergeSelectedCells() {
             const selected = Array.from(document.querySelectorAll('td.cell-selected'));
             if (selected.length < 2) return alert('Hãy kéo chuột chọn ít nhất 2 ô cùng cột để gộp!');
@@ -673,6 +646,8 @@
             const rows = Array.from(tbody.children);
             const colIndex = getColIndex(firstCell);
             const startRow = getRowIndex(firstCell);
+            
+            /* SỬA LỖI TÍNH TOÁN ROWSPAN CỦA BẠN TRƯỚC ĐÂY */
             const lastSelected = selected[selected.length - 1];
             const endRow = getRowIndex(lastSelected) + (lastSelected.rowSpan || 1) - 1;
             const totalSpan = endRow - startRow + 1;
@@ -696,6 +671,7 @@
             clearCellSelection();
         }
 
+        // TÁCH Ô
         function splitSelectedCell() {
             const targetCell = document.querySelector('td.cell-selected') || focusedCell;
             if (!targetCell || !targetCell.closest('tbody')) return alert('Hãy click vào ô đã gộp cần tách!');
@@ -719,54 +695,32 @@
             clearCellSelection();
         }
 
-
-
-        // =========================================================
-        // TÍNH NĂNG DÁN DỮ LIỆU TỪ PDF/EXCEL/WORD VÀO BẢNG
-        // =========================================================
-        
+        // DÁN DỮ LIỆU TỪ EXCEL/WORD
         document.addEventListener('paste', function(e) {
-            // Chỉ kích hoạt khi đang ở chế độ Edit
             if (!isEditing) return;
-
-            // Tìm xem người dùng đang click chuột (focus) vào ô nào trong bảng
             let targetCell = e.target.closest('td.editable-field');
-            if (!targetCell) return; // Nếu không click vào bảng thì bỏ qua, cho paste bình thường
+            if (!targetCell) return; 
 
-            // Lấy dữ liệu văn bản thô từ khay nhớ tạm (Clipboard)
             let pasteData = (e.clipboardData || window.clipboardData).getData('text');
             if (!pasteData) return;
 
-            // Ngăn chặn trình duyệt tự động dán (vì nó sẽ nhét tất cả vào 1 ô)
             e.preventDefault();
 
-            // Tách dữ liệu thành các DÒNG (dựa vào ký tự xuống dòng \n)
             let rowsData = pasteData.trim().split(/\r\n|\n|\r/);
-            
-            // Lấy thẻ <tbody> hiện tại và danh sách các hàng (tr) trong đó
             let tbody = targetCell.closest('tbody');
             let tableRows = Array.from(tbody.querySelectorAll('tr'));
             
-            // Xác định tọa độ (hàng, cột) của ô đang được click
             let startRowIndex = tableRows.indexOf(targetCell.closest('tr'));
             let startColIndex = Array.from(targetCell.parentElement.children).indexOf(targetCell);
 
-            // Duyệt qua từng dòng dữ liệu copy được
             for (let i = 0; i < rowsData.length; i++) {
-                // Tách dòng thành các CỘT (dựa vào ký tự Tab \t)
                 let colsData = rowsData[i].split('\t');
                 
-                // Kiểm tra xem hàng đích trên web có tồn tại không
                 if (startRowIndex + i < tableRows.length) {
                     let targetRow = tableRows[startRowIndex + i];
-                    
-                    // Duyệt qua từng cột dữ liệu
                     for (let j = 0; j < colsData.length; j++) {
-                        // Kiểm tra xem cột đích trên web có tồn tại không
                         if (startColIndex + j < targetRow.children.length) {
                             let cell = targetRow.children[startColIndex + j];
-                            
-                            // Chỉ ghi đè dữ liệu nếu ô đó được phép sửa và không bị ẩn (do gộp ô)
                             if (cell.classList.contains('editable-field') && !cell.classList.contains('merged-hidden')) {
                                 cell.innerText = colsData[j].trim();
                             }
@@ -776,43 +730,25 @@
             }
         });
 
-        // =========================================================
-        // TÍNH NĂNG XÓA (DELETE) VÀ COPY (CTRL+C) NHIỀU Ô CÙNG LÚC
-        // =========================================================
-        
-        // 1. Xử lý sự kiện nhấn phím Delete hoặc Backspace
+        // XÓA (DELETE) HOẶC COPY (CTRL+C) NHIỀU Ô
         document.addEventListener('keydown', function(e) {
             if (!isEditing) return;
             
             if (e.key === 'Delete' || e.key === 'Backspace') {
                 const selectedCells = document.querySelectorAll('td.cell-selected');
-                
-                // Nếu người dùng đang quét chọn nhiều ô (từ 2 ô trở lên)
                 if (selectedCells.length > 1) {
-                    e.preventDefault(); // Chặn lệnh xóa ký tự mặc định
-                    
-                    // Xóa trắng toàn bộ nội dung của các ô đang được bôi màu cam
-                    selectedCells.forEach(cell => {
-                        cell.innerText = ''; 
-                    });
+                    e.preventDefault(); 
+                    selectedCells.forEach(cell => { cell.innerText = ''; });
                 }
             }
         });
 
-        // 2. Xử lý sự kiện Copy (Ctrl + C)
         document.addEventListener('copy', function(e) {
             if (!isEditing) return;
-            
             const selectedCells = Array.from(document.querySelectorAll('td.cell-selected'));
-            
-            // Nếu người dùng đang quét chọn nhiều ô
             if (selectedCells.length > 1) {
-                e.preventDefault(); // Chặn lệnh copy văn bản mặc định
-                
-                // Gom nội dung các ô lại, cách nhau bằng phím Enter (xuống dòng)
+                e.preventDefault(); 
                 const copiedText = selectedCells.map(cell => cell.innerText).join('\r\n');
-                
-                // Nạp mảng văn bản đó vào khay nhớ tạm (Clipboard)
                 if (e.clipboardData) {
                     e.clipboardData.setData('text/plain', copiedText);
                 } else if (window.clipboardData) {
@@ -820,9 +756,6 @@
                 }
             }
         });
-
-
-
     </script>
 </body>
 </html>

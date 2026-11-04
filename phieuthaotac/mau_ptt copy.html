@@ -67,6 +67,7 @@
         .header-right-page2 > div {
              display: inline-block;
              text-align: left;
+             white-space: nowrap; /* Thêm dòng này để ép không ngắt dòng chữ T500HB */
         }
 
         /* === FORM NHẬP LIỆU === */
@@ -209,6 +210,42 @@
         }
 
 
+        /* Cho phép hiển thị nút bấm nằm cạnh lề phải tờ giấy A4 */
+        .page { overflow: visible !important; }
+
+        /* === NÚT ĐIỀU KHIỂN TRANG (THÊM / XÓA TRANG) === */
+        .page-controls {
+            position: absolute;
+            top: 20px;
+            right: -50px; /* Nằm gọn bên ngoài lề phải tờ A4 */
+            display: none; /* Mặc định ẩn, chỉ hiện khi bấm Edit */
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+        .btn-page {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            transition: 0.2s;
+        }
+        .btn-add-page { background-color: #2ecc71; }
+        .btn-add-page:hover { background-color: #27ae60; transform: scale(1.1); }
+        .btn-del-page { background-color: #e74c3c; }
+        .btn-del-page:hover { background-color: #c0392b; transform: scale(1.1); }
+
+        @media print {
+            .page-controls { display: none !important; }
+        }
+
     </style>
 </head>
 <body>
@@ -228,7 +265,7 @@
             <div class="page-header-a4">
                 <div class="header-left">TRUYỀN TẢI ĐIỆN HÒA BÌNH<br><br><strong>TRẠM 500 KV HÒA BÌNH</strong></div>
                 <div class="header-center">PHIẾU THAO TÁC</div>
-                <div class="header-right">Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 01/04</div>
+                <div class="header-right">Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 01/04</span></div>
             </div>
             
             <div class="form-row">
@@ -299,10 +336,15 @@
         </div>
 
         <!-- ================= TRANG 2 ================= -->
-        <div class="page">
-            <div class="header-right-page2">
-                <div>Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 02/04</div>
+        <div class="page step-page">
+            <div class="page-controls">
+                <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang thao tác phía dưới">➕</button>
+                <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang thao tác này">🗑️</button>
             </div>
+
+            <div class="header-right-page2">
+                <div>Số phiếu: <span class="editable-field" style="width: 150px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 02/04</span></div>
+            </div>      
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
                 <colgroup>
@@ -365,10 +407,15 @@
         </div>
 
         <!-- ================= TRANG 3 ================= -->
-        <div class="page">
-            <div class="header-right-page2">
-                 <div>Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 03/04</div>
+        <div class="page step-page">
+            <div class="page-controls">
+                <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang thao tác phía dưới">➕</button>
+                <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang thao tác này">🗑️</button>
             </div>
+
+            <div class="header-right-page2">
+                 <div>Số phiếu: <span class="editable-field" style="width: 150px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 03/04</span></div>
+            </div>  
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
                 <colgroup>
@@ -401,15 +448,15 @@
                     </tr>
                     <!-- Bổ sung dòng đánh số thứ tự -->
                     <tr>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>6</td>
+                        <td>7</td>
+                        <td>8</td>
+                        <td>9</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -432,7 +479,7 @@
         <!-- ================= TRANG 4 ================= -->
         <div class="page">
              <div class="header-right-page2">
-                 <div>Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br>Trang số : 04/04</div>
+                 <div>Số phiếu: <span class="editable-field" style="width: 150px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 04/04</span></div>
             </div>
             
             <div style="font-weight: bold; margin-bottom: 5px;">Giao nhận, nghiệm thu đường dây, thiết bị điện sau khi thao tác:</div>
@@ -465,7 +512,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT XỬ LÝ CHỈNH SỬA & GỘP/TÁCH Ô -->
+    <!-- SCRIPT XỬ LÝ CHỈNH SỬA, GỘP Ô VÀ THÊM/XÓA TRANG -->
     <script>
         let isEditing = false;
         let isDraggingCells = false;
@@ -477,8 +524,11 @@
             const btnEdit = document.getElementById('btnEdit');
             const btnMerge = document.getElementById('btnMerge');
             const btnSplit = document.getElementById('btnSplit');
+            const btnSave = document.getElementById('btnSave');
             
-            const editableFields = document.querySelectorAll('.editable-field');
+            const editableFields = document.getElementById('document-container').querySelectorAll('.editable-field');
+            const pageControls = document.querySelectorAll('.page-controls');
+
             editableFields.forEach(field => {
                 field.setAttribute('contenteditable', isEditing);
             });
@@ -488,33 +538,77 @@
                 btnEdit.classList.add('active');
                 btnMerge.style.display = "block";
                 btnSplit.style.display = "block";
+                if (btnSave) btnSave.style.display = "block";
+                pageControls.forEach(ctrl => ctrl.style.display = "flex");
             } else {
                 btnEdit.innerHTML = "🔒 Edit";
                 btnEdit.classList.remove('active');
                 btnMerge.style.display = "none";
                 btnSplit.style.display = "none";
+                if (btnSave) btnSave.style.display = "none";
+                pageControls.forEach(ctrl => ctrl.style.display = "none");
                 clearCellSelection();
             }
         }
 
-        // Lấy vị trí cột chính xác của ô trong hàng (0 -> 8)
-        function getColIndex(td) {
-            return Array.from(td.parentElement.children).indexOf(td);
+        // NHÂN BẢN TRANG THAO TÁC
+        function duplicatePage(btn) {
+            const currentPage = btn.closest('.page');
+            const newPage = currentPage.cloneNode(true);
+            
+            // Xóa thẻ script sinh dòng cũ bên trong bản sao (vì các dòng <tr> đã được tạo sẵn)
+            newPage.querySelectorAll('script').forEach(s => s.remove());
+
+            // Làm sạch dữ liệu và trạng thái gộp ô trong bảng của trang mới
+            const newFields = newPage.querySelectorAll('tbody .editable-field');
+            newFields.forEach(field => {
+                field.innerText = '';
+                field.rowSpan = 1;
+                field.classList.remove('merged-hidden', 'cell-selected');
+                field.setAttribute('contenteditable', isEditing);
+            });
+
+            // Chèn trang mới ngay phía dưới trang hiện tại
+            currentPage.parentNode.insertBefore(newPage, currentPage.nextSibling);
+            
+            // Đánh lại số trang tự động
+            updatePageNumbers();
         }
 
-        // Lấy vị trí hàng trong tbody
-        function getRowIndex(td) {
-            return Array.from(td.closest('tbody').children).indexOf(td.parentElement);
+        // XÓA TRANG THAO TÁC
+        function deletePage(btn) {
+            const stepPages = document.querySelectorAll('.page.step-page');
+            if (stepPages.length <= 1) {
+                alert("Phiếu thao tác phải giữ lại ít nhất 1 trang trình tự thao tác!");
+                return;
+            }
+            if (confirm("Bạn có chắc muốn xóa trang thao tác này?")) {
+                const currentPage = btn.closest('.page');
+                currentPage.remove();
+                updatePageNumbers();
+            }
         }
 
-        // Xóa vùng chọn hiện tại
-        function clearCellSelection() {
-            document.querySelectorAll('td.cell-selected').forEach(td => {
-                td.classList.remove('cell-selected');
+        // TỰ ĐỘNG CẬP NHẬT SỐ TRANG (01/05, 02/05...)
+        function updatePageNumbers() {
+            const pages = document.querySelectorAll('#document-container .page');
+            const totalPages = pages.length;
+            
+            pages.forEach((page, index) => {
+                const pageNumDisplay = page.querySelector('.page-number-display');
+                if (pageNumDisplay) {
+                    const currentNum = String(index + 1).padStart(2, '0');
+                    const totalNum = String(totalPages).padStart(2, '0');
+                    pageNumDisplay.innerText = `Trang số : ${currentNum}/${totalNum}`;
+                }
             });
         }
 
-        // Tô sáng các ô cùng cột từ cellA đến cellB
+        // --- CÁC HÀM QUÉT CHỌN & GỘP/TÁCH Ô ---
+        function getColIndex(td) { return Array.from(td.parentElement.children).indexOf(td); }
+        function getRowIndex(td) { return Array.from(td.closest('tbody').children).indexOf(td.parentElement); }
+        function clearCellSelection() { document.querySelectorAll('td.cell-selected').forEach(td => td.classList.remove('cell-selected')); }
+
         function selectColumnRange(cellA, cellB) {
             if (!cellA || !cellB) return;
             const tbodyA = cellA.closest('tbody');
@@ -523,7 +617,7 @@
 
             const colA = getColIndex(cellA);
             const colB = getColIndex(cellB);
-            if (colA !== colB) return; // Chỉ gộp theo chiều dọc cùng cột
+            if (colA !== colB) return; 
 
             clearCellSelection();
             const rows = Array.from(tbodyA.children);
@@ -540,18 +634,14 @@
             }
         }
 
-        // Lắng nghe sự kiện chuột trên các ô bảng
         document.addEventListener('mousedown', (e) => {
             if (!isEditing) return;
             const td = e.target.closest('tbody td.editable-field');
             if (!td) {
-                if (!e.target.closest('.control-panel')) clearCellSelection();
+                if (!e.target.closest('.control-panel') && !e.target.closest('.page-controls')) clearCellSelection();
                 return;
             }
-
             focusedCell = td;
-
-            // Nếu giữ phím Shift + Click để chọn dải ô
             if (e.shiftKey && startCell && td !== startCell) {
                 e.preventDefault();
                 window.getSelection().removeAllRanges();
@@ -567,34 +657,26 @@
             if (!isEditing || !isDraggingCells || !startCell) return;
             const td = e.target.closest('tbody td.editable-field');
             if (td && td !== startCell) {
-                window.getSelection().removeAllRanges(); // Bỏ bôi đen văn bản khi đang kéo chọn nhiều ô
+                window.getSelection().removeAllRanges(); 
                 selectColumnRange(startCell, td);
             }
         });
 
-        document.addEventListener('mouseup', () => {
-            isDraggingCells = false;
-        });
+        document.addEventListener('mouseup', () => { isDraggingCells = false; });
 
-        // HÀM GỘP Ô (MERGE CELLS)
         function mergeSelectedCells() {
             const selected = Array.from(document.querySelectorAll('td.cell-selected'));
-            if (selected.length < 2) {
-                alert('Hãy kéo chuột quét chọn (hoặc giữ Shift + Click) ít nhất 2 ô theo chiều dọc để gộp!');
-                return;
-            }
-
+            if (selected.length < 2) return alert('Hãy kéo chuột chọn ít nhất 2 ô cùng cột để gộp!');
+            
             const firstCell = selected[0];
             const tbody = firstCell.closest('tbody');
             const rows = Array.from(tbody.children);
             const colIndex = getColIndex(firstCell);
-
             const startRow = getRowIndex(firstCell);
             const lastSelected = selected[selected.length - 1];
             const endRow = getRowIndex(lastSelected) + (lastSelected.rowSpan || 1) - 1;
             const totalSpan = endRow - startRow + 1;
 
-            // Gom nội dung chữ của các ô lại (nếu có) để không bị mất chữ
             let combinedText = [];
             for (let r = startRow; r <= endRow; r++) {
                 const cell = rows[r].children[colIndex];
@@ -602,7 +684,6 @@
                 if (text) combinedText.push(text);
             }
 
-            // Gán rowspan cho ô đầu tiên và ẩn các ô bên dưới
             firstCell.rowSpan = totalSpan;
             firstCell.innerText = combinedText.join(' ');
 
@@ -612,30 +693,21 @@
                 cell.innerText = '';
                 cell.classList.add('merged-hidden');
             }
-
             clearCellSelection();
         }
 
-        // HÀM TÁCH Ô (SPLIT CELLS)
         function splitSelectedCell() {
             const targetCell = document.querySelector('td.cell-selected') || focusedCell;
-            if (!targetCell || !targetCell.closest('tbody')) {
-                alert('Hãy click chuột vào ô đã gộp cần tách!');
-                return;
-            }
-
+            if (!targetCell || !targetCell.closest('tbody')) return alert('Hãy click vào ô đã gộp cần tách!');
+            
             const span = targetCell.rowSpan || 1;
-            if (span <= 1) {
-                alert('Ô này chưa được gộp!');
-                return;
-            }
+            if (span <= 1) return alert('Ô này chưa được gộp!');
 
             const tbody = targetCell.closest('tbody');
             const rows = Array.from(tbody.children);
             const colIndex = getColIndex(targetCell);
             const startRow = getRowIndex(targetCell);
 
-            // Đưa ô đầu về 1 dòng và bật hiển thị lại các ô bên dưới
             targetCell.rowSpan = 1;
             for (let r = startRow + 1; r < startRow + span; r++) {
                 const cell = rows[r].children[colIndex];
@@ -644,9 +716,113 @@
                     cell.rowSpan = 1;
                 }
             }
-
             clearCellSelection();
         }
+
+
+
+        // =========================================================
+        // TÍNH NĂNG DÁN DỮ LIỆU TỪ PDF/EXCEL/WORD VÀO BẢNG
+        // =========================================================
+        
+        document.addEventListener('paste', function(e) {
+            // Chỉ kích hoạt khi đang ở chế độ Edit
+            if (!isEditing) return;
+
+            // Tìm xem người dùng đang click chuột (focus) vào ô nào trong bảng
+            let targetCell = e.target.closest('td.editable-field');
+            if (!targetCell) return; // Nếu không click vào bảng thì bỏ qua, cho paste bình thường
+
+            // Lấy dữ liệu văn bản thô từ khay nhớ tạm (Clipboard)
+            let pasteData = (e.clipboardData || window.clipboardData).getData('text');
+            if (!pasteData) return;
+
+            // Ngăn chặn trình duyệt tự động dán (vì nó sẽ nhét tất cả vào 1 ô)
+            e.preventDefault();
+
+            // Tách dữ liệu thành các DÒNG (dựa vào ký tự xuống dòng \n)
+            let rowsData = pasteData.trim().split(/\r\n|\n|\r/);
+            
+            // Lấy thẻ <tbody> hiện tại và danh sách các hàng (tr) trong đó
+            let tbody = targetCell.closest('tbody');
+            let tableRows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Xác định tọa độ (hàng, cột) của ô đang được click
+            let startRowIndex = tableRows.indexOf(targetCell.closest('tr'));
+            let startColIndex = Array.from(targetCell.parentElement.children).indexOf(targetCell);
+
+            // Duyệt qua từng dòng dữ liệu copy được
+            for (let i = 0; i < rowsData.length; i++) {
+                // Tách dòng thành các CỘT (dựa vào ký tự Tab \t)
+                let colsData = rowsData[i].split('\t');
+                
+                // Kiểm tra xem hàng đích trên web có tồn tại không
+                if (startRowIndex + i < tableRows.length) {
+                    let targetRow = tableRows[startRowIndex + i];
+                    
+                    // Duyệt qua từng cột dữ liệu
+                    for (let j = 0; j < colsData.length; j++) {
+                        // Kiểm tra xem cột đích trên web có tồn tại không
+                        if (startColIndex + j < targetRow.children.length) {
+                            let cell = targetRow.children[startColIndex + j];
+                            
+                            // Chỉ ghi đè dữ liệu nếu ô đó được phép sửa và không bị ẩn (do gộp ô)
+                            if (cell.classList.contains('editable-field') && !cell.classList.contains('merged-hidden')) {
+                                cell.innerText = colsData[j].trim();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // =========================================================
+        // TÍNH NĂNG XÓA (DELETE) VÀ COPY (CTRL+C) NHIỀU Ô CÙNG LÚC
+        // =========================================================
+        
+        // 1. Xử lý sự kiện nhấn phím Delete hoặc Backspace
+        document.addEventListener('keydown', function(e) {
+            if (!isEditing) return;
+            
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                const selectedCells = document.querySelectorAll('td.cell-selected');
+                
+                // Nếu người dùng đang quét chọn nhiều ô (từ 2 ô trở lên)
+                if (selectedCells.length > 1) {
+                    e.preventDefault(); // Chặn lệnh xóa ký tự mặc định
+                    
+                    // Xóa trắng toàn bộ nội dung của các ô đang được bôi màu cam
+                    selectedCells.forEach(cell => {
+                        cell.innerText = ''; 
+                    });
+                }
+            }
+        });
+
+        // 2. Xử lý sự kiện Copy (Ctrl + C)
+        document.addEventListener('copy', function(e) {
+            if (!isEditing) return;
+            
+            const selectedCells = Array.from(document.querySelectorAll('td.cell-selected'));
+            
+            // Nếu người dùng đang quét chọn nhiều ô
+            if (selectedCells.length > 1) {
+                e.preventDefault(); // Chặn lệnh copy văn bản mặc định
+                
+                // Gom nội dung các ô lại, cách nhau bằng phím Enter (xuống dòng)
+                const copiedText = selectedCells.map(cell => cell.innerText).join('\r\n');
+                
+                // Nạp mảng văn bản đó vào khay nhớ tạm (Clipboard)
+                if (e.clipboardData) {
+                    e.clipboardData.setData('text/plain', copiedText);
+                } else if (window.clipboardData) {
+                    window.clipboardData.setData('Text', copiedText);
+                }
+            }
+        });
+
+
+
     </script>
 </body>
 </html>
