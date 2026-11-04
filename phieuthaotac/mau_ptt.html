@@ -231,6 +231,11 @@
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
         <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
         <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()" title="Click vào ô đã gộp rồi bấm để tách ra">✂️ Tách ô</button>
+        
+        <!-- THÊM 2 NÚT NÀY VÀO ĐÂY -->
+        <button id="btnAddRow" class="btn btn-merge" style="background-color: #34495e; display: none;" onclick="addRow()" title="Thêm 1 dòng mới vào cuối bảng">⬇️ Thêm dòng</button>
+        <button id="btnDelRow" class="btn btn-split" style="background-color: #7f8c8d; display: none;" onclick="removeRow()" title="Xóa dòng cuối cùng của bảng">⬆️ Xóa dòng</button>
+        
         <button id="btnSave" class="btn btn-save" onclick="alert('Tính năng lưu đang phát triển')">💾 Lưu Phiếu</button>
         <button class="btn btn-print" onclick="window.print()">🖨️ In / Xuất PDF</button>
     </div>
