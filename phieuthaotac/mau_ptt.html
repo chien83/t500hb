@@ -583,12 +583,14 @@
             }
         }
 
-        // TÍNH NĂNG THÊM DÒNG VÀO BẢNG ĐANG CLICK
+       // TÍNH NĂNG THÊM DÒNG VÀO BẢNG ĐANG CLICK
         function addRow() {
             if (!focusedCell) return alert("Hãy click chuột vào bảng mà bạn muốn thêm dòng!");
             const tbody = focusedCell.closest('tbody');
             if (!tbody) return;
             
+            saveState(); // <--- Ghi nhớ trạng thái trước khi thêm dòng
+
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td class="editable-field" contenteditable="true" style="font-weight:bold; height: 28px;"></td>
@@ -611,8 +613,10 @@
             if (!tbody) return;
             
             const rows = tbody.querySelectorAll('tr');
-            if (rows.length > 1) { // Giữ lại ít nhất 1 dòng
-                tbody.removeChild(rows[rows.length - 1]);
+            if (rows.length > 1) { 
+                saveState(); // <--- Ghi nhớ trạng thái trước khi xóa dòng
+                
+                tbody.removeChild(rows[rows.length - 1]); // Đã khôi phục dấu trừ (-) bị thiếu
             } else {
                 alert("Không thể xóa dòng cuối cùng của bảng!");
             }
