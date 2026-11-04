@@ -732,7 +732,7 @@
         function mergeSelectedCells() {
             const selected = Array.from(document.querySelectorAll('td.cell-selected'));
             if (selected.length < 2) return alert('Hãy kéo chuột chọn ít nhất 2 ô cùng cột để gộp!');
-            
+            saveState(); // <--- THÊM DÒNG NÀY VÀO ĐÂY (Lưu trước khi gộp)
             const firstCell = selected[0];
             const tbody = firstCell.closest('tbody');
             const rows = Array.from(tbody.children);
