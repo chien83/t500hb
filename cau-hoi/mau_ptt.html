@@ -156,6 +156,19 @@
         .table-giaonhan td { height: 30px; } /* Đặt chiều cao dòng trống cho dễ viết */
     </style>
 </head>
+
+<script>
+        // 1. CHỨC NĂNG BẢO VỆ BẰNG MẬT KHẨU (ĐẶT Ở HEAD ĐỂ CHẶN HIỂN THỊ)
+        const passwordChuan = "t500hb@"; // Mật khẩu truy cập
+        let nhapPass = prompt("Vui lòng nhập mật khẩu để xem tài liệu:");
+
+        if (nhapPass !== passwordChuan) {
+            alert("Mật khẩu không chính xác!");
+            window.location.href = "../index.html"; 
+        }
+        // Nếu đúng mật khẩu, bỏ qua if và trình duyệt sẽ tiếp tục vẽ phần <body>
+    </script>
+
 <body>
 
     <!-- ===== CỘT TRÁI: MỤC LỤC ===== -->
@@ -1617,21 +1630,6 @@
 
     <!-- ===== JAVASCRIPT XỬ LÝ LẬT TRANG VÀ MỤC LỤC ===== -->
     <script>
-
-    // 1. CHỨC NĂNG BẢO VỆ BẰNG MẬT KHẨU
-    (function() {
-        const passwordChuan = "t500hb@"; // Mật khẩu truy cập
-        let nhapPass = prompt("Vui lòng nhập mật khẩu để xem tài liệu:");
-
-        if (nhapPass === passwordChuan) {
-            document.getElementById("wrapper").style.display = "block";
-        } else {
-            alert("Mật khẩu không chính xác!");
-            window.location.href = "../index.html"; 
-        }
-    })();
-
-
         let currentDocId = 'doc-1-1'; // Tài liệu mặc định khi mở web
         let currentPageIndex = 0;     // Trang mặc định (Trang 1 có index là 0)
         let totalPagesInDoc = 0;
