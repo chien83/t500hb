@@ -21,12 +21,13 @@
             padding: 20px 0;
         }
 
-        /* === GIAO DIỆN TRANG A4 === */
+        /* === GIAO DIỆN TRANG A4 CỐ ĐỊNH CHUẨN 297MM === */
         .page {
             background: white;
             width: 210mm;
-            min-height: 297mm;
-            padding: 15mm 15mm 20mm 15mm; 
+            height: 297mm;
+            max-height: 297mm;
+            padding: 15mm 15mm 15mm 15mm; 
             margin-bottom: 20px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             position: relative;
@@ -211,18 +212,23 @@
 
         /* === CSS KHI IN ẤN (PDF) === */
         @media print {
-            @page { size: A4; margin: 0; }
-            body, html { background: none; margin: 0; padding: 0; }
+            @page { size: A4 portrait; margin: 0; }
+            body, html { background: none; margin: 0; padding: 0; width: 210mm; }
             .page { 
                 box-shadow: none; 
                 margin: 0; 
                 border: none; 
+                width: 210mm;
+                height: 297mm;
+                max-height: 297mm;
+                padding: 15mm 15mm 15mm 15mm;
                 page-break-after: always; 
-                min-height: auto; 
-                padding: 15mm;
+                break-after: page;
+                page-break-inside: avoid;
+                break-inside: avoid;
                 overflow: hidden !important;
             }
-            .page:last-child { page-break-after: auto; }
+            .page:last-child { page-break-after: auto; break-after: auto; }
             .control-panel, .page-controls { display: none !important; }
             [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
         }
@@ -240,8 +246,8 @@
         <button id="btnUndo" class="btn btn-edit" style="background-color: #95a5a6; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
         <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
         <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()" title="Click vào ô đã gộp rồi bấm để tách ra">✂️ Tách ô</button>
-        <button id="btnAddRow" class="btn btn-merge" style="background-color: #34495e; display: none;" onclick="addRow()" title="Thêm 1 dòng mới vào cuối bảng">⬇️ Thêm dòng</button>
-        <button id="btnDelRow" class="btn btn-split" style="background-color: #7f8c8d; display: none;" onclick="removeRow()" title="Xóa dòng cuối cùng của bảng">⬆️ Xóa dòng</button>
+        <button id="btnAddRow" class="btn btn-merge" style="background-color: #34495e; display: none;" onclick="addRow()" title="Chèn thêm 1 dòng ngay bên dưới dòng đang đặt con trỏ chuột">⬇️ Thêm dòng</button>
+        <button id="btnDelRow" class="btn btn-split" style="background-color: #7f8c8d; display: none;" onclick="removeRow()" title="Xóa dòng đang đặt con trỏ chuột">⬆️ Xóa dòng</button>
         <button id="btnSave" class="btn btn-save" onclick="alert('Tính năng lưu đang phát triển')">💾 Lưu Phiếu</button>
         <button class="btn btn-print" onclick="window.print()">🖨️ In / Xuất PDF</button>
     </div>
@@ -504,12 +510,17 @@
         let startCell = null;
         let focusedCell = null;
 
+        // Hàm trừ số nguyên an toàn không dùng ký tự dấu trừ để tránh lỗi khi copy code
+        function sub(a, b) {
+            return a + (~b + 1);
+        }
+
         // Dọn dẹp các thẻ script sinh dòng ban đầu để HTML sạch sẽ khi lưu Undo
         document.querySelectorAll('#document-container script').forEach(s => s.remove());
 
         // KHO LƯU TRỮ TRẠNG THÁI CHO TÍNH NĂNG UNDO
         let undoStack = [];
-        const MAX_UNDO_STEPS = 50; // Tăng lên 50 bước để thoải mái Undo cả gõ chữ và thao tác bảng
+        const MAX_UNDO_STEPS = 50;
         let isTyping = false;
         let typingTimer = null;
 
@@ -518,7 +529,6 @@
             const container = document.getElementById('document-container');
             const currentHTML = container.innerHTML;
             
-            // Tránh lưu trùng lặp nếu nội dung không thay đổi so với bước ngay trước đó
             const lastState = undoStack.slice().pop();
             if (lastState === currentHTML) return;
 
@@ -532,17 +542,15 @@
         document.getElementById('document-container').addEventListener('beforeinput', function() {
             if (!isEditing) return;
             if (!isTyping) {
-                saveState(); // Chụp lại màn hình ngay trước khi ký tự đầu tiên được gõ vào
+                saveState();
                 isTyping = true;
             }
-            // Nếu ngừng gõ quá 0.8 giây thì tách thành một bước Undo mới cho lần gõ tiếp theo
             clearTimeout(typingTimer);
             typingTimer = setTimeout(function() {
                 isTyping = false;
             }, 800);
         });
 
-        // Khi click chuột chuyển sang ô khác, tự động ngắt nhịp để tính là bước Undo mới
         document.getElementById('document-container').addEventListener('focusin', function() {
             isTyping = false;
         });
@@ -616,44 +624,190 @@
             }
         }
 
-        // THÊM DÒNG VÀO BẢNG ĐANG CLICK
+        // TẠO 1 DÒNG TRỐNG CHUẨN 9 CỘT
+        function createBlankStepRow() {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="editable-field" contenteditable="${isEditing}" style="font-weight:bold; height: 28px;"></td>
+                <td class="editable-field" contenteditable="${isEditing}"></td>
+                <td class="editable-field" contenteditable="${isEditing}"></td>
+                <td class="editable-field" contenteditable="${isEditing}" style="text-align: left;"></td>
+                <td class="editable-field" contenteditable="${isEditing}"></td>
+                <td class="editable-field" contenteditable="${isEditing}"></td>
+                <td class="editable-field" contenteditable="${isEditing}"></td>
+                <td class="editable-field" contenteditable="${isEditing}"></td>
+                <td class="editable-field" contenteditable="${isEditing}"></td>
+            `;
+            return tr;
+        }
+
+        // KIỂM TRA XEM 1 DÒNG CÓ ĐANG TRỐNG HOÀN TOÀN KHÔNG
+        function isRowEmpty(tr) {
+            if (!tr) return false;
+            const cells = Array.from(tr.children);
+            const hasMerge = cells.some(td => (td.rowSpan && td.rowSpan > 1) || td.classList.contains('merged-hidden'));
+            if (hasMerge) return false;
+            return cells.every(td => td.innerText.trim() === '');
+        }
+
+        // THÊM DÒNG NGAY PHÍA DƯỚI DÒNG ĐANG ĐẶT CON TRỎ CHUỘT
         function addRow() {
-            if (!focusedCell) return alert("Hãy click chuột vào bảng mà bạn muốn thêm dòng!");
+            if (!focusedCell) return alert("Hãy click chuột vào dòng mà bạn muốn chèn thêm dòng phía dưới!");
+            const currentRow = focusedCell.closest('tr');
             const tbody = focusedCell.closest('tbody');
-            if (!tbody) return;
+            if (!currentRow || !tbody) return;
             
             saveState();
 
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td class="editable-field" contenteditable="true" style="font-weight:bold; height: 28px;"></td>
-                <td class="editable-field" contenteditable="true"></td>
-                <td class="editable-field" contenteditable="true"></td>
-                <td class="editable-field" contenteditable="true" style="text-align: left;"></td>
-                <td class="editable-field" contenteditable="true"></td>
-                <td class="editable-field" contenteditable="true"></td>
-                <td class="editable-field" contenteditable="true"></td>
-                <td class="editable-field" contenteditable="true"></td>
-                <td class="editable-field" contenteditable="true"></td>
-            `;
-            tbody.appendChild(newRow);
-        }
+            // Nếu dòng đang click có ô đang gộp dọc (rowSpan > 1), nhảy tới dòng cuối của cụm gộp đó
+            const allRows = Array.from(tbody.children);
+            let insertAfterIndex = allRows.indexOf(currentRow);
+            Array.from(currentRow.children).forEach(td => {
+                if (td.rowSpan && td.rowSpan > 1) {
+                    const spanEnd = sub(insertAfterIndex + td.rowSpan, 1);
+                    if (spanEnd > insertAfterIndex) insertAfterIndex = spanEnd;
+                }
+            });
+            const lastValidIndex = sub(allRows.length, 1);
+            const targetRow = allRows[Math.min(insertAfterIndex, lastValidIndex)];
 
-        // XÓA DÒNG CUỐI CỦA BẢNG ĐANG CLICK (Không dùng dấu trừ để tránh lỗi copy)
-        function removeRow() {
-            if (!focusedCell) return alert("Hãy click chuột vào bảng mà bạn muốn xóa dòng!");
-            const tbody = focusedCell.closest('tbody');
-            if (!tbody) return;
-            
-            const rows = tbody.querySelectorAll('tr');
-            if (rows.length > 1) { 
-                saveState();
-                tbody.removeChild(tbody.lastElementChild);
-                focusedCell = tbody.lastElementChild.querySelector('td.editable-field');
-            } else {
-                alert("Không thể xóa dòng cuối cùng của bảng!");
+            const newRow = createBlankStepRow();
+            targetRow.parentNode.insertBefore(newRow, targetRow.nextSibling);
+
+            // Nếu bảng nằm trong trang thao tác (.step-page), tự động cân đối lại khung A4
+            if (tbody.closest('.step-page')) {
+                fitAllStepPages();
+            }
+
+            const colIdx = getColIndex(focusedCell);
+            const cellToFocus = newRow.children[colIdx] || newRow.children[3] || newRow.children[0];
+            if (cellToFocus) {
+                focusedCell = cellToFocus;
+                cellToFocus.focus();
             }
         }
+
+        // XÓA ĐÚNG DÒNG ĐANG ĐẶT CON TRỎ CHUỘT
+        function removeRow() {
+            if (!focusedCell) return alert("Hãy click chuột vào dòng mà bạn muốn xóa!");
+            const currentRow = focusedCell.closest('tr');
+            const tbody = focusedCell.closest('tbody');
+            if (!currentRow || !tbody) return;
+            
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            if (rows.length <= 1) {
+                return alert("Không thể xóa dòng cuối cùng của bảng!");
+            }
+
+            const hasVerticalMerge = Array.from(currentRow.children).some(
+                td => (td.rowSpan && td.rowSpan > 1) || td.classList.contains('merged-hidden')
+            );
+            if (hasVerticalMerge) {
+                return alert("Dòng này đang có ô được gộp dọc. Hãy bấm '✂️ Tách ô' trước khi xóa dòng!");
+            }
+
+            saveState();
+
+            const colIdx = getColIndex(focusedCell);
+            const nextFocusRow = currentRow.nextElementSibling || currentRow.previousElementSibling;
+            currentRow.remove();
+
+            if (tbody.closest('.step-page')) {
+                fitAllStepPages();
+            }
+
+            if (nextFocusRow && nextFocusRow.children[colIdx]) {
+                focusedCell = nextFocusRow.children[colIdx];
+                focusedCell.focus();
+            } else {
+                focusedCell = null;
+            }
+        }
+
+        // HÀM TỰ ĐỘNG ĐẨY DÒNG TRÀN SANG TRANG SAU & BÙ DÒNG TRỐNG KHÍT KHỔ GIẤY A4
+        function fitAllStepPages() {
+            const container = document.getElementById('document-container');
+            let stepPages = Array.from(container.querySelectorAll('.page.step-page'));
+            if (stepPages.length === 0) return;
+
+            const lastPage = container.lastElementChild;
+
+            for (let pIdx = 0; pIdx < stepPages.length; pIdx++) {
+                const page = stepPages[pIdx];
+                const table = page.querySelector('table');
+                const tbody = page.querySelector('tbody');
+                if (!table || !tbody) continue;
+
+                // Giới hạn đáy bảng an toàn trên khổ A4 (chừa lề dưới 15mm ~ 58px)
+                const maxAllowedBottom = sub(page.clientHeight, 58);
+
+                // 1. NẾU BẢNG VƯỢT QUÁ KHỔ A4 -> XÓA DÒNG TRỐNG Ở ĐÁY HOẶC ĐẨY SANG TRANG KẾ TIẾP
+                while (tbody.children.length > 1 && (table.offsetTop + table.offsetHeight) > maxAllowedBottom) {
+                    const rows = Array.from(tbody.children);
+                    const lastRow = tbody.lastElementChild;
+
+                    if (isRowEmpty(lastRow)) {
+                        lastRow.remove();
+                        continue;
+                    }
+
+                    // Nếu dòng cuối có dữ liệu (kiểm tra xem nó có thuộc cụm gộp dọc với dòng trên không)
+                    let groupStartIdx = sub(rows.length, 1);
+                    while (groupStartIdx > 0) {
+                        const rCells = Array.from(rows[groupStartIdx].children);
+                        if (rCells.some(td => td.classList.contains('merged-hidden') && td.colSpan === 1)) {
+                            groupStartIdx = sub(groupStartIdx, 1);
+                        } else {
+                            break;
+                        }
+                    }
+
+                    if (groupStartIdx === 0) break;
+
+                    const rowsToMove = rows.slice(groupStartIdx);
+
+                    // Tìm trang thao tác kế tiếp (nếu chưa có thì tự tạo trang mới)
+                    let nextPage = stepPages[pIdx + 1];
+                    if (!nextPage) {
+                        nextPage = page.cloneNode(true);
+                        nextPage.querySelector('tbody').innerHTML = '';
+                        const ctrl = nextPage.querySelector('.page-controls');
+                        if (ctrl) ctrl.style.display = isEditing ? "flex" : "none";
+                        container.insertBefore(nextPage, lastPage);
+                        stepPages.push(nextPage);
+                    }
+
+                    const nextTbody = nextPage.querySelector('tbody');
+                    const firstChildOfNext = nextTbody.firstElementChild;
+                    rowsToMove.forEach(r => {
+                        nextTbody.insertBefore(r, firstChildOfNext);
+                    });
+                }
+
+                // 2. NẾU BẢNG CHƯA CHẠM ĐÁY A4 -> TỰ ĐỘNG BÙ THÊM CÁC DÒNG TRỐNG KẺ KHUNG ĐẦY ĐỦ
+                let safetyCount = 0;
+                while ((table.offsetTop + table.offsetHeight) < maxAllowedBottom && safetyCount < 40) {
+                    const blankRow = createBlankStepRow();
+                    tbody.appendChild(blankRow);
+                    if ((table.offsetTop + table.offsetHeight) > maxAllowedBottom) {
+                        blankRow.remove();
+                        break;
+                    }
+                    safetyCount++;
+                }
+            }
+
+            updatePageNumbers();
+        }
+
+        // Tự động căn chỉnh lại khung A4 khi người dùng gõ thêm nội dung dài hoặc trước khi bấm In
+        document.getElementById('document-container').addEventListener('input', function(e) {
+            if (e.target.closest('.step-page')) {
+                clearTimeout(window.fitPageTimer);
+                window.fitPageTimer = setTimeout(fitAllStepPages, 500);
+            }
+        });
+        window.addEventListener('beforeprint', fitAllStepPages);
 
         // NHÂN BẢN TRANG
         function duplicatePage(btn) {
@@ -672,7 +826,7 @@
             });
 
             currentPage.parentNode.insertBefore(newPage, currentPage.nextSibling);
-            updatePageNumbers();
+            fitAllStepPages();
         }
 
         // XÓA TRANG
@@ -767,7 +921,7 @@
 
         document.addEventListener('mouseup', () => { isDraggingCells = false; });
 
-        // GỘP Ô (Đã tối ưu phép cộng không dùng dấu trừ để tránh lỗi copy)
+        // GỘP Ô
         function mergeSelectedCells() {
             const selected = Array.from(document.querySelectorAll('td.cell-selected'));
             if (selected.length < 2) return alert('Hãy kéo chuột chọn ít nhất 2 ô cùng cột để gộp!');
@@ -803,6 +957,7 @@
                 cell.classList.add('merged-hidden');
             }
             clearCellSelection();
+            if (tbody.closest('.step-page')) fitAllStepPages();
         }
 
         // TÁCH Ô
@@ -829,6 +984,7 @@
                 }
             }
             clearCellSelection();
+            if (tbody.closest('.step-page')) fitAllStepPages();
         }
 
         // DÁN DỮ LIỆU TỪ EXCEL/WORD
@@ -865,6 +1021,7 @@
                     }
                 }
             }
+            if (tbody.closest('.step-page')) fitAllStepPages();
         });
 
         // XÓA (DELETE) HOẶC COPY (CTRL+C) NHIỀU Ô
@@ -877,6 +1034,7 @@
                     saveState();
                     e.preventDefault(); 
                     selectedCells.forEach(cell => { cell.innerText = ''; });
+                    fitAllStepPages();
                 }
             }
         });
@@ -903,7 +1061,6 @@
             const file = event.target.files[0];
             if (!file) return;
 
-            // Lưu trạng thái vào Undo trước khi import
             if (isEditing) saveState();
 
             const fileName = file.name.toLowerCase();
@@ -919,7 +1076,6 @@
                 console.error(err);
                 alert('Có lỗi khi đọc file: ' + err.message);
             }
-            // Reset input để có thể chọn lại cùng 1 file nếu muốn
             event.target.value = '';
         }
 
@@ -951,7 +1107,6 @@
                     const rowCells = [];
 
                     tcs.forEach(tc => {
-                        // Nối các đoạn văn <w:p> trong cùng 1 ô bằng dấu cách để không bị dính chữ khi xuống dòng
                         const paragraphs = Array.from(tc.getElementsByTagName("w:p"));
                         const pTexts = paragraphs.map(p => {
                             return Array.from(p.getElementsByTagName("w:t"))
@@ -960,7 +1115,6 @@
                         }).filter(txt => txt.trim() !== "");
                         const cellText = pTexts.join(" ").replace(/\s+/g, " ").trim();
 
-                        // Kiểm tra gộp ngang (gridSpan) và gộp dọc (vMerge)
                         let colspan = 1;
                         let vMerge = null;
                         const tcPr = Array.from(tc.children).find(el => el.tagName === "w:tcPr");
@@ -978,7 +1132,6 @@
                         rowCells.push({ text: cellText, colspan, vMerge });
                     });
 
-                    // Bỏ qua 3 dòng tiêu đề bảng (Mục, Địa điểm... và dòng đánh số 1 -> 9)
                     if (isHeaderRow(rowCells.map(c => c.text))) return;
 
                     pageRows.push(rowCells);
@@ -1010,7 +1163,6 @@
                     const row = rawRows[r].map(v => String(v || "").replace(/\s+/g, " ").trim());
                     if (row.every(cell => cell === "")) continue;
 
-                    // Nhận diện dòng đánh số cột 1 -> 9 để ngắt sang trang thao tác mới
                     if (row[0] === "1" && row[1] === "2" && row[2] === "3" && row[3] === "4") {
                         if (currentPageRows.length > 0) {
                             pagesData.push(currentPageRows);
@@ -1019,7 +1171,6 @@
                         continue;
                     }
 
-                    // Bỏ qua các dòng tiêu đề đầu trang của Nitro Pro
                     if (
                         row[0].includes("Trình tự hạng mục") ||
                         (row[0] === "Mục" && row[1] === "Địa điểm") ||
@@ -1028,24 +1179,20 @@
                         continue;
                     }
 
-                    // Kiểm tra xem dòng này có phải dòng tiêu đề phụ gộp ngang ở cột C (index 2) không
                     const isSectionHeader = merges.some(m => m.s.r === r && m.s.c === 2 && m.e.c >= 4);
-
-                    // Kiểm tra gộp dọc ở cột Bước (index 2)
                     const vMergeStart = merges.some(m => m.s.r === r && m.s.c === 2 && m.e.r > r);
                     const vMergeCont = merges.some(m => r > m.s.r && r <= m.e.r && m.s.c === 2);
 
-                    // Ánh xạ 10 cột của Excel Nitro Pro (do cột Nội dung chiếm D:E) về 9 cột chuẩn
                     const mapped9Cols = [
-                        row[0] || "", // 1. Mục
-                        row[1] || "", // 2. Địa điểm
-                        row[2] || "", // 3. Bước
-                        row[3] || row[4] || "", // 4. Nội dung
-                        row[5] || "", // 5. Đã thực hiện
-                        row[6] || "", // 6. Bắt đầu
-                        row[7] || "", // 7. Kết thúc
-                        row[8] || "", // 8. Ra lệnh
-                        row[9] || ""  // 9. Nhận lệnh
+                        row[0] || "",
+                        row[1] || "",
+                        row[2] || "",
+                        row[3] || row[4] || "",
+                        row[5] || "",
+                        row[6] || "",
+                        row[7] || "",
+                        row[8] || "",
+                        row[9] || ""
                     ];
 
                     if (isSectionHeader) {
@@ -1080,7 +1227,6 @@
             renderImportedStepPages(pagesData);
         }
 
-        // Hàm nhận diện dòng tiêu đề bảng để lọc bỏ
         function isHeaderRow(texts) {
             const joined = texts.join("|");
             if (joined.includes("Trình tự thao tác") || joined.includes("Địa điểm")) return true;
@@ -1089,105 +1235,98 @@
             return false;
         }
 
-        // --- 3. DỰNG LẠI CÁC TRANG THAO TÁC TRÊN GIAO DIỆN WEB ---
+        // --- 3. DỰNG LẠI CÁC TRANG THAO TÁC VỪA KHÍT KHỔ GIẤY A4 ---
         function renderImportedStepPages(pagesData) {
             const container = document.getElementById('document-container');
             const existingStepPages = Array.from(container.querySelectorAll('.page.step-page'));
             if (existingStepPages.length === 0) return;
 
-            // Lấy trang thao tác đầu tiên làm mẫu khung (Template)
             const templatePage = existingStepPages[0].cloneNode(true);
             templatePage.querySelectorAll('script').forEach(s => s.remove());
 
-            // Tìm Trang cuối (Trang nghiệm thu) để chèn các trang thao tác vào ngay trước nó
-            const allPages = Array.from(container.querySelectorAll('.page'));
-            const lastPage = allPages[allPages.length - 1];
+            const lastPage = container.lastElementChild;
 
-            // Xóa các trang thao tác cũ
             existingStepPages.forEach(p => p.remove());
 
-            // Sinh từng trang thao tác mới theo đúng phân trang của file tải lên
-            pagesData.forEach(pageRows => {
-                const newPage = templatePage.cloneNode(true);
-                const tbody = newPage.querySelector('tbody');
-                tbody.innerHTML = '';
+            const firstStepPage = templatePage.cloneNode(true);
+            const tbody = firstStepPage.querySelector('tbody');
+            tbody.innerHTML = '';
 
-                // Điều chỉnh hiển thị nút +/- trang theo chế độ Edit hiện tại
-                const ctrl = newPage.querySelector('.page-controls');
-                if (ctrl) ctrl.style.display = isEditing ? "flex" : "none";
+            const ctrl = firstStepPage.querySelector('.page-controls');
+            if (ctrl) ctrl.style.display = isEditing ? "flex" : "none";
 
-                pageRows.forEach(rowCells => {
-                    const tr = document.createElement('tr');
+            const allRowsData = pagesData.flat();
 
-                    // Trường hợp dòng tiêu đề phụ gộp 3 cột (Bước + Nội dung + Đã thực hiện)
-                    if (rowCells.length === 7 && rowCells[2].colspan === 3) {
-                        for (let c = 0; c < 9; c++) {
-                            const td = document.createElement('td');
-                            td.className = 'editable-field';
-                            td.setAttribute('contenteditable', isEditing);
-                            if (c === 0) {
-                                td.style.fontWeight = 'bold';
-                                td.style.height = '28px';
-                                td.innerText = rowCells[0].text;
-                            } else if (c === 1) {
-                                td.innerText = rowCells[1].text;
-                            } else if (c === 2) {
-                                td.colSpan = 3;
-                                td.style.fontWeight = 'bold';
-                                td.style.textAlign = 'left';
-                                td.innerText = rowCells[2].text;
-                            } else if (c === 3 || c === 4) {
-                                td.classList.add('merged-hidden');
-                            } else {
-                                const mappedIdx = c - 2;
-                                td.innerText = rowCells[mappedIdx] ? rowCells[mappedIdx].text : '';
-                            }
-                            tr.appendChild(td);
+            allRowsData.forEach(rowCells => {
+                const tr = document.createElement('tr');
+
+                if (rowCells.length === 7 && rowCells[2].colspan === 3) {
+                    for (let c = 0; c < 9; c++) {
+                        const td = document.createElement('td');
+                        td.className = 'editable-field';
+                        td.setAttribute('contenteditable', isEditing);
+                        if (c === 0) {
+                            td.style.fontWeight = 'bold';
+                            td.style.height = '28px';
+                            td.innerText = rowCells[0].text;
+                        } else if (c === 1) {
+                            td.innerText = rowCells[1].text;
+                        } else if (c === 2) {
+                            td.colSpan = 3;
+                            td.style.fontWeight = 'bold';
+                            td.style.textAlign = 'left';
+                            td.innerText = rowCells[2].text;
+                        } else if (c === 3 || c === 4) {
+                            td.classList.add('merged-hidden');
+                        } else {
+                            const mappedIdx = sub(c, 2);
+                            td.innerText = rowCells[mappedIdx] ? rowCells[mappedIdx].text : '';
                         }
-                    } else {
-                        // Dòng 9 cột tiêu chuẩn
-                        for (let c = 0; c < 9; c++) {
-                            const cellData = rowCells[c] || { text: '', colspan: 1, vMerge: null };
-                            const td = document.createElement('td');
-                            td.className = 'editable-field';
-                            td.setAttribute('contenteditable', isEditing);
-
-                            if (c === 0) {
-                                td.style.fontWeight = 'bold';
-                                td.style.height = '28px';
-                            }
-                            if (c === 3) {
-                                td.style.textAlign = 'left';
-                            }
-
-                            // Xử lý gộp dọc (vMerge) cho các bước như Bước 40, 58, 63
-                            if (cellData.vMerge === 'continue') {
-                                td.classList.add('merged-hidden');
-                                const prevTr = tbody.lastElementChild;
-                                if (prevTr && prevTr.children[c]) {
-                                    prevTr.children[c].rowSpan = (prevTr.children[c].rowSpan || 1) + 1;
-                                }
-                            } else {
-                                td.innerText = cellData.text;
-                            }
-
-                            tr.appendChild(td);
-                        }
+                        tr.appendChild(td);
                     }
+                } else {
+                    for (let c = 0; c < 9; c++) {
+                        const cellData = rowCells[c] || { text: '', colspan: 1, vMerge: null };
+                        const td = document.createElement('td');
+                        td.className = 'editable-field';
+                        td.setAttribute('contenteditable', isEditing);
 
-                    tbody.appendChild(tr);
-                });
+                        if (c === 0) {
+                            td.style.fontWeight = 'bold';
+                            td.style.height = '28px';
+                        }
+                        if (c === 3) {
+                            td.style.textAlign = 'left';
+                        }
 
-                container.insertBefore(newPage, lastPage);
+                        if (cellData.vMerge === 'continue') {
+                            td.classList.add('merged-hidden');
+                            const prevTr = tbody.lastElementChild;
+                            if (prevTr && prevTr.children[c]) {
+                                prevTr.children[c].rowSpan = (prevTr.children[c].rowSpan || 1) + 1;
+                            }
+                        } else {
+                            td.innerText = cellData.text;
+                        }
+
+                        tr.appendChild(td);
+                    }
+                }
+
+                tbody.appendChild(tr);
             });
 
-            // Cập nhật lại số trang tự động (01/05, 02/05...)
-            updatePageNumbers();
-            alert(`Đã nhập thành công ${pagesData.length} trang trình tự thao tác!`);
+            container.insertBefore(firstStepPage, lastPage);
+
+            // Tự động phân bổ các bước vừa khít từng trang A4 và kẻ bù dòng trống đến sát lề dưới
+            fitAllStepPages();
+
+            const totalStepPages = container.querySelectorAll('.page.step-page').length;
+            alert(`Đã nhập dữ liệu và tự động căn chuẩn vào ${totalStepPages} trang thao tác A4!`);
         }
 
-
-
+        // Tự động căn chuẩn khung A4 ngay khi vừa mở trang
+        window.addEventListener('load', fitAllStepPages);
     </script>
 </body>
 </html>
