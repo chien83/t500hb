@@ -776,6 +776,52 @@
             }
         });
 
+        // =========================================================
+        // TÍNH NĂNG XÓA (DELETE) VÀ COPY (CTRL+C) NHIỀU Ô CÙNG LÚC
+        // =========================================================
+        
+        // 1. Xử lý sự kiện nhấn phím Delete hoặc Backspace
+        document.addEventListener('keydown', function(e) {
+            if (!isEditing) return;
+            
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                const selectedCells = document.querySelectorAll('td.cell-selected');
+                
+                // Nếu người dùng đang quét chọn nhiều ô (từ 2 ô trở lên)
+                if (selectedCells.length > 1) {
+                    e.preventDefault(); // Chặn lệnh xóa ký tự mặc định
+                    
+                    // Xóa trắng toàn bộ nội dung của các ô đang được bôi màu cam
+                    selectedCells.forEach(cell => {
+                        cell.innerText = ''; 
+                    });
+                }
+            }
+        });
+
+        // 2. Xử lý sự kiện Copy (Ctrl + C)
+        document.addEventListener('copy', function(e) {
+            if (!isEditing) return;
+            
+            const selectedCells = Array.from(document.querySelectorAll('td.cell-selected'));
+            
+            // Nếu người dùng đang quét chọn nhiều ô
+            if (selectedCells.length > 1) {
+                e.preventDefault(); // Chặn lệnh copy văn bản mặc định
+                
+                // Gom nội dung các ô lại, cách nhau bằng phím Enter (xuống dòng)
+                const copiedText = selectedCells.map(cell => cell.innerText).join('\r\n');
+                
+                // Nạp mảng văn bản đó vào khay nhớ tạm (Clipboard)
+                if (e.clipboardData) {
+                    e.clipboardData.setData('text/plain', copiedText);
+                } else if (window.clipboardData) {
+                    window.clipboardData.setData('Text', copiedText);
+                }
+            }
+        });
+
+
 
     </script>
 </body>
