@@ -240,10 +240,9 @@
     <div class="control-panel">
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
         
-        <!-- NÚT TẢI FILE WORD / EXCEL LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
-        <button id="btnImport" class="btn btn-edit" style="background-color: #16a085;" onclick="document.getElementById('fileUpload').click()" title="Tải file Word (.docx) hoặc Excel (.xlsx) đã convert từ PDF">📂 Nhập Word/Excel</button>
-        <input type="file" id="fileUpload" accept=".docx,.xlsx,.xls" style="display: none;" onchange="handleFileImport(event)">
-
+        <!-- NÚT TẢI FILE PDF / WORD / EXCEL LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
+        <button id="btnImport" class="btn btn-edit" style="background-color: #16a085;" onclick="document.getElementById('fileUpload').click()" title="Tải trực tiếp file PDF (.pdf), Word (.docx) hoặc Excel (.xlsx)">📂 Nhập PDF/Word/Excel</button>
+        <input type="file" id="fileUpload" accept=".pdf,.docx,.xlsx,.xls" style="display: none;" onchange="handleFileImport(event)">
         <button id="btnUndo" class="btn btn-edit" style="background-color: #95a5a6; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
         <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
         <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()" title="Click vào ô đã gộp rồi bấm để tách ra">✂️ Tách ô</button>
