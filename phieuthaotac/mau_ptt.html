@@ -1084,7 +1084,7 @@
             event.target.value = '';
         }
 
-        // --- ĐỌC TRỰC TIẾP FILE PDF DỰA TRÊN TỌA ĐỘ HÌNH HỌC (X, Y) ---
+        // --- 1. ĐỌC TRỰC TIẾP FILE PDF (TỰ ĐỘNG BỎ QUA TRANG ĐẦU & BẢNG GIAO NHẬN CUỐI TRANG) ---
         async function importFromPdf(file) {
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -1095,7 +1095,6 @@
                 const page = await pdf.getPage(p);
                 const textContent = await page.getTextContent();
 
-                // 1. Trích xuất toàn bộ các mảnh văn bản kèm tọa độ x0, x1, yc
                 const rawChunks = [];
                 textContent.items.forEach(item => {
                     const str = item.str;
@@ -1111,20 +1110,20 @@
                         text: str
                     });
 
-                    // Tự động bắt Số phiếu (ví dụ: Số phiếu: 412/2026/KH/A0)
+                    // Tự động bắt Số phiếu (ví dụ: 215/2026/KH/A0)
                     if (!detectedTicketNumber && str.includes('Số phiếu:')) {
                         const match = str.match(/Số\s*phiếu\s*:\s*([^\r\n]+)/i);
                         if (match && match[1]) detectedTicketNumber = match[1].trim();
                     }
                 });
 
-                // Chỉ xử lý những trang PDF có bảng "Trình tự hạng mục thao tác" hoặc "Trình tự thao tác"
+                // BỎ QUA TRANG THỪA: Chỉ xử lý trang có bảng 9 cột ("Trình tự" + "Địa điểm")
                 const fullPageText = rawChunks.map(c => c.text).join(' ');
-                if (!fullPageText.includes('Trình tự') && !fullPageText.includes('Địa điểm')) {
+                if (!fullPageText.includes('Trình tự') || !fullPageText.includes('Địa điểm')) {
                     continue;
                 }
 
-                // 2. Gom các mảnh chữ nằm cùng 1 dòng ngang (chênh lệch y <= 3.5 pt) và gần nhau theo trục X
+                // Gom các mảnh chữ nằm cùng 1 dòng ngang
                 rawChunks.sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
                 const lineGroups = [];
                 rawChunks.forEach(ch => {
@@ -1136,7 +1135,6 @@
                     }
                 });
 
-                // Nối các từ liền kề trong cùng 1 cột trên mỗi dòng ngang
                 const mergedItems = [];
                 lineGroups.forEach(lg => {
                     lg.chunks.sort((a, b) => sub(a.x0, b.x0));
@@ -1145,7 +1143,6 @@
                         if (!current) {
                             current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
                         } else {
-                            // Nếu khoảng cách ngang nhỏ hơn 12pt và không vượt qua vạch chia cột chính (110, 164, 193, 363)
                             const gap = sub(ch.x0, current.x1);
                             const crossesBoundary = [110, 164, 193, 363].some(bx => current.x1 < bx && ch.x0 >= sub(bx, 2));
                             if (gap < 12 && !crossesBoundary) {
@@ -1160,13 +1157,51 @@
                     if (current) mergedItems.push(current);
                 });
 
-                // 3. Tách các chuỗi bị dính cột trong PDF (ví dụ "I T500 HB" hoặc "VI T500 HB 34")
+                // Tìm tọa độ Y của tiêu đề "Trình tự hạng mục thao tác" hoặc "Địa điểm"
+                let stepTableTopY = 780;
+                mergedItems.forEach(it => {
+                    if (it.text.includes('Trình tự hạng mục') || it.text.includes('Địa điểm')) {
+                        stepTableTopY = Math.min(stepTableTopY, it.yc + 15);
+                    }
+                });
+
+                // Tìm đáy của phần Header bảng 9 cột (dòng đánh số 1..9 hoặc dòng chữ Bước / Nội dung)
+                let headerBottomY = sub(stepTableTopY, 45);
+                mergedItems.forEach(it => {
+                    const t = it.text.trim();
+                    if (it.yc < stepTableTopY && it.yc > sub(stepTableTopY, 90)) {
+                        if (t === '4' || t === '3' || /^1\s+2\s+3/.test(t) || t === 'Nội dung' || t === 'Bước') {
+                            headerBottomY = Math.min(headerBottomY, it.yc);
+                        }
+                    }
+                });
+
+                // TÌM VẠCH CẮT ĐÁY (footerStopY): Tự động dừng lại nếu gặp mục "Giao nhận, nghiệm thu sau khi thao tác" ở cuối trang
+                let footerStopY = 48;
+                mergedItems.forEach(it => {
+                    if (it.yc < sub(headerBottomY, 5)) {
+                        const t = it.text.trim();
+                        if (
+                            t.includes('Giao nhận, nghiệm thu') ||
+                            t.includes('Giao nhận nghiệm thu') ||
+                            t.includes('Các sự kiện bất thường') ||
+                            t.includes('Người viết phiếu') ||
+                            t.includes('Người duyệt phiếu') ||
+                            t.includes('Người thực hiện thao tác') ||
+                            (t === 'Đơn vị' || t === 'Họ tên') ||
+                            /Ngày\s+\d+\s+tháng\s+\d+\s+năm/i.test(t)
+                        ) {
+                            // Đặt vạch dừng ngay phía trên dòng tiêu đề phụ này
+                            footerStopY = Math.max(footerStopY, it.yc + 4);
+                        }
+                    }
+                });
+
+                // Tách các chuỗi dính cột (như "I T500 HB" hoặc "VI T500 HB 34")
                 const cleanItems = [];
                 mergedItems.forEach(it => {
                     const txt = it.text.trim();
                     if (!txt) return;
-
-                    // Bỏ qua dòng đánh số cột "1 2 3 5 6 7 8 9"
                     if (/^1\s+2\s+3/.test(txt)) return;
 
                     if (it.x0 < 110) {
@@ -1186,42 +1221,35 @@
                     cleanItems.push({ x0: it.x0, x1: it.x1, yc: it.yc, text: txt });
                 });
 
-                // 4. Tìm vị trí đáy của tiêu đề bảng (dựa vào số thứ tự cột '4' hoặc chữ 'Nội dung')
-                let headerBottomY = 682;
-                cleanItems.forEach(it => {
-                    if ((it.text === '4' || it.text === '3' || it.text === '1') && it.yc > 650 && it.yc < 710) {
-                        headerBottomY = Math.min(headerBottomY, it.yc);
-                    }
-                });
+                // Chỉ lấy các phần tử nằm giữa đáy Header bảng và vạch cắt Footer (bỏ qua hoàn toàn bảng Giao nhận)
+                const bodyItems = cleanItems.filter(it => it.yc < sub(headerBottomY, 3) && it.yc > footerStopY);
 
-                // Chỉ lấy các phần tử nằm dưới tiêu đề bảng (và trên lề dưới 50pt)
-                const bodyItems = cleanItems.filter(it => it.yc < sub(headerBottomY, 3) && it.yc > 50);
-
-                // 5. Lấy các dòng thuộc cột Nội dung (x0 >= 193) hoặc dòng tiêu đề phụ gộp ngang (164 <= x0 < 190 và x1 > 210)
                 const contentLines = bodyItems.filter(it => it.x0 >= 164 && it.x0 < 363 && (it.x0 >= 191 || it.x1 > 210));
                 contentLines.sort((a, b) => sub(b.yc, a.yc));
 
-                // Gom các dòng nội dung cách nhau <= 14.8pt vào cùng 1 ô (Block)
+                // Gom các dòng nội dung thuộc cùng 1 bước (khoảng cách dòng <= 14.8pt)
                 const blocks = [];
                 contentLines.forEach(cl => {
-                    const isSpan = (cl.x0 < 191 && cl.x1 > 210);
+                    // Nhận diện dòng tiêu đề giai đoạn (bắt đầu từ cột Bước x0 < 191 hoặc căn giữa x0 > 202)
+                    const isSpanLine = (cl.x0 < 191 || cl.x0 > 202);
                     if (blocks.length === 0) {
-                        blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpan });
+                        blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpanLine });
                     } else {
                         const prev = blocks[sub(blocks.length, 1)];
                         const dy = sub(prev.yBot, cl.yc);
-                        if (dy <= 14.8 && prev.isSpan === isSpan) {
+                        if (dy <= 14.8) {
                             prev.yBot = cl.yc;
                             prev.lines.push(cl);
+                            if (isSpanLine) prev.isSpan = true;
                         } else {
-                            blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpan });
+                            blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpanLine });
                         }
                     }
                 });
 
                 if (blocks.length === 0) continue;
 
-                // 6. Gắn các cột Mục (x < 110), Địa điểm (110..164), Bước (164..191) vào đúng Block theo tọa độ Y
+                // Gắn các cột Mục, Địa điểm, Bước vào đúng dòng
                 blocks.forEach(b => { b.col0 = []; b.col1 = []; b.col2 = []; });
                 const otherItems = bodyItems.filter(it => !contentLines.includes(it));
 
@@ -1243,26 +1271,28 @@
                     else if (it.x0 < 191) bestBlock.col2.push(it.text);
                 });
 
-                // 7. Chuyển đổi thành cấu trúc dòng chuẩn để đẩy vào renderImportedStepPages
                 const pageRows = [];
                 blocks.forEach(b => {
                     const c0 = b.col0.join(' ').trim();
                     const c1 = b.col1.join(' ').trim();
                     const c2 = b.col2.join(' ').trim();
                     const lineTexts = b.lines.map(l => l.text.trim());
+                    const joinedContent = lineTexts.join(' ');
 
-                    if (b.isSpan) {
+                    // Nếu dòng không có số Bước (c2 rỗng) và không phải dòng "Kết quả kiểm tra" -> Là dòng tiêu đề phụ gộp 3 cột (như "Cô lập MC 580, 581 T500 Sơn La")
+                    const isSectionHeader = (c2 === '' && !joinedContent.includes('Kết quả kiểm tra')) || (b.isSpan && c2 === '');
+
+                    if (isSectionHeader) {
                         pageRows.push([
                             { text: c0, colspan: 1, vMerge: null },
                             { text: c1, colspan: 1, vMerge: null },
-                            { text: lineTexts.join(' '), colspan: 3, vMerge: null },
+                            { text: joinedContent, colspan: 3, vMerge: null },
                             { text: '', colspan: 1, vMerge: null },
                             { text: '', colspan: 1, vMerge: null },
                             { text: '', colspan: 1, vMerge: null },
                             { text: '', colspan: 1, vMerge: null }
                         ]);
                     } else {
-                        // Kiểm tra nếu có dòng "Kết quả kiểm tra là: Đúng: ... Sai:" thì tách thành dòng phụ gộp dọc cột Bước
                         const kqIdx = lineTexts.findIndex(t => t.includes('Kết quả kiểm tra'));
                         if (kqIdx > 0) {
                             const mainContent = lineTexts.slice(0, kqIdx).join(' ');
@@ -1294,7 +1324,7 @@
                                 { text: c0, colspan: 1, vMerge: null },
                                 { text: c1, colspan: 1, vMerge: null },
                                 { text: c2, colspan: 1, vMerge: null },
-                                { text: lineTexts.join(' '), colspan: 1, vMerge: null },
+                                { text: joinedContent, colspan: 1, vMerge: null },
                                 { text: '', colspan: 1, vMerge: null },
                                 { text: '', colspan: 1, vMerge: null },
                                 { text: '', colspan: 1, vMerge: null },
@@ -1315,10 +1345,8 @@
                 return;
             }
 
-            // Dựng các trang bước thao tác và tự động căn khít khổ A4
             renderImportedStepPages(pagesData);
 
-            // Tự động điền Số phiếu nếu phát hiện được trong PDF
             if (detectedTicketNumber) {
                 document.querySelectorAll('.page-header-a4 .header-right .editable-field, .header-right-page2 .editable-field').forEach(el => {
                     el.innerText = detectedTicketNumber;
@@ -1326,7 +1354,7 @@
             }
         }
 
-        // --- 1. ĐỌC FILE WORD (.DOCX) TỪ NITRO PRO ---
+        // --- 2. ĐỌC FILE WORD (.DOCX) - TỰ ĐỘNG BỎ QUA BẢNG GIAO NHẬN 4 CỘT ---
         async function importFromDocx(file) {
             const arrayBuffer = await file.arrayBuffer();
             const zip = await JSZip.loadAsync(arrayBuffer);
@@ -1346,6 +1374,12 @@
             const pagesData = [];
 
             tables.forEach(tbl => {
+                // Kiểm tra toàn bộ chữ trong bảng: Bỏ qua nếu là bảng Giao nhận ("Đơn vị", "Họ tên") hoặc không có chữ "Địa điểm"
+                const tableFullText = tbl.textContent || "";
+                if (!tableFullText.includes("Địa điểm") && !tableFullText.includes("Trình tự thao tác")) {
+                    return; // Bỏ qua bảng Giao nhận trước/sau khi thao tác
+                }
+
                 const trs = Array.from(tbl.getElementsByTagName("w:tr"));
                 const pageRows = [];
 
@@ -1389,10 +1423,15 @@
                 }
             });
 
+            if (pagesData.length === 0) {
+                alert("Không tìm thấy bảng trình tự thao tác 9 cột nào trong file Word!");
+                return;
+            }
+
             renderImportedStepPages(pagesData);
         }
 
-        // --- 2. ĐỌC FILE EXCEL (.XLSX) TỪ NITRO PRO ---
+        // --- 3. ĐỌC FILE EXCEL (.XLSX) - TỰ ĐỘNG BỎ QUA MỤC ĐẦU & BẢNG GIAO NHẬN CUỐI ---
         async function importFromExcel(file) {
             const arrayBuffer = await file.arrayBuffer();
             const workbook = XLSX.read(arrayBuffer, { type: 'array' });
@@ -1405,26 +1444,48 @@
                 const merges = ws['!merges'] || [];
 
                 let currentPageRows = [];
+                let isInsideStepTable = false; // Chỉ lấy dữ liệu khi đang ở trong bảng 9 cột
 
                 for (let r = 0; r < rawRows.length; r++) {
                     const row = rawRows[r].map(v => String(v || "").replace(/\s+/g, " ").trim());
                     if (row.every(cell => cell === "")) continue;
 
+                    const joinedRow = row.join(" ");
+
+                    // Nếu gặp các mục ngoài bảng thao tác (Điều kiện, Lưu ý, Giao nhận nghiệm thu, Chữ ký) -> Ngắt thu thập ngay
+                    if (
+                        joinedRow.includes("Giao nhận, nghiệm thu") ||
+                        joinedRow.includes("Giao nhận nghiệm thu") ||
+                        joinedRow.includes("Điều kiện cần có") ||
+                        joinedRow.includes("Các sự kiện bất thường") ||
+                        joinedRow.includes("Người viết phiếu") ||
+                        (row.includes("Đơn vị") && row.includes("Họ tên"))
+                    ) {
+                        isInsideStepTable = false;
+                        continue;
+                    }
+
+                    // Bắt đầu thu thập khi gặp dòng đánh số cột 1 -> 9 của bảng thao tác
                     if (row[0] === "1" && row[1] === "2" && row[2] === "3" && row[3] === "4") {
                         if (currentPageRows.length > 0) {
                             pagesData.push(currentPageRows);
                             currentPageRows = [];
                         }
+                        isInsideStepTable = true;
                         continue;
                     }
 
+                    // Bỏ qua các dòng tiêu đề bảng thao tác
                     if (
                         row[0].includes("Trình tự hạng mục") ||
                         (row[0] === "Mục" && row[1] === "Địa điểm") ||
                         (row[2] === "Bước" && row[3] === "Nội dung")
                     ) {
+                        isInsideStepTable = true;
                         continue;
                     }
+
+                    if (!isInsideStepTable) continue;
 
                     const isSectionHeader = merges.some(m => m.s.r === r && m.s.c === 2 && m.e.c >= 4);
                     const vMergeStart = merges.some(m => m.s.r === r && m.s.c === 2 && m.e.r > r);
