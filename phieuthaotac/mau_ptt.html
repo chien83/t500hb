@@ -190,7 +190,7 @@
         .page-controls {
             position: absolute;
             top: 20px;
-            right: -50px; 
+            left: -50px; 
             display: none; 
             flex-direction: column;
             gap: 10px;
@@ -245,7 +245,7 @@
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
         
         <!-- NÚT TẢI FILE PDF / WORD / EXCEL LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
-        <button id="btnImport" class="btn btn-edit" style="background-color: #16a085;" onclick="document.getElementById('fileUpload').click()" title="Tải trực tiếp file PDF (.pdf), Word (.docx) hoặc Excel (.xlsx)">📂 Nhập PDF/Word/Excel</button>
+        <button id="btnImport" class="btn btn-edit" style="background-color: #16a085;" onclick="document.getElementById('fileUpload').click()" title="Tải file PDF, Word hoặc Excel">📂 Nhập PDF/Word<br>/Excel</button>
         <input type="file" id="fileUpload" accept=".pdf,.docx,.xlsx,.xls" style="display: none;" onchange="handleFileImport(event)">
         <button id="btnUndo" class="btn btn-edit" style="background-color: #95a5a6; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
         <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
