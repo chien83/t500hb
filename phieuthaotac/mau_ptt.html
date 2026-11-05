@@ -149,29 +149,33 @@
             display: none !important;
         }
 
-        /* === THANH CÔNG CỤ === */
+        /* === THANH CÔNG CỤ BÊN PHẢI (THU GỌN VÀ BÁM SÁT LỀ) === */
         .control-panel {
             position: fixed;
             top: 20px;
-            right: 20px;
+            right: 5px; /* Sát mép phải màn hình */
             background: #2c3e50;
-            padding: 12px; 
+            padding: 8px; 
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             z-index: 1000;
             display: flex;
             flex-direction: column; 
-            gap: 10px; 
+            gap: 8px; 
+            width: 145px; /* Cố định chiều ngang gọn gàng */
         }
         .btn {
             cursor: pointer;
-            padding: 8px 15px;
+            padding: 8px 10px;
             border: none;
             border-radius: 5px;
             font-weight: bold;
-            font-size: 11pt;
+            font-size: 10.5pt;
             color: white;
             transition: 0.3s;
+            text-align: center;
+            white-space: normal; /* Cho phép chữ tự động xuống dòng khi chật */
+            line-height: 1.3;
         }
         .btn-edit { background-color: #3498db; }
         .btn-edit.active { background-color: #e67e22; }
