@@ -1054,8 +1054,11 @@
         });
 
         // =========================================================
-        // TÍNH NĂNG TỰ ĐỘNG ĐỌC FILE WORD (.DOCX) & EXCEL (.XLSX)
+        // TÍNH NĂNG TỰ ĐỘNG ĐỌC FILE WORD (.DOCX) & EXCEL (.XLSX), PDF
         // =========================================================
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
 
         async function handleFileImport(event) {
             const file = event.target.files[0];
@@ -1065,18 +1068,262 @@
 
             const fileName = file.name.toLowerCase();
             try {
-                if (fileName.endsWith('.docx')) {
+                if (fileName.endsWith('.pdf')) {
+                    await importFromPdf(file);
+                } else if (fileName.endsWith('.docx')) {
                     await importFromDocx(file);
                 } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
                     await importFromExcel(file);
                 } else {
-                    alert('Vui lòng chọn file định dạng .docx hoặc .xlsx!');
+                    alert('Vui lòng chọn file định dạng .pdf, .docx hoặc .xlsx!');
                 }
             } catch (err) {
                 console.error(err);
                 alert('Có lỗi khi đọc file: ' + err.message);
             }
             event.target.value = '';
+        }
+
+        // --- ĐỌC TRỰC TIẾP FILE PDF DỰA TRÊN TỌA ĐỘ HÌNH HỌC (X, Y) ---
+        async function importFromPdf(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const pagesData = [];
+            let detectedTicketNumber = null;
+
+            for (let p = 1; p <= pdf.numPages; p++) {
+                const page = await pdf.getPage(p);
+                const textContent = await page.getTextContent();
+
+                // 1. Trích xuất toàn bộ các mảnh văn bản kèm tọa độ x0, x1, yc
+                const rawChunks = [];
+                textContent.items.forEach(item => {
+                    const str = item.str;
+                    if (!str || !str.trim()) return;
+                    const x0 = item.transform[4];
+                    const y0 = item.transform[5];
+                    const w = item.width || 0;
+                    const h = Math.abs(item.height || item.transform[0] || 10);
+                    rawChunks.push({
+                        x0: x0,
+                        x1: x0 + w,
+                        yc: y0 + h * 0.4,
+                        text: str
+                    });
+
+                    // Tự động bắt Số phiếu (ví dụ: Số phiếu: 412/2026/KH/A0)
+                    if (!detectedTicketNumber && str.includes('Số phiếu:')) {
+                        const match = str.match(/Số\s*phiếu\s*:\s*([^\r\n]+)/i);
+                        if (match && match[1]) detectedTicketNumber = match[1].trim();
+                    }
+                });
+
+                // Chỉ xử lý những trang PDF có bảng "Trình tự hạng mục thao tác" hoặc "Trình tự thao tác"
+                const fullPageText = rawChunks.map(c => c.text).join(' ');
+                if (!fullPageText.includes('Trình tự') && !fullPageText.includes('Địa điểm')) {
+                    continue;
+                }
+
+                // 2. Gom các mảnh chữ nằm cùng 1 dòng ngang (chênh lệch y <= 3.5 pt) và gần nhau theo trục X
+                rawChunks.sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
+                const lineGroups = [];
+                rawChunks.forEach(ch => {
+                    const existingLine = lineGroups.find(lg => Math.abs(sub(lg.yc, ch.yc)) <= 3.5);
+                    if (existingLine) {
+                        existingLine.chunks.push(ch);
+                    } else {
+                        lineGroups.push({ yc: ch.yc, chunks: [ch] });
+                    }
+                });
+
+                // Nối các từ liền kề trong cùng 1 cột trên mỗi dòng ngang
+                const mergedItems = [];
+                lineGroups.forEach(lg => {
+                    lg.chunks.sort((a, b) => sub(a.x0, b.x0));
+                    let current = null;
+                    lg.chunks.forEach(ch => {
+                        if (!current) {
+                            current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
+                        } else {
+                            // Nếu khoảng cách ngang nhỏ hơn 12pt và không vượt qua vạch chia cột chính (110, 164, 193, 363)
+                            const gap = sub(ch.x0, current.x1);
+                            const crossesBoundary = [110, 164, 193, 363].some(bx => current.x1 < bx && ch.x0 >= sub(bx, 2));
+                            if (gap < 12 && !crossesBoundary) {
+                                current.text += (gap > 1.5 ? ' ' : '') + ch.text;
+                                current.x1 = Math.max(current.x1, ch.x1);
+                            } else {
+                                mergedItems.push(current);
+                                current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
+                            }
+                        }
+                    });
+                    if (current) mergedItems.push(current);
+                });
+
+                // 3. Tách các chuỗi bị dính cột trong PDF (ví dụ "I T500 HB" hoặc "VI T500 HB 34")
+                const cleanItems = [];
+                mergedItems.forEach(it => {
+                    const txt = it.text.trim();
+                    if (!txt) return;
+
+                    // Bỏ qua dòng đánh số cột "1 2 3 5 6 7 8 9"
+                    if (/^1\s+2\s+3/.test(txt)) return;
+
+                    if (it.x0 < 110) {
+                        const match3 = txt.match(/^([IVXLCDM]+)\s+(.+?)\s+(\d+)$/);
+                        const match2 = txt.match(/^([IVXLCDM]+)\s+(.+)$/);
+                        if (match3) {
+                            cleanItems.push({ x0: 90, x1: 100, yc: it.yc, text: match3[1] });
+                            cleanItems.push({ x0: 125, x1: 155, yc: it.yc, text: match3[2].trim() });
+                            cleanItems.push({ x0: 175, x1: 185, yc: it.yc, text: match3[3] });
+                            return;
+                        } else if (match2) {
+                            cleanItems.push({ x0: 90, x1: 100, yc: it.yc, text: match2[1] });
+                            cleanItems.push({ x0: 125, x1: 155, yc: it.yc, text: match2[2].trim() });
+                            return;
+                        }
+                    }
+                    cleanItems.push({ x0: it.x0, x1: it.x1, yc: it.yc, text: txt });
+                });
+
+                // 4. Tìm vị trí đáy của tiêu đề bảng (dựa vào số thứ tự cột '4' hoặc chữ 'Nội dung')
+                let headerBottomY = 682;
+                cleanItems.forEach(it => {
+                    if ((it.text === '4' || it.text === '3' || it.text === '1') && it.yc > 650 && it.yc < 710) {
+                        headerBottomY = Math.min(headerBottomY, it.yc);
+                    }
+                });
+
+                // Chỉ lấy các phần tử nằm dưới tiêu đề bảng (và trên lề dưới 50pt)
+                const bodyItems = cleanItems.filter(it => it.yc < sub(headerBottomY, 3) && it.yc > 50);
+
+                // 5. Lấy các dòng thuộc cột Nội dung (x0 >= 193) hoặc dòng tiêu đề phụ gộp ngang (164 <= x0 < 190 và x1 > 210)
+                const contentLines = bodyItems.filter(it => it.x0 >= 164 && it.x0 < 363 && (it.x0 >= 191 || it.x1 > 210));
+                contentLines.sort((a, b) => sub(b.yc, a.yc));
+
+                // Gom các dòng nội dung cách nhau <= 14.8pt vào cùng 1 ô (Block)
+                const blocks = [];
+                contentLines.forEach(cl => {
+                    const isSpan = (cl.x0 < 191 && cl.x1 > 210);
+                    if (blocks.length === 0) {
+                        blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpan });
+                    } else {
+                        const prev = blocks[sub(blocks.length, 1)];
+                        const dy = sub(prev.yBot, cl.yc);
+                        if (dy <= 14.8 && prev.isSpan === isSpan) {
+                            prev.yBot = cl.yc;
+                            prev.lines.push(cl);
+                        } else {
+                            blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpan });
+                        }
+                    }
+                });
+
+                if (blocks.length === 0) continue;
+
+                // 6. Gắn các cột Mục (x < 110), Địa điểm (110..164), Bước (164..191) vào đúng Block theo tọa độ Y
+                blocks.forEach(b => { b.col0 = []; b.col1 = []; b.col2 = []; });
+                const otherItems = bodyItems.filter(it => !contentLines.includes(it));
+
+                otherItems.forEach(it => {
+                    let bestBlock = blocks[0];
+                    let minDist = 9999;
+                    blocks.forEach(b => {
+                        let dist = 0;
+                        if (it.yc > b.yTop + 5) dist = sub(it.yc, b.yTop);
+                        else if (it.yc < sub(b.yBot, 5)) dist = sub(b.yBot, it.yc);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            bestBlock = b;
+                        }
+                    });
+
+                    if (it.x0 < 110) bestBlock.col0.push(it.text);
+                    else if (it.x0 < 164) bestBlock.col1.push(it.text);
+                    else if (it.x0 < 191) bestBlock.col2.push(it.text);
+                });
+
+                // 7. Chuyển đổi thành cấu trúc dòng chuẩn để đẩy vào renderImportedStepPages
+                const pageRows = [];
+                blocks.forEach(b => {
+                    const c0 = b.col0.join(' ').trim();
+                    const c1 = b.col1.join(' ').trim();
+                    const c2 = b.col2.join(' ').trim();
+                    const lineTexts = b.lines.map(l => l.text.trim());
+
+                    if (b.isSpan) {
+                        pageRows.push([
+                            { text: c0, colspan: 1, vMerge: null },
+                            { text: c1, colspan: 1, vMerge: null },
+                            { text: lineTexts.join(' '), colspan: 3, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null }
+                        ]);
+                    } else {
+                        // Kiểm tra nếu có dòng "Kết quả kiểm tra là: Đúng: ... Sai:" thì tách thành dòng phụ gộp dọc cột Bước
+                        const kqIdx = lineTexts.findIndex(t => t.includes('Kết quả kiểm tra'));
+                        if (kqIdx > 0) {
+                            const mainContent = lineTexts.slice(0, kqIdx).join(' ');
+                            const subContent = lineTexts.slice(kqIdx).join(' ');
+                            pageRows.push([
+                                { text: c0, colspan: 1, vMerge: null },
+                                { text: c1, colspan: 1, vMerge: null },
+                                { text: c2, colspan: 1, vMerge: 'restart' },
+                                { text: mainContent, colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null }
+                            ]);
+                            pageRows.push([
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: 'continue' },
+                                { text: subContent, colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null }
+                            ]);
+                        } else {
+                            pageRows.push([
+                                { text: c0, colspan: 1, vMerge: null },
+                                { text: c1, colspan: 1, vMerge: null },
+                                { text: c2, colspan: 1, vMerge: null },
+                                { text: lineTexts.join(' '), colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null }
+                            ]);
+                        }
+                    }
+                });
+
+                if (pageRows.length > 0) {
+                    pagesData.push(pageRows);
+                }
+            }
+
+            if (pagesData.length === 0) {
+                alert('Không tìm thấy bảng trình tự thao tác nào trong file PDF này!');
+                return;
+            }
+
+            // Dựng các trang bước thao tác và tự động căn khít khổ A4
+            renderImportedStepPages(pagesData);
+
+            // Tự động điền Số phiếu nếu phát hiện được trong PDF
+            if (detectedTicketNumber) {
+                document.querySelectorAll('.page-header-a4 .header-right .editable-field, .header-right-page2 .editable-field').forEach(el => {
+                    el.innerText = detectedTicketNumber;
+                });
+            }
         }
 
         // --- 1. ĐỌC FILE WORD (.DOCX) TỪ NITRO PRO ---
