@@ -757,11 +757,29 @@
                 return alert("Không thể xóa dòng cuối cùng của bảng!");
             }
 
-            const hasVerticalMerge = Array.from(currentRow.children).some(
-                td => (td.rowSpan && td.rowSpan > 1) || td.classList.contains('merged-hidden')
-            );
-            if (hasVerticalMerge) {
-                return alert("Dòng này đang có ô được gộp dọc. Hãy bấm '✂️ Tách ô' trước khi xóa dòng!");
+            // CHỈ CHẶN NẾU LÀ GỘP DỌC (rowSpan > 1). Gộp ngang (colSpan) thì cho phép xóa dòng bình thường.
+            let isVerticalMerged = false;
+            Array.from(currentRow.children).forEach(td => {
+                if (td.rowSpan && td.rowSpan > 1) {
+                    isVerticalMerged = true;
+                }
+            });
+
+            // Nếu dòng chứa ô bị ẩn (merged-hidden), phải kiểm tra xem ô đó bị ẩn do gộp dọc từ dòng trên xuống hay bị ẩn do gộp ngang trên cùng 1 dòng
+            if (!isVerticalMerged) {
+                const rIdx = getRowIndex(focusedCell);
+                if (rIdx > 0) {
+                    const prevRow = rows[sub(rIdx, 1)];
+                    Array.from(prevRow.children).forEach(td => {
+                        if (td.rowSpan && td.rowSpan > 1) {
+                            isVerticalMerged = true;
+                        }
+                    });
+                }
+            }
+
+            if (isVerticalMerged) {
+                return alert("Dòng này đang dính với ô được gộp dọc (chung với dòng khác). Hãy bấm '✂️ Tách ô' trước khi xóa dòng!");
             }
 
             saveState();
