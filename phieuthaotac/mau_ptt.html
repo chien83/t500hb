@@ -922,8 +922,8 @@
         function getRowIndex(td) { return Array.from(td.closest('tbody').children).indexOf(td.parentElement); }
         function clearCellSelection() { document.querySelectorAll('td.cell-selected').forEach(td => td.classList.remove('cell-selected')); }
 
-        // QUÉT CHỌN NHIỀU Ô
-        function selectColumnRange(cellA, cellB) {
+        // QUÉT CHỌN NHIỀU Ô (HỖ TRỢ CẢ DỌC VÀ NGANG)
+        function selectCellRange(cellA, cellB) {
             if (!cellA || !cellB) return;
             const tbodyA = cellA.closest('tbody');
             const tbodyB = cellB.closest('tbody');
@@ -931,19 +931,25 @@
 
             const colA = getColIndex(cellA);
             const colB = getColIndex(cellB);
-            if (colA !== colB) return; 
+            const r1 = getRowIndex(cellA);
+            const r2 = getRowIndex(cellB);
+
+            // Chỉ cho phép quét chọn trên cùng 1 Cột HOẶC cùng 1 Hàng
+            if (colA !== colB && r1 !== r2) return; 
 
             clearCellSelection();
             const rows = Array.from(tbodyA.children);
-            const r1 = getRowIndex(cellA);
-            const r2 = getRowIndex(cellB);
             const minRow = Math.min(r1, r2);
             const maxRow = Math.max(r1, r2);
+            const minCol = Math.min(colA, colB);
+            const maxCol = Math.max(colA, colB);
 
             for (let r = minRow; r <= maxRow; r++) {
-                const cell = rows[r].children[colA];
-                if (cell && !cell.classList.contains('merged-hidden')) {
-                    cell.classList.add('cell-selected');
+                for (let c = minCol; c <= maxCol; c++) {
+                    const cell = rows[r].children[c];
+                    if (cell && !cell.classList.contains('merged-hidden')) {
+                        cell.classList.add('cell-selected');
+                    }
                 }
             }
         }
