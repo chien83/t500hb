@@ -985,10 +985,10 @@
 
         document.addEventListener('mouseup', () => { isDraggingCells = false; });
 
-        // GỘP Ô
+        // GỘP Ô (HỖ TRỢ CẢ GỘP DỌC VÀ GỘP NGANG)
         function mergeSelectedCells() {
             const selected = Array.from(document.querySelectorAll('td.cell-selected'));
-            if (selected.length < 2) return alert('Hãy kéo chuột chọn ít nhất 2 ô cùng cột để gộp!');
+            if (selected.length < 2) return alert('Hãy kéo chuột chọn ít nhất 2 ô cùng cột hoặc cùng hàng để gộp!');
             
             saveState();
 
@@ -998,28 +998,51 @@
             const colIndex = getColIndex(firstCell);
             const startRow = getRowIndex(firstCell);
             
-            let totalSpan = 0;
-            selected.forEach(cell => {
-                totalSpan += (cell.rowSpan || 1);
-            });
-            const endLimit = startRow + totalSpan;
+            // Xác định xem đang quét chọn Dọc hay Ngang
+            const isHorizontal = (getRowIndex(selected[0]) === getRowIndex(selected[1]));
 
             let combinedText = [];
-            for (let r = startRow; r < endLimit; r++) {
-                const cell = rows[r].children[colIndex];
-                const text = cell.innerText.trim();
-                if (text) combinedText.push(text);
+            
+            if (isHorizontal) {
+                // XỬ LÝ GỘP NGANG (COLSPAN)
+                let totalColSpan = 0;
+                selected.forEach(cell => {
+                    totalColSpan += (cell.colSpan || 1);
+                    const text = cell.innerText.trim();
+                    if (text) combinedText.push(text);
+                });
+
+                firstCell.colSpan = totalColSpan;
+                firstCell.innerText = combinedText.join(' ');
+                firstCell.style.textAlign = 'center'; // Căn giữa tự động khi gộp ngang (tuỳ chọn)
+
+                for (let i = 1; i < selected.length; i++) {
+                    const cell = selected[i];
+                    cell.colSpan = 1;
+                    cell.innerText = '';
+                    cell.classList.add('merged-hidden');
+                }
+            } else {
+                // XỬ LÝ GỘP DỌC (ROWSPAN)
+                let totalRowSpan = 0;
+                selected.forEach(cell => {
+                    totalRowSpan += (cell.rowSpan || 1);
+                    const text = cell.innerText.trim();
+                    if (text) combinedText.push(text);
+                });
+                const endLimit = startRow + totalRowSpan;
+
+                firstCell.rowSpan = totalRowSpan;
+                firstCell.innerText = combinedText.join(' ');
+
+                for (let r = startRow + 1; r < endLimit; r++) {
+                    const cell = rows[r].children[colIndex];
+                    cell.rowSpan = 1;
+                    cell.innerText = '';
+                    cell.classList.add('merged-hidden');
+                }
             }
 
-            firstCell.rowSpan = totalSpan;
-            firstCell.innerText = combinedText.join(' ');
-
-            for (let r = startRow + 1; r < endLimit; r++) {
-                const cell = rows[r].children[colIndex];
-                cell.rowSpan = 1;
-                cell.innerText = '';
-                cell.classList.add('merged-hidden');
-            }
             clearCellSelection();
             if (tbody.closest('.step-page')) fitAllStepPages();
         }
