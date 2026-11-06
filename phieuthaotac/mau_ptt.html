@@ -1047,29 +1047,49 @@
             if (tbody.closest('.step-page')) fitAllStepPages();
         }
 
-        // TÁCH Ô
+        // TÁCH Ô (HỖ TRỢ TÁCH CẢ ROWSPAN VÀ COLSPAN)
         function splitSelectedCell() {
             const targetCell = document.querySelector('td.cell-selected') || focusedCell;
             if (!targetCell || !targetCell.closest('tbody')) return alert('Hãy click vào ô đã gộp cần tách!');
             
-            const span = targetCell.rowSpan || 1;
-            if (span <= 1) return alert('Ô này chưa được gộp!');
+            const rSpan = targetCell.rowSpan || 1;
+            const cSpan = targetCell.colSpan || 1;
+            
+            if (rSpan <= 1 && cSpan <= 1) return alert('Ô này chưa được gộp!');
             
             saveState();
 
             const tbody = targetCell.closest('tbody');
             const rows = Array.from(tbody.children);
-            const colIndex = getColIndex(targetCell);
+            const startCol = getColIndex(targetCell);
             const startRow = getRowIndex(targetCell);
 
+            // Khôi phục lại text alignment mặc định nếu trước đó gộp ngang bị căn giữa
+            if (cSpan > 1 && startCol === 2) targetCell.style.textAlign = 'left';
+
             targetCell.rowSpan = 1;
-            for (let r = startRow + 1; r < startRow + span; r++) {
-                const cell = rows[r].children[colIndex];
+            targetCell.colSpan = 1;
+
+            // Mở khóa các ô bị ẩn do gộp dọc
+            for (let r = startRow + 1; r < startRow + rSpan; r++) {
+                const cell = rows[r].children[startCol];
                 if (cell) {
                     cell.classList.remove('merged-hidden');
                     cell.rowSpan = 1;
+                    cell.colSpan = 1;
                 }
             }
+
+            // Mở khóa các ô bị ẩn do gộp ngang
+            for (let c = startCol + 1; c < startCol + cSpan; c++) {
+                const cell = rows[startRow].children[c];
+                if (cell) {
+                    cell.classList.remove('merged-hidden');
+                    cell.rowSpan = 1;
+                    cell.colSpan = 1;
+                }
+            }
+
             clearCellSelection();
             if (tbody.closest('.step-page')) fitAllStepPages();
         }
