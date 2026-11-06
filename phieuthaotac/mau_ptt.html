@@ -757,24 +757,32 @@
                 return alert("Không thể xóa dòng cuối cùng của bảng!");
             }
 
-            // CHỈ CHẶN NẾU LÀ GỘP DỌC (rowSpan > 1). Gộp ngang (colSpan) thì cho phép xóa dòng bình thường.
+            const rIdx = getRowIndex(focusedCell);
             let isVerticalMerged = false;
+
+            // Kiểm tra xem dòng HIỆN TẠI có chứa ô nào đang GỘP XUỐNG dưới không
             Array.from(currentRow.children).forEach(td => {
                 if (td.rowSpan && td.rowSpan > 1) {
                     isVerticalMerged = true;
                 }
             });
 
-            // Nếu dòng chứa ô bị ẩn (merged-hidden), phải kiểm tra xem ô đó bị ẩn do gộp dọc từ dòng trên xuống hay bị ẩn do gộp ngang trên cùng 1 dòng
-            if (!isVerticalMerged) {
-                const rIdx = getRowIndex(focusedCell);
-                if (rIdx > 0) {
-                    const prevRow = rows[sub(rIdx, 1)];
-                    Array.from(prevRow.children).forEach(td => {
-                        if (td.rowSpan && td.rowSpan > 1) {
-                            isVerticalMerged = true;
+            // Nếu dòng HIỆN TẠI có ô bị ẩn (merged-hidden), kiểm tra xem nó bị ẩn do GỘP DỌC TỪ TRÊN XUỐNG hay do gộp ngang
+            const currentCells = Array.from(currentRow.children);
+            for (let c = 0; c < currentCells.length; c++) {
+                const td = currentCells[c];
+                if (td.classList.contains('merged-hidden')) {
+                    // Kiểm tra xem các dòng phía trên cùng cột này có ô nào rowSpan vượt qua dòng HIỆN TẠI không
+                    for (let r = rIdx - 1; r >= 0; r--) {
+                        const cellAbove = rows[r].children[c];
+                        if (cellAbove && cellAbove.rowSpan > 1) {
+                            // Nếu số dòng gộp của ô phía trên đủ lớn để tràn xuống dòng HIỆN TẠI
+                            if (r + cellAbove.rowSpan > rIdx) {
+                                isVerticalMerged = true;
+                                break;
+                            }
                         }
-                    });
+                    }
                 }
             }
 
@@ -940,7 +948,7 @@
         function getRowIndex(td) { return Array.from(td.closest('tbody').children).indexOf(td.parentElement); }
         function clearCellSelection() { document.querySelectorAll('td.cell-selected').forEach(td => td.classList.remove('cell-selected')); }
 
-        // QUÉT CHỌN NHIỀU Ô (HỖ TRỢ CẢ DỌC VÀ NGANG)
+        // QUÉT CHỌN NHIỀU Ô (HỖ TRỢ CẢ DỌC VÀ NGANG CHUẨN XÁC)
         function selectCellRange(cellA, cellB) {
             if (!cellA || !cellB) return;
             const tbodyA = cellA.closest('tbody');
@@ -952,7 +960,6 @@
             const r1 = getRowIndex(cellA);
             const r2 = getRowIndex(cellB);
 
-            // Chỉ cho phép quét chọn trên cùng 1 Cột HOẶC cùng 1 Hàng
             if (colA !== colB && r1 !== r2) return; 
 
             clearCellSelection();
@@ -963,9 +970,13 @@
             const maxCol = Math.max(colA, colB);
 
             for (let r = minRow; r <= maxRow; r++) {
+                const tr = rows[r];
+                // Lấy tất cả các ô trong dòng (kể cả ô bị ẩn)
+                const cells = Array.from(tr.children);
                 for (let c = minCol; c <= maxCol; c++) {
-                    const cell = rows[r].children[c];
-                    if (cell && !cell.classList.contains('merged-hidden')) {
+                    const cell = cells[c];
+                    // Nếu là bôi đen ngang (r1 === r2), cho phép bôi đen lướt qua cả ô đang bị gộp ngang
+                    if (cell && (r1 === r2 || !cell.classList.contains('merged-hidden'))) {
                         cell.classList.add('cell-selected');
                     }
                 }
@@ -984,11 +995,20 @@
             if (e.shiftKey && startCell && td !== startCell) {
                 e.preventDefault();
                 window.getSelection().removeAllRanges();
-                selectColumnRange(startCell, td);
+                selectCellRange(startCell, td); // Gọi đúng hàm mới
             } else {
                 clearCellSelection();
                 startCell = td;
                 isDraggingCells = true;
+            }
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            if (!isEditing || !isDraggingCells || !startCell) return;
+            const td = e.target.closest('tbody td.editable-field');
+            if (td && td !== startCell) {
+                window.getSelection().removeAllRanges(); 
+                selectCellRange(startCell, td); // Gọi đúng hàm mới
             }
         });
 
@@ -1016,23 +1036,22 @@
             const colIndex = getColIndex(firstCell);
             const startRow = getRowIndex(firstCell);
             
-            // Xác định xem đang quét chọn Dọc hay Ngang
             const isHorizontal = (getRowIndex(selected[0]) === getRowIndex(selected[1]));
 
             let combinedText = [];
             
             if (isHorizontal) {
-                // XỬ LÝ GỘP NGANG (COLSPAN)
+                // GỘP NGANG
                 let totalColSpan = 0;
                 selected.forEach(cell => {
                     totalColSpan += (cell.colSpan || 1);
                     const text = cell.innerText.trim();
-                    if (text) combinedText.push(text);
+                    if (text && !cell.classList.contains('merged-hidden')) combinedText.push(text);
                 });
 
                 firstCell.colSpan = totalColSpan;
                 firstCell.innerText = combinedText.join(' ');
-                firstCell.style.textAlign = 'center'; // Căn giữa tự động khi gộp ngang (tuỳ chọn)
+                firstCell.style.textAlign = 'center'; 
 
                 for (let i = 1; i < selected.length; i++) {
                     const cell = selected[i];
@@ -1041,12 +1060,12 @@
                     cell.classList.add('merged-hidden');
                 }
             } else {
-                // XỬ LÝ GỘP DỌC (ROWSPAN)
+                // GỘP DỌC
                 let totalRowSpan = 0;
                 selected.forEach(cell => {
                     totalRowSpan += (cell.rowSpan || 1);
                     const text = cell.innerText.trim();
-                    if (text) combinedText.push(text);
+                    if (text && !cell.classList.contains('merged-hidden')) combinedText.push(text);
                 });
                 const endLimit = startRow + totalRowSpan;
 
@@ -1055,9 +1074,11 @@
 
                 for (let r = startRow + 1; r < endLimit; r++) {
                     const cell = rows[r].children[colIndex];
-                    cell.rowSpan = 1;
-                    cell.innerText = '';
-                    cell.classList.add('merged-hidden');
+                    if (cell) {
+                        cell.rowSpan = 1;
+                        cell.innerText = '';
+                        cell.classList.add('merged-hidden');
+                    }
                 }
             }
 
@@ -1065,9 +1086,13 @@
             if (tbody.closest('.step-page')) fitAllStepPages();
         }
 
-        // TÁCH Ô (HỖ TRỢ TÁCH CẢ ROWSPAN VÀ COLSPAN)
+        // TÁCH Ô 
         function splitSelectedCell() {
-            const targetCell = document.querySelector('td.cell-selected') || focusedCell;
+            // Lấy đúng thẻ TD gốc, không lấy thẻ span bên trong
+            let targetCell = document.querySelector('td.cell-selected');
+            if (!targetCell && focusedCell) {
+                targetCell = focusedCell.tagName === 'TD' ? focusedCell : focusedCell.closest('td');
+            }
             if (!targetCell || !targetCell.closest('tbody')) return alert('Hãy click vào ô đã gộp cần tách!');
             
             const rSpan = targetCell.rowSpan || 1;
@@ -1082,13 +1107,11 @@
             const startCol = getColIndex(targetCell);
             const startRow = getRowIndex(targetCell);
 
-            // Khôi phục lại text alignment mặc định nếu trước đó gộp ngang bị căn giữa
             if (cSpan > 1 && startCol === 2) targetCell.style.textAlign = 'left';
 
             targetCell.rowSpan = 1;
             targetCell.colSpan = 1;
 
-            // Mở khóa các ô bị ẩn do gộp dọc
             for (let r = startRow + 1; r < startRow + rSpan; r++) {
                 const cell = rows[r].children[startCol];
                 if (cell) {
@@ -1098,7 +1121,6 @@
                 }
             }
 
-            // Mở khóa các ô bị ẩn do gộp ngang
             for (let c = startCol + 1; c < startCol + cSpan; c++) {
                 const cell = rows[startRow].children[c];
                 if (cell) {
