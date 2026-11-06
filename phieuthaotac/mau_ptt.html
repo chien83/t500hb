@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chỉnh sửa Phiếu Thao Tác Trực Quan</title>
-<!-- Thư viện đọc file Word (.docx), Excel (.xlsx) và PDF (.pdf) trực tiếp trên trình duyệt -->
+    <!-- Thư viện đọc file Word (.docx), Excel (.xlsx) và PDF (.pdf) trực tiếp trên trình duyệt -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -237,6 +237,60 @@
             .control-panel, .page-controls { display: none !important; }
             [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
         }
+
+        /* === GIAO DIỆN TỐI ƯU CHO ĐIỆN THOẠI (MÀN HÌNH <= 850PX) === */
+        @media screen and (max-width: 850px) {
+            body {
+                padding: 10px 0 95px 0; /* Chừa khoảng trống dưới đáy cho thanh menu */
+                overflow-x: hidden;
+            }
+            #document-container {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .page {
+                /* Tự động thu nhỏ tờ A4 vừa khít chiều ngang màn hình điện thoại */
+                transform: scale(var(--mobile-scale, 0.46));
+                transform-origin: top center;
+                /* Bù lại khoảng trống chiều cao sau khi thu nhỏ để các trang A4 xếp sát nhau */
+                margin-bottom: calc((297mm * (var(--mobile-scale, 0.46) - 1)) + 12px) !important;
+            }
+            /* Đưa thanh công cụ xuống đáy màn hình thành dạng thanh ngang */
+            .control-panel {
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                border-radius: 12px 12px 0 0;
+                padding: 8px 6px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+                box-shadow: 0 -3px 12px rgba(0,0,0,0.4);
+            }
+            .control-panel .btn {
+                flex: 1 1 auto;
+                min-width: 78px;
+                max-width: 115px;
+                padding: 7px 5px;
+                font-size: 9.5pt;
+            }
+            /* Đưa nút Thêm/Xóa trang (➕/🗑️) vào góc trên bên trái tờ giấy để không bị tràn lề */
+            .page-controls {
+                top: 10px;
+                left: 12px;
+                right: auto;
+                flex-direction: row;
+                gap: 12px;
+                /* Giữ kích thước nút bấm lớn dễ chạm trên màn hình cảm ứng */
+                transform: scale(calc(1 / var(--mobile-scale, 0.46)));
+                transform-origin: top left;
+            }
+        }        
     </style>
 </head>
 <body>
