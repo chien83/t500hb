@@ -1279,6 +1279,7 @@
                 // TỰ ĐỘNG TÍNH TOÁN RANH GIỚI CỘT TRƯỚC KHI GHÉP CHỮ (Tránh dính cột Bước và cột Nội dung)
                 let col0_x = 110, col1_x = 158, col2_x = 186;
                 let line1234 = lineGroups.find(lg => {
+                    lg.chunks.sort((a, b) => sub(a.x0, b.x0));
                     let txt = lg.chunks.map(c => c.text).join('').replace(/\s/g,'');
                     return txt.includes('1234') || txt.includes('1243');
                 });
@@ -1441,9 +1442,10 @@
 
                     const txt = it.text.trim();
                     const isStepNum = /^\d+[\.\)]?$/.test(txt);
+                    const isRoman = /^([IVXLCDM\u2160-\u216F]+)$/i.test(txt);
                     
-                    if (it.x0 < col0_x) bestBlock.col0.push(txt);
-                    else if (it.x0 < col1_x) bestBlock.col1.push(txt);
+                    if (it.x0 < col1_x && isRoman) bestBlock.col0.push(txt);
+                    else if (it.x0 < col1_x && !isStepNum) bestBlock.col1.push(txt);
                     else if (isStepNum && it.x0 < col2_x + 20) bestBlock.col2.push(txt.replace(/[\.\)]$/, ''));
                     else if (it.x0 < col2_x) bestBlock.col2.push(txt);
                 });
