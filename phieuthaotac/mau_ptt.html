@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+<!-- PHIÊN BẢN: Ver 2.1 -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,84 +45,194 @@
             font-weight: bold;
             line-height: 1.2;
         }
-        .header-left { text-align: center; width: 35%; font-size: 12pt; }
-        .header-center { text-align: center; width: 30%; font-size: 14pt; margin-top: 10px; }
-        .header-right { text-align: left; width: 35%; font-weight: normal; font-size: 12pt; padding-left: 15px; }
-        .header-right-page2 { text-align: right; margin-bottom: 10px; font-size: 13pt; }
-        .header-right-page2 > div { display: inline-block; text-align: left; white-space: nowrap; }
+        .header-left { 
+            text-align: center; 
+            width: 35%; 
+            font-size: 12pt; 
+        }
+        .header-center { 
+            text-align: center; 
+            width: 30%; 
+            font-size: 14pt; 
+            margin-top: 10px; 
+        }
+        .header-right { 
+            text-align: left; 
+            width: 35%; 
+            font-weight: normal; 
+            font-size: 12pt; 
+            padding-left: 15px; 
+        }
+        .header-right-page2 {
+            text-align: right; 
+            margin-bottom: 10px;
+            font-size: 13pt;
+        }
+        .header-right-page2 > div {
+             display: inline-block;
+             text-align: left;
+             white-space: nowrap; 
+        }
 
         /* === FORM NHẬP LIỆU === */
         .form-row { display: flex; align-items: flex-end; margin-bottom: 10px; line-height: 1.6; }
         .form-label { white-space: nowrap; margin-right: 5px; }
         
         .dotted-line {
-            flex-grow: 1; border-bottom: 1px dotted #000; min-height: 20px; display: flex; align-items: flex-end;
+            flex-grow: 1;
+            border-bottom: 1px dotted #000;
+            min-height: 20px;
+            display: flex;
+            align-items: flex-end;
         }
         .inline-dotted {
-            border-bottom: 1px dotted #000; display: inline-block; min-height: 20px; margin: 0 5px;
+            border-bottom: 1px dotted #000;
+            display: inline-block;
+            min-height: 20px;
+            margin: 0 5px;
         }
 
         .signature-grid {
-            display: grid; grid-template-columns: 55% 45%; row-gap: 15px; margin-bottom: 10px; margin-top: 15px;
+            display: grid;
+            grid-template-columns: 55% 45%;
+            row-gap: 15px;
+            margin-bottom: 10px;
+            margin-top: 15px;
         }
         .sig-item { display: flex; align-items: flex-end; padding-right: 15px; }
+
         ol.numbered-list { padding-left: 25px; margin-top: 5px; line-height: 1.8; }
         ol.numbered-list li { padding-left: 5px; }
 
         /* === BẢNG BIỂU === */
         table {
-            width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12pt; table-layout: fixed; 
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12pt;
+            table-layout: fixed; 
         }
         th, td {
-            border: 1px solid #000; padding: 5px; vertical-align: middle; text-align: center; word-wrap: break-word;
+            border: 1px solid #000;
+            padding: 5px;
+            vertical-align: middle;
+            text-align: center;
+            word-wrap: break-word;
         }
         th { font-weight: bold; }
 
         /* === CSS CHẾ ĐỘ CHỈNH SỬA (WYSIWYG) === */
-        .editable-field { width: 100%; min-height: 20px; outline: none; display: inline-block; }
+        .editable-field {
+            width: 100%;
+            min-height: 20px;
+            outline: none;
+            display: inline-block;
+        }
         td.editable-field { display: table-cell; }
-        [contenteditable="true"] { background-color: #e3f2fd; border-radius: 2px; cursor: text; }
+
+        [contenteditable="true"] {
+            background-color: #e3f2fd;
+            border-radius: 2px;
+            cursor: text;
+        }
         [contenteditable="true"]:hover { background-color: #bbdefb; }
-        [contenteditable="true"]:focus { background-color: #fff8e1; box-shadow: inset 0 0 0 1px #ff9800; }
+        [contenteditable="true"]:focus {
+            background-color: #fff8e1;
+            box-shadow: inset 0 0 0 1px #ff9800;
+        }
 
         /* === TÍNH NĂNG GỘP / TÁCH Ô === */
-        td.cell-selected { background-color: #ffe0b2 !important; box-shadow: inset 0 0 0 2px #e65100 !important; }
-        td.merged-hidden { display: none !important; }
+        td.cell-selected {
+            background-color: #ffe0b2 !important;
+            box-shadow: inset 0 0 0 2px #e65100 !important;
+        }
+        td.merged-hidden {
+            display: none !important;
+        }
 
         /* === THANH CÔNG CỤ BÊN PHẢI (THU GỌN VÀ BÁM SÁT LỀ) === */
         .control-panel {
-            position: fixed; top: 20px; right: 5px; background: #2c3e50; padding: 8px; 
-            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 1000;
-            display: flex; flex-direction: column; gap: 8px; width: 145px;
+            position: fixed;
+            top: 20px;
+            right: 5px; /* Sát mép phải màn hình */
+            background: #2c3e50;
+            padding: 8px; 
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; 
+            gap: 8px; 
+            width: 145px; /* Cố định chiều ngang gọn gàng */
         }
         .btn {
-            cursor: pointer; padding: 8px 10px; border: none; border-radius: 5px; font-weight: bold;
-            font-size: 10.5pt; color: white; transition: 0.3s; text-align: center; white-space: normal; line-height: 1.3;
+            cursor: pointer;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 10.5pt;
+            color: white;
+            transition: 0.3s;
+            text-align: center;
+            white-space: normal; /* Cho phép chữ tự động xuống dòng khi chật */
+            line-height: 1.3;
         }
-        .btn-edit { background-color: #3498db; } .btn-edit.active { background-color: #e67e22; }
-        .btn-print { background-color: #2ecc71; } .btn-save { background-color: #9b59b6; display: none; }
-        .btn-merge { background-color: #f39c12; display: none; } .btn-merge:hover { background-color: #d68910; }
-        .btn-split { background-color: #e74c3c; display: none; } .btn-split:hover { background-color: #c0392b; }
+        .btn-edit { background-color: #3498db; }
+        .btn-edit.active { background-color: #e67e22; }
+        .btn-print { background-color: #2ecc71; }
+        .btn-save { background-color: #9b59b6; display: none; }
+        .btn-merge { background-color: #f39c12; display: none; }
+        .btn-merge:hover { background-color: #d68910; }
+        .btn-split { background-color: #e74c3c; display: none; }
+        .btn-split:hover { background-color: #c0392b; }
 
         /* === NÚT ĐIỀU KHIỂN TRANG (THÊM / XÓA TRANG) === */
         .page-controls {
-            position: absolute; top: 20px; left: -50px; display: none; flex-direction: column; gap: 10px; z-index: 100;
+            position: absolute;
+            top: 20px;
+            left: -50px; 
+            display: none; 
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
         }
         .btn-page {
-            width: 38px; height: 38px; border-radius: 50%; border: none; color: white; cursor: pointer;
-            font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 6px rgba(0,0,0,0.3); transition: 0.2s;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            transition: 0.2s;
         }
-        .btn-add-page { background-color: #2ecc71; } .btn-add-page:hover { background-color: #27ae60; transform: scale(1.1); }
-        .btn-del-page { background-color: #e74c3c; } .btn-del-page:hover { background-color: #c0392b; transform: scale(1.1); }
+        .btn-add-page { background-color: #2ecc71; }
+        .btn-add-page:hover { background-color: #27ae60; transform: scale(1.1); }
+        .btn-del-page { background-color: #e74c3c; }
+        .btn-del-page:hover { background-color: #c0392b; transform: scale(1.1); }
 
         /* === CSS KHI IN ẤN (PDF) === */
         @media print {
             @page { size: A4 portrait; margin: 0; }
             body, html { background: none; margin: 0; padding: 0; width: 210mm; }
             .page { 
-                box-shadow: none; margin: 0; border: none; width: 210mm; height: 297mm; max-height: 297mm;
-                padding: 15mm 15mm 15mm 15mm; page-break-after: always; break-after: page;
-                page-break-inside: avoid; break-inside: avoid; overflow: hidden !important;
+                box-shadow: none; 
+                margin: 0; 
+                border: none; 
+                width: 210mm;
+                height: 297mm;
+                max-height: 297mm;
+                padding: 15mm 15mm 15mm 15mm;
+                page-break-after: always; 
+                break-after: page;
+                page-break-inside: avoid;
+                break-inside: avoid;
+                overflow: hidden !important;
             }
             .page:last-child { page-break-after: auto; break-after: auto; }
             .control-panel, .page-controls { display: none !important; }
@@ -130,28 +241,65 @@
 
         /* === GIAO DIỆN TỐI ƯU CHO ĐIỆN THOẠI (MÀN HÌNH <= 850PX) === */
         @media screen and (max-width: 850px) {
-            body { padding: 10px 0 95px 0; overflow-x: hidden; }
-            #document-container { width: 100%; display: flex; flex-direction: column; align-items: center; }
+            body {
+                padding: 10px 0 95px 0; /* Chừa khoảng trống dưới đáy cho thanh menu */
+                overflow-x: hidden;
+            }
+            #document-container {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
             .page {
-                transform: scale(var(--mobile-scale, 0.46)); transform-origin: top center;
+                /* Tự động thu nhỏ tờ A4 vừa khít chiều ngang màn hình điện thoại */
+                transform: scale(var(--mobile-scale, 0.46));
+                transform-origin: top center;
+                /* Bù lại khoảng trống chiều cao sau khi thu nhỏ để các trang A4 xếp sát nhau */
                 margin-bottom: calc((297mm * (var(--mobile-scale, 0.46) - 1)) + 12px) !important;
             }
+            /* Đưa thanh công cụ xuống đáy màn hình thành dạng thanh ngang */
             .control-panel {
-                top: auto; bottom: 0; left: 0; right: 0; width: 100%; border-radius: 12px 12px 0 0;
-                padding: 8px 6px; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 6px; box-shadow: 0 -3px 12px rgba(0,0,0,0.4);
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                border-radius: 12px 12px 0 0;
+                padding: 8px 6px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+                box-shadow: 0 -3px 12px rgba(0,0,0,0.4);
             }
-            .control-panel .btn { flex: 1 1 auto; min-width: 78px; max-width: 115px; padding: 7px 5px; font-size: 9.5pt; }
+            .control-panel .btn {
+                flex: 1 1 auto;
+                min-width: 78px;
+                max-width: 115px;
+                padding: 7px 5px;
+                font-size: 9.5pt;
+            }
+            /* Đưa nút Thêm/Xóa trang (➕/🗑️) vào góc trên bên trái tờ giấy để không bị tràn lề */
             .page-controls {
-                top: 10px; left: 12px; right: auto; flex-direction: row; gap: 12px;
-                transform: scale(calc(1 / var(--mobile-scale, 0.46))); transform-origin: top left;
+                top: 10px;
+                left: 12px;
+                right: auto;
+                flex-direction: row;
+                gap: 12px;
+                /* Giữ kích thước nút bấm lớn dễ chạm trên màn hình cảm ứng */
+                transform: scale(calc(1 / var(--mobile-scale, 0.46)));
+                transform-origin: top left;
             }
         }        
     </style>
 </head>
 <body>
-
+    <div style="position: fixed; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: lime; padding: 2px 5px; font-size: 10pt; z-index: 2000; border-radius: 3px;">Ver 2.1</div>
     <div class="control-panel">
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
+        
+        <!-- NÚT TẢI FILE PDF / WORD / EXCEL LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
         <button id="btnImport" class="btn btn-edit" style="background-color: #16a085;" onclick="document.getElementById('fileUpload').click()" title="Tải file PDF, Word hoặc Excel">📂 Nhập PDF/Word<br>/Excel</button>
         <input type="file" id="fileUpload" accept=".pdf,.docx,.xlsx,.xls" style="display: none;" onchange="handleFileImport(event)">
         <button id="btnUndo" class="btn btn-edit" style="background-color: #95a5a6; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
@@ -1060,14 +1208,14 @@
             event.target.value = '';
         }
 
-        // --- 1. ĐỌC TRỰC TIẾP FILE PDF VỚI TỌA ĐỘ LINH HOẠT VÀ TÁCH BƯỚC THÔNG MINH ---
+        // --- 1. ĐỌC TRỰC TIẾP FILE PDF VỚI TỌA ĐỘ LINH HOẠT VÀ TÁCH BƯỚC THÔNG MINH (VER 2.1) ---
         async function importFromPdf(file) {
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             const pagesData = [];
             let page1Extracted = false;
             let isParsingGNS = false;
-            let giaoNhanSauRaw = []; // Mảng chứa dữ liệu thô của bảng Giao nhận sau
+            let giaoNhanSauRaw = []; 
 
             for (let p = 1; p <= pdf.numPages; p++) {
                 const page = await pdf.getPage(p);
@@ -1090,7 +1238,7 @@
                 if (!page1Extracted && fullPageText.includes('Mục đích thao tác') && fullPageText.includes('Thời gian dự kiến')) {
                     const p1Data = extractPage1RedBoxFromChunks(rawChunks);
                     if (p1Data) {
-                        populatePage1RedBox(p1Data);
+                        populatePage1(p1Data);
                         page1Extracted = true;
                     }
                 }
@@ -1351,7 +1499,7 @@
                 if (tg || dv || ht || nd) {
                     dataTrang4.giaoNhanSau.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
                 }
-                populatePage4RedBox(dataTrang4);
+                populatePage4(dataTrang4);
             }
 
             if (pagesData.length > 0) {
@@ -1546,7 +1694,7 @@
         }
 
         // --- HÀM ĐỔ DỮ LIỆU VÀO TRANG 1 & TRANG 4 ---
-        function populatePage1RedBox(data) {
+        function populatePage1(data) {
             const page1 = document.querySelector('#document-container .page:first-child');
             if (!page1) return;
 
@@ -1665,7 +1813,7 @@
         }
 
         // Tự động điền bảng Giao nhận sau (Trang cuối)
-        function populatePage4RedBox(data) {
+        function populatePage4(data) {
             const pageLast = document.getElementById('page-last');
             if (!pageLast || data.giaoNhanSau.length === 0) return;
             const table = pageLast.querySelector('#table-giao-nhan-sau');
@@ -1779,7 +1927,7 @@
                 if (pageRows.length > 0) pagesData.push(pageRows);
             });
 
-            if (dataTrang4.giaoNhanSau.length > 0) populatePage4RedBox(dataTrang4);
+            if (dataTrang4.giaoNhanSau.length > 0) populatePage4(dataTrang4);
             if (pagesData.length === 0) return alert("Không tìm thấy bảng trình tự thao tác 9 cột nào trong file Word!");
             renderImportedStepPages(pagesData);
         }
@@ -1875,7 +2023,7 @@
                 }
             });
 
-            if (dataTrang4.giaoNhanSau.length > 0) populatePage4RedBox(dataTrang4);
+            if (dataTrang4.giaoNhanSau.length > 0) populatePage4(dataTrang4);
             if (pagesData.length === 0) return alert("Không tìm thấy dữ liệu bước thao tác hợp lệ trong file Excel!");
             renderImportedStepPages(pagesData);
         }
