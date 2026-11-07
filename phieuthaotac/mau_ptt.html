@@ -1353,10 +1353,17 @@
                     const txt = it.text.trim();
                     if (!txt || /^1\s+2\s+3/.test(txt)) return;
 
+                    // TRỊ LỖI ÉP DÍNH (I T500 SL 1): Tách Số La Mã + Tên Trạm + Số Bước
                     if (it.x0 < col0_x) {
                         const match3 = txt.match(/^([IVXLCDM]+)\s+(.+?)\s+(\d+)$/);
                         const match2 = txt.match(/^([IVXLCDM]+)\s+(.+)$/);
                         if (match3) {
+                            cleanItems.push({ x0: sub(col0_x, 20), x1: sub(col0_x, 10), yc: it.yc, text: match3[1] });
+                            cleanItems.push({ x0: sub(col1_x, 30), x1: sub(col1_x, 10), yc: it.yc, text: match3[2].trim() });
+                            // Đẩy số bước lệch xuống 2px (yc + 2) để nó tách khỏi dòng tiêu đề và sinh ra block mới
+                            cleanItems.push({ x0: sub(col2_x, 20), x1: sub(col2_x, 10), yc: it.yc + 2, text: match3[3] });
+                            return;
+                        } else if (match2) {
                             cleanItems.push({ x0: sub(col0_x, 20), x1: sub(col0_x, 10), yc: it.yc, text: match3[1] });
                             cleanItems.push({ x0: sub(col1_x, 30), x1: sub(col1_x, 10), yc: it.yc, text: match3[2].trim() });
                             cleanItems.push({ x0: sub(col2_x, 20), x1: sub(col2_x, 10), yc: it.yc, text: match3[3] });
