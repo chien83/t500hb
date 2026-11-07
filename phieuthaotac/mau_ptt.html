@@ -842,7 +842,7 @@
                 const tbody = page.querySelector('tbody');
                 if (!table || !tbody) continue;
 
-                const maxAllowedBottom = sub(page.clientHeight, 58);
+                const maxAllowedBottom = sub(page.clientHeight, 25);
 
                 // 1. NẾU BẢNG VƯỢT QUÁ KHỔ A4 -> XÓA DÒNG TRỐNG Ở ĐÁY HOẶC ĐẨY SANG TRANG KẾ TIẾP
                 while (tbody.children.length > 1 && (table.offsetTop + table.offsetHeight) > maxAllowedBottom) {
