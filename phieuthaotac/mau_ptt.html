@@ -44,105 +44,251 @@
             font-weight: bold;
             line-height: 1.2;
         }
-        .header-left { text-align: center; width: 35%; font-size: 12pt; }
-        .header-center { text-align: center; width: 30%; font-size: 14pt; margin-top: 10px; }
-        .header-right { text-align: left; width: 35%; font-weight: normal; font-size: 12pt; padding-left: 15px; }
-        .header-right-page2 { text-align: right; margin-bottom: 10px; font-size: 13pt; }
-        .header-right-page2 > div { display: inline-block; text-align: left; white-space: nowrap; }
+        .header-left { 
+            text-align: center; 
+            width: 35%; 
+            font-size: 12pt; 
+        }
+        .header-center { 
+            text-align: center; 
+            width: 30%; 
+            font-size: 14pt; 
+            margin-top: 10px; 
+        }
+        .header-right { 
+            text-align: left; 
+            width: 35%; 
+            font-weight: normal; 
+            font-size: 12pt; 
+            padding-left: 15px; 
+        }
+        .header-right-page2 {
+            text-align: right; 
+            margin-bottom: 10px;
+            font-size: 13pt;
+        }
+        .header-right-page2 > div {
+             display: inline-block;
+             text-align: left;
+             white-space: nowrap; 
+        }
 
         /* === FORM NHẬP LIỆU === */
         .form-row { display: flex; align-items: flex-end; margin-bottom: 10px; line-height: 1.6; }
         .form-label { white-space: nowrap; margin-right: 5px; }
         
         .dotted-line {
-            flex-grow: 1; border-bottom: 1px dotted #000; min-height: 20px; display: flex; align-items: flex-end;
+            flex-grow: 1;
+            border-bottom: 1px dotted #000;
+            min-height: 20px;
+            display: flex;
+            align-items: flex-end;
         }
         .inline-dotted {
-            border-bottom: 1px dotted #000; display: inline-block; min-height: 20px; margin: 0 5px;
+            border-bottom: 1px dotted #000;
+            display: inline-block;
+            min-height: 20px;
+            margin: 0 5px;
         }
 
         .signature-grid {
-            display: grid; grid-template-columns: 55% 45%; row-gap: 15px; margin-bottom: 10px; margin-top: 15px;
+            display: grid;
+            grid-template-columns: 55% 45%;
+            row-gap: 15px;
+            margin-bottom: 10px;
+            margin-top: 15px;
         }
         .sig-item { display: flex; align-items: flex-end; padding-right: 15px; }
+
         ol.numbered-list { padding-left: 25px; margin-top: 5px; line-height: 1.8; }
         ol.numbered-list li { padding-left: 5px; }
 
         /* === BẢNG BIỂU === */
         table {
-            width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12pt; table-layout: fixed; 
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12pt;
+            table-layout: fixed; 
         }
         th, td {
-            border: 1px solid #000; padding: 5px; vertical-align: middle; text-align: center; word-wrap: break-word;
+            border: 1px solid #000;
+            padding: 5px;
+            vertical-align: middle;
+            text-align: center;
+            word-wrap: break-word;
         }
         th { font-weight: bold; }
 
         /* === CSS CHẾ ĐỘ CHỈNH SỬA (WYSIWYG) === */
-        .editable-field { width: 100%; min-height: 20px; outline: none; display: inline-block; }
+        .editable-field {
+            width: 100%;
+            min-height: 20px;
+            outline: none;
+            display: inline-block;
+        }
         td.editable-field { display: table-cell; }
 
-        [contenteditable="true"] { background-color: #e3f2fd; border-radius: 2px; cursor: text; }
+        [contenteditable="true"] {
+            background-color: #e3f2fd;
+            border-radius: 2px;
+            cursor: text;
+        }
         [contenteditable="true"]:hover { background-color: #bbdefb; }
-        [contenteditable="true"]:focus { background-color: #fff8e1; box-shadow: inset 0 0 0 1px #ff9800; }
+        [contenteditable="true"]:focus {
+            background-color: #fff8e1;
+            box-shadow: inset 0 0 0 1px #ff9800;
+        }
 
         /* === TÍNH NĂNG GỘP / TÁCH Ô === */
-        td.cell-selected { background-color: #ffe0b2 !important; box-shadow: inset 0 0 0 2px #e65100 !important; }
-        td.merged-hidden { display: none !important; }
+        td.cell-selected {
+            background-color: #ffe0b2 !important;
+            box-shadow: inset 0 0 0 2px #e65100 !important;
+        }
+        td.merged-hidden {
+            display: none !important;
+        }
 
-        /* === THANH CÔNG CỤ BÊN PHẢI === */
+        /* === THANH CÔNG CỤ BÊN PHẢI (THU GỌN VÀ BÁM SÁT LỀ) === */
         .control-panel {
-            position: fixed; top: 20px; right: 5px; background: #2c3e50; padding: 8px; border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 1000; display: flex; flex-direction: column; gap: 8px; width: 145px;
+            position: fixed;
+            top: 20px;
+            right: 5px; /* Sát mép phải màn hình */
+            background: #2c3e50;
+            padding: 8px; 
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; 
+            gap: 8px; 
+            width: 145px; /* Cố định chiều ngang gọn gàng */
         }
         .btn {
-            cursor: pointer; padding: 8px 10px; border: none; border-radius: 5px; font-weight: bold; font-size: 10.5pt;
-            color: white; transition: 0.3s; text-align: center; white-space: normal; line-height: 1.3;
+            cursor: pointer;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 10.5pt;
+            color: white;
+            transition: 0.3s;
+            text-align: center;
+            white-space: normal; /* Cho phép chữ tự động xuống dòng khi chật */
+            line-height: 1.3;
         }
-        .btn-edit { background-color: #3498db; } .btn-edit.active { background-color: #e67e22; }
-        .btn-print { background-color: #2ecc71; } .btn-save { background-color: #9b59b6; display: none; }
-        .btn-merge { background-color: #f39c12; display: none; } .btn-merge:hover { background-color: #d68910; }
-        .btn-split { background-color: #e74c3c; display: none; } .btn-split:hover { background-color: #c0392b; }
+        .btn-edit { background-color: #3498db; }
+        .btn-edit.active { background-color: #e67e22; }
+        .btn-print { background-color: #2ecc71; }
+        .btn-save { background-color: #9b59b6; display: none; }
+        .btn-merge { background-color: #f39c12; display: none; }
+        .btn-merge:hover { background-color: #d68910; }
+        .btn-split { background-color: #e74c3c; display: none; }
+        .btn-split:hover { background-color: #c0392b; }
 
+        /* === NÚT ĐIỀU KHIỂN TRANG (THÊM / XÓA TRANG) === */
         .page-controls {
-            position: absolute; top: 20px; left: -50px; display: none; flex-direction: column; gap: 10px; z-index: 100;
+            position: absolute;
+            top: 20px;
+            left: -50px; 
+            display: none; 
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
         }
         .btn-page {
-            width: 38px; height: 38px; border-radius: 50%; border: none; color: white; cursor: pointer;
-            font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 6px rgba(0,0,0,0.3); transition: 0.2s;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            transition: 0.2s;
         }
-        .btn-add-page { background-color: #2ecc71; } .btn-add-page:hover { background-color: #27ae60; transform: scale(1.1); }
-        .btn-del-page { background-color: #e74c3c; } .btn-del-page:hover { background-color: #c0392b; transform: scale(1.1); }
+        .btn-add-page { background-color: #2ecc71; }
+        .btn-add-page:hover { background-color: #27ae60; transform: scale(1.1); }
+        .btn-del-page { background-color: #e74c3c; }
+        .btn-del-page:hover { background-color: #c0392b; transform: scale(1.1); }
 
         /* === CSS KHI IN ẤN (PDF) === */
         @media print {
             @page { size: A4 portrait; margin: 0; }
             body, html { background: none; margin: 0; padding: 0; width: 210mm; }
             .page { 
-                box-shadow: none; margin: 0; border: none; width: 210mm; height: 297mm; max-height: 297mm;
-                padding: 15mm 15mm 15mm 15mm; page-break-after: always; break-after: page;
-                page-break-inside: avoid; break-inside: avoid; overflow: hidden !important;
+                box-shadow: none; 
+                margin: 0; 
+                border: none; 
+                width: 210mm;
+                height: 297mm;
+                max-height: 297mm;
+                padding: 15mm 15mm 15mm 15mm;
+                page-break-after: always; 
+                break-after: page;
+                page-break-inside: avoid;
+                break-inside: avoid;
+                overflow: hidden !important;
             }
             .page:last-child { page-break-after: auto; break-after: auto; }
             .control-panel, .page-controls { display: none !important; }
             [contenteditable="true"] { background: transparent !important; box-shadow: none !important; }
         }
 
-        /* === GIAO DIỆN TỐI ƯU CHO ĐIỆN THOẠI === */
+        /* === GIAO DIỆN TỐI ƯU CHO ĐIỆN THOẠI (MÀN HÌNH <= 850PX) === */
         @media screen and (max-width: 850px) {
-            body { padding: 10px 0 95px 0; overflow-x: hidden; }
-            #document-container { width: 100%; display: flex; flex-direction: column; align-items: center; }
+            body {
+                padding: 10px 0 95px 0; /* Chừa khoảng trống dưới đáy cho thanh menu */
+                overflow-x: hidden;
+            }
+            #document-container {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
             .page {
-                transform: scale(var(--mobile-scale, 0.46)); transform-origin: top center;
+                /* Tự động thu nhỏ tờ A4 vừa khít chiều ngang màn hình điện thoại */
+                transform: scale(var(--mobile-scale, 0.46));
+                transform-origin: top center;
+                /* Bù lại khoảng trống chiều cao sau khi thu nhỏ để các trang A4 xếp sát nhau */
                 margin-bottom: calc((297mm * (var(--mobile-scale, 0.46) - 1)) + 12px) !important;
             }
+            /* Đưa thanh công cụ xuống đáy màn hình thành dạng thanh ngang */
             .control-panel {
-                top: auto; bottom: 0; left: 0; right: 0; width: 100%; border-radius: 12px 12px 0 0;
-                padding: 8px 6px; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 6px; box-shadow: 0 -3px 12px rgba(0,0,0,0.4);
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                border-radius: 12px 12px 0 0;
+                padding: 8px 6px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+                box-shadow: 0 -3px 12px rgba(0,0,0,0.4);
             }
-            .control-panel .btn { flex: 1 1 auto; min-width: 78px; max-width: 115px; padding: 7px 5px; font-size: 9.5pt; }
+            .control-panel .btn {
+                flex: 1 1 auto;
+                min-width: 78px;
+                max-width: 115px;
+                padding: 7px 5px;
+                font-size: 9.5pt;
+            }
+            /* Đưa nút Thêm/Xóa trang (➕/🗑️) vào góc trên bên trái tờ giấy để không bị tràn lề */
             .page-controls {
-                top: 10px; left: 12px; right: auto; flex-direction: row; gap: 12px;
-                transform: scale(calc(1 / var(--mobile-scale, 0.46))); transform-origin: top left;
+                top: 10px;
+                left: 12px;
+                right: auto;
+                flex-direction: row;
+                gap: 12px;
+                /* Giữ kích thước nút bấm lớn dễ chạm trên màn hình cảm ứng */
+                transform: scale(calc(1 / var(--mobile-scale, 0.46)));
+                transform-origin: top left;
             }
         }        
     </style>
@@ -151,36 +297,45 @@
 
     <div class="control-panel">
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
+        
+        <!-- NÚT TẢI FILE PDF / WORD / EXCEL LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
         <button id="btnImport" class="btn btn-edit" style="background-color: #16a085;" onclick="document.getElementById('fileUpload').click()" title="Tải file PDF, Word hoặc Excel">📂 Nhập PDF/Word<br>/Excel</button>
         <input type="file" id="fileUpload" accept=".pdf,.docx,.xlsx,.xls" style="display: none;" onchange="handleFileImport(event)">
-        <button id="btnUndo" class="btn btn-edit" style="background-color: #95a5a6; display: none;" onclick="undoAction()">↩️ Undo</button>
-        <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()">🔗 Gộp ô</button>
-        <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()">✂️ Tách ô</button>
-        <button id="btnAddRow" class="btn btn-merge" style="background-color: #34495e; display: none;" onclick="addRow()">⬇️ Thêm dòng</button>
-        <button id="btnDelRow" class="btn btn-split" style="background-color: #7f8c8d; display: none;" onclick="removeRow()">⬆️ Xóa dòng</button>
+        <button id="btnUndo" class="btn btn-edit" style="background-color: #95a5a6; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
+        <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
+        <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()" title="Click vào ô đã gộp rồi bấm để tách ra">✂️ Tách ô</button>
+        <button id="btnAddRow" class="btn btn-merge" style="background-color: #34495e; display: none;" onclick="addRow()" title="Chèn thêm 1 dòng ngay bên dưới dòng đang đặt con trỏ chuột">⬇️ Thêm dòng</button>
+        <button id="btnDelRow" class="btn btn-split" style="background-color: #7f8c8d; display: none;" onclick="removeRow()" title="Xóa dòng đang đặt con trỏ chuột">⬆️ Xóa dòng</button>
         <button id="btnSave" class="btn btn-save" onclick="alert('Tính năng lưu đang phát triển')">💾 Lưu Phiếu</button>
         <button class="btn btn-print" onclick="window.print()">🖨️ In / Xuất PDF</button>
     </div>
 
     <div id="document-container">
-        <!-- TRANG 1 -->
-        <div class="page" id="page-1">
+        
+        <!-- ================= TRANG 1 ================= -->
+        <div class="page">
             <div class="page-header-a4">
                 <div class="header-left">TRUYỀN TẢI ĐIỆN HÒA BÌNH<br><br><strong>TRẠM 500 KV HÒA BÌNH</strong></div>
                 <div class="header-center">PHIẾU THAO TÁC</div>
                 <div class="header-right">Số phiếu: <span class="editable-field" style="width: 140px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 01/04</span></div>
             </div>
             
-            <div class="form-row"><span class="form-label">Tên phiếu thao tác:</span><div class="dotted-line"><span class="editable-field" style="padding-left: 10px;"></span></div></div>
+            <div class="form-row">
+                <span class="form-label">Tên phiếu thao tác:</span>
+                <div class="dotted-line"><span class="editable-field" style="padding-left: 10px;"></span></div>
+            </div>
             <div class="form-row"><div class="dotted-line"><span class="editable-field"></span></div></div>
 
             <div class="signature-grid">
                 <div class="sig-item"><span class="form-label">Người viết phiếu:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
                 <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                
                 <div class="sig-item"><span class="form-label">Người duyệt phiếu:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
                 <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                
                 <div class="sig-item"><span class="form-label">Người giám sát:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
                 <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
+                
                 <div class="sig-item"><span class="form-label">Người thao tác:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
                 <div class="sig-item"><span class="form-label">Chức vụ:</span><div class="dotted-line"><span class="editable-field"></span></div></div>
             </div>
@@ -203,62 +358,190 @@
             <div style="margin-top: 10px; font-weight: bold;">Điều kiện cần có để thực hiện:</div>
             <ol class="numbered-list">
                 <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
             </ol>
             
             <div style="margin-top: 5px; font-weight: bold;">Lưu ý:</div>
             <ol class="numbered-list">
                 <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
+                <li><div class="dotted-line"><span class="editable-field"></span></div></li>
             </ol>
 
             <div style="font-weight: bold; margin-top: 10px;">Giao nhận, nghiệm thu đường dây, thiết bị điện trước khi thao tác (nếu có):</div>
-            <table id="table-giao-nhan-truoc">
-                <colgroup><col style="width: 15%;"><col style="width: 20%;"><col style="width: 25%;"><col style="width: 40%;"></colgroup>
+            <table>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                    <col style="width: 40%;">
+                </colgroup>
                 <tr><th>Thời gian</th><th>Đơn vị</th><th>Họ tên</th><th>Nội dung</th></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
                 <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
             </table>
         </div>
 
-        <!-- TRANG 2 (BẢNG BƯỚC THAO TÁC) -->
+        <!-- ================= TRANG 2 ================= -->
         <div class="page step-page">
             <div class="page-controls">
-                <button class="btn-page btn-add-page" onclick="duplicatePage(this)">➕</button>
-                <button class="btn-page btn-del-page" onclick="deletePage(this)">🗑️</button>
+                <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang thao tác phía dưới">➕</button>
+                <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang thao tác này">🗑️</button>
             </div>
-            <div class="header-right-page2"><div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 02/04</span></div></div>      
+
+            <div class="header-right-page2">
+                <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 02/04</span></div>
+            </div>      
             <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
             <table>
                 <colgroup>
-                    <col style="width: 6.5%;"> <col style="width: 10%;"> <col style="width: 7.5%;"> 
-                    <col style="width: 41.5%;"> <col style="width: 7%;"> <col style="width: 6.5%;"> 
-                    <col style="width: 6.5%;"> <col style="width: 7%;"> <col style="width: 7.5%;"> 
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 10%;">  
+                    <col style="width: 7.5%;"> 
+                    <col style="width: 41.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 7.5%;"> 
                 </colgroup>
                 <thead>
                     <tr>
-                        <th rowspan="2">Mục</th><th rowspan="2">Địa điểm</th><th colspan="2">Trình tự thao tác</th>
-                        <th rowspan="2">Đã<br>thực<br>hiện</th><th colspan="2">Thời gian</th><th colspan="2">Người</th>
+                        <th rowspan="2">Mục</th>
+                        <th rowspan="2">Địa điểm</th>
+                        <th colspan="2">Trình tự thao tác</th>
+                        <th rowspan="2">Đã<br>thực<br>hiện</th>
+                        <th colspan="2">Thời gian</th>
+                        <th colspan="2">Người</th>
                     </tr>
-                    <tr><th>Bước</th><th>Nội dung</th><th>Bắt<br>đầu</th><th>Kết<br>thúc</th><th>Ra<br>lệnh</th><th>Nhận<br>lệnh</th></tr>
                     <tr>
-                        <td style="text-align: center;">1</td><td style="text-align: center;">2</td><td style="text-align: center;">3</td>
-                        <td style="text-align: center;">4</td><td style="text-align: center;">5</td><td style="text-align: center;">6</td>
-                        <td style="text-align: center;">7</td><td style="text-align: center;">8</td><td style="text-align: center;">9</td>
+                        <th>Bước</th>
+                        <th>Nội dung</th>
+                        <th>Bắt<br>đầu</th>
+                        <th>Kết<br>thúc</th>
+                        <th>Ra<br>lệnh</th>
+                        <th>Nhận<br>lệnh</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: center;">3</td>
+                        <td style="text-align: center;">4</td>
+                        <td style="text-align: center;">5</td>
+                        <td style="text-align: center;">6</td>
+                        <td style="text-align: center;">7</td>
+                        <td style="text-align: center;">8</td>
+                        <td style="text-align: center;">9</td>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td class="editable-field" style="font-weight:bold; height: 28px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field" style="text-align: left;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+                    <script>
+                        for(let i=1; i<=27; i++) { 
+                            document.write(`
+                            <tr>
+                                <td class="editable-field" style="font-weight:bold; height: 28px;">${i===1 ? 'I' : ''}</td>
+                                <td class="editable-field"></td>
+                                <td class="editable-field">${i}</td>
+                                <td class="editable-field" style="text-align: left;"></td>
+                                <td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td>
+                            </tr>`);
+                        }
+                    </script>
                 </tbody>
             </table>
         </div>
 
-        <!-- TRANG 4 (SAU THAO TÁC) -->
-        <div class="page" id="page-last">
-             <div class="header-right-page2"><div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 04/04</span></div></div>
+        <!-- ================= TRANG 3 ================= -->
+        <div class="page step-page">
+            <div class="page-controls">
+                <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang thao tác phía dưới">➕</button>
+                <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang thao tác này">🗑️</button>
+            </div>
+
+            <div class="header-right-page2">
+                 <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 03/04</span></div>
+            </div>  
+            <div style="font-weight: bold; margin-bottom: 10px;">Trình tự hạng mục thao tác:</div>
+            <table>
+                <colgroup>
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 10%;">  
+                    <col style="width: 7.5%;"> 
+                    <col style="width: 41.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 6.5%;"> 
+                    <col style="width: 7%;">    
+                    <col style="width: 7.5%;"> 
+                </colgroup>
+                <thead>
+                     <tr>
+                        <th rowspan="2">Mục</th>
+                        <th rowspan="2">Địa điểm</th>
+                        <th colspan="2">Trình tự thao tác</th>
+                        <th rowspan="2">Đã<br>thực<br>hiện</th>
+                        <th colspan="2">Thời gian</th>
+                        <th colspan="2">Người</th>
+                    </tr>
+                    <tr>
+                        <th>Bước</th>
+                        <th>Nội dung</th>
+                        <th>Bắt<br>đầu</th>
+                        <th>Kết<br>thúc</th>
+                        <th>Ra<br>lệnh</th>
+                        <th>Nhận<br>lệnh</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: center;">3</td>
+                        <td style="text-align: center;">4</td>
+                        <td style="text-align: center;">5</td>
+                        <td style="text-align: center;">6</td>
+                        <td style="text-align: center;">7</td>
+                        <td style="text-align: center;">8</td>
+                        <td style="text-align: center;">9</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <script>
+                        for(let i=28; i<=54; i++) {
+                            document.write(`
+                            <tr>
+                                <td class="editable-field" style="font-weight:bold; height: 28px;"></td>
+                                <td class="editable-field"></td>
+                                <td class="editable-field"></td>
+                                <td class="editable-field" style="text-align: left;"></td>
+                                <td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td>
+                            </tr>`);
+                        }
+                    </script>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= TRANG 4 ================= -->
+        <div class="page">
+             <div class="header-right-page2">
+                 <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br><span class="page-number-display">Trang số : 04/04</span></div>
+            </div>
             
             <div style="font-weight: bold; margin-bottom: 5px;">Giao nhận, nghiệm thu đường dây, thiết bị điện sau khi thao tác:</div>
-            <table id="table-giao-nhan-sau">
-                <colgroup><col style="width: 15%;"><col style="width: 20%;"><col style="width: 25%;"><col style="width: 40%;"></colgroup>
+            <table>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                    <col style="width: 40%;">
+                </colgroup>
                 <tr><th>Thời gian</th><th>Đơn vị</th><th>Họ tên</th><th>Nội dung</th></tr>
-                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field" style="text-align: left;"></td></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
+                <tr><td class="editable-field" style="height: 35px;"></td><td class="editable-field"></td><td class="editable-field"></td><td class="editable-field"></td></tr>
             </table>
 
             <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 30px; font-weight: bold;">
@@ -268,6 +551,7 @@
             
             <div style="font-weight: bold; margin-top: 60px;">Các sự kiện bất thường trong thao tác:</div>
             <div class="dotted-line" style="margin-top: 15px;"><span class="editable-field"></span></div>
+            <div class="dotted-line" style="margin-top: 25px;"><span class="editable-field"></span></div>
             
             <div style="text-align: center; margin-top: 50px; font-weight: bold;">Người thực hiện thao tác<br>Ngày <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> tháng <span class="inline-dotted"><span class="editable-field" style="width: 20px;"></span></span> năm <span class="inline-dotted"><span class="editable-field" style="width: 30px;"></span></span></div>
             <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 15px; font-weight: bold;">
@@ -283,61 +567,122 @@
         let isDraggingCells = false;
         let startCell = null;
         let focusedCell = null;
+
+        // Hàm trừ số nguyên an toàn không dùng ký tự dấu trừ để tránh lỗi khi copy code
+        function sub(a, b) {
+            return a + (~b + 1);
+        }
+
+        // Dọn dẹp các thẻ script sinh dòng ban đầu để HTML sạch sẽ khi lưu Undo
+        document.querySelectorAll('#document-container script').forEach(s => s.remove());
+
+        // KHO LƯU TRỮ TRẠNG THÁI CHO TÍNH NĂNG UNDO
         let undoStack = [];
         const MAX_UNDO_STEPS = 50;
         let isTyping = false;
         let typingTimer = null;
 
-        function sub(a, b) { return a + (~b + 1); }
-
         function saveState() {
             if (!isEditing) return;
             const container = document.getElementById('document-container');
             const currentHTML = container.innerHTML;
-            if (undoStack.length > 0 && undoStack[sub(undoStack.length, 1)] === currentHTML) return;
+            
+            const lastState = undoStack.slice().pop();
+            if (lastState === currentHTML) return;
+
             undoStack.push(currentHTML);
-            if (undoStack.length > MAX_UNDO_STEPS) undoStack.shift();
+            if (undoStack.length > MAX_UNDO_STEPS) {
+                undoStack.shift();
+            }
         }
 
+        // TỰ ĐỘNG GHI NHỚ TRƯỚC KHI NGƯỜI DÙNG GÕ CHỮ HOẶC XÓA KÝ TỰ ĐƠN LẺ
         document.getElementById('document-container').addEventListener('beforeinput', function() {
             if (!isEditing) return;
-            if (!isTyping) { saveState(); isTyping = true; }
+            if (!isTyping) {
+                saveState();
+                isTyping = true;
+            }
             clearTimeout(typingTimer);
-            typingTimer = setTimeout(() => { isTyping = false; }, 800);
+            typingTimer = setTimeout(function() {
+                isTyping = false;
+            }, 800);
         });
 
-        document.getElementById('document-container').addEventListener('focusin', () => isTyping = false);
+        document.getElementById('document-container').addEventListener('focusin', function() {
+            isTyping = false;
+        });
 
         function undoAction() {
             if (!isEditing || undoStack.length === 0) return;
-            isTyping = false; clearTimeout(typingTimer);
-            document.getElementById('document-container').innerHTML = undoStack.pop();
+            isTyping = false;
+            clearTimeout(typingTimer);
+
+            const container = document.getElementById('document-container');
+            const previousState = undoStack.pop();
+            container.innerHTML = previousState;
+            
             clearCellSelection();
-            document.querySelectorAll('.editable-field').forEach(f => f.setAttribute('contenteditable', 'true'));
-            document.querySelectorAll('.page-controls').forEach(c => c.style.display = "flex");
+            const editableFields = container.querySelectorAll('.editable-field');
+            editableFields.forEach(field => {
+                field.setAttribute('contenteditable', 'true');
+            });
+            const pageControls = document.querySelectorAll('.page-controls');
+            pageControls.forEach(ctrl => ctrl.style.display = "flex");
             updatePageNumbers();
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (isEditing && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); undoAction(); }
+        document.addEventListener('keydown', function(e) {
+            if (isEditing && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                e.preventDefault();
+                undoAction();
+            }
         });
 
+        // BẬT / TẮT CHẾ ĐỘ CHỈNH SỬA
         function toggleEditMode() {
             isEditing = !isEditing;
-            document.querySelectorAll('.editable-field').forEach(f => f.setAttribute('contenteditable', isEditing));
-            
             const btnEdit = document.getElementById('btnEdit');
-            btnEdit.innerHTML = isEditing ? "🔓 Khóa" : "🔒 Edit";
-            btnEdit.classList.toggle('active', isEditing);
+            const btnUndo = document.getElementById('btnUndo');
+            const btnMerge = document.getElementById('btnMerge');
+            const btnSplit = document.getElementById('btnSplit');
+            const btnAddRow = document.getElementById('btnAddRow');
+            const btnDelRow = document.getElementById('btnDelRow');
+            const btnSave = document.getElementById('btnSave');
+            
+            const editableFields = document.getElementById('document-container').querySelectorAll('.editable-field');
+            const pageControls = document.querySelectorAll('.page-controls');
 
-            ['btnUndo', 'btnMerge', 'btnSplit', 'btnAddRow', 'btnDelRow', 'btnSave'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = isEditing ? "block" : "none";
+            editableFields.forEach(field => {
+                field.setAttribute('contenteditable', isEditing);
             });
-            document.querySelectorAll('.page-controls').forEach(c => c.style.display = isEditing ? "flex" : "none");
-            if (!isEditing) { undoStack = []; clearCellSelection(); }
+
+            if (isEditing) {
+                btnEdit.innerHTML = "🔓 Khóa";
+                btnEdit.classList.add('active');
+                if (btnUndo) btnUndo.style.display = "block";
+                btnMerge.style.display = "block";
+                btnSplit.style.display = "block";
+                if (btnAddRow) btnAddRow.style.display = "block";
+                if (btnDelRow) btnDelRow.style.display = "block";
+                if (btnSave) btnSave.style.display = "block";
+                pageControls.forEach(ctrl => ctrl.style.display = "flex");
+            } else {
+                btnEdit.innerHTML = "🔒 Edit";
+                btnEdit.classList.remove('active');
+                if (btnUndo) btnUndo.style.display = "none";
+                undoStack = [];
+                btnMerge.style.display = "none";
+                btnSplit.style.display = "none";
+                if (btnAddRow) btnAddRow.style.display = "none";
+                if (btnDelRow) btnDelRow.style.display = "none";
+                if (btnSave) btnSave.style.display = "none";
+                pageControls.forEach(ctrl => ctrl.style.display = "none");
+                clearCellSelection();
+            }
         }
 
+        // TẠO 1 DÒNG TRỐNG CHUẨN 9 CỘT
         function createBlankStepRow() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -354,91 +699,141 @@
             return tr;
         }
 
+        // KIỂM TRA XEM 1 DÒNG CÓ ĐANG TRỐNG HOÀN TOÀN KHÔNG
         function isRowEmpty(tr) {
             if (!tr) return false;
             const cells = Array.from(tr.children);
-            if (cells.some(td => (td.rowSpan && td.rowSpan > 1) || td.classList.contains('merged-hidden'))) return false;
+            const hasMerge = cells.some(td => (td.rowSpan && td.rowSpan > 1) || td.classList.contains('merged-hidden'));
+            if (hasMerge) return false;
             return cells.every(td => td.innerText.trim() === '');
         }
 
+        // THÊM DÒNG NGAY PHÍA DƯỚI DÒNG ĐANG ĐẶT CON TRỎ CHUỘT
         function addRow() {
             if (!focusedCell) return alert("Hãy click chuột vào dòng mà bạn muốn chèn thêm dòng phía dưới!");
-            const tr = focusedCell.closest('tr');
+            const currentRow = focusedCell.closest('tr');
             const tbody = focusedCell.closest('tbody');
-            if (!tr || !tbody) return;
+            if (!currentRow || !tbody) return;
             
             saveState();
+
+            // Nếu dòng đang click có ô đang gộp dọc (rowSpan > 1), nhảy tới dòng cuối của cụm gộp đó
             const allRows = Array.from(tbody.children);
-            let insertIdx = allRows.indexOf(tr);
-            Array.from(tr.children).forEach(td => {
-                if (td.rowSpan > 1) insertIdx = Math.max(insertIdx, sub(insertIdx + td.rowSpan, 1));
+            let insertAfterIndex = allRows.indexOf(currentRow);
+            Array.from(currentRow.children).forEach(td => {
+                if (td.rowSpan && td.rowSpan > 1) {
+                    const spanEnd = sub(insertAfterIndex + td.rowSpan, 1);
+                    if (spanEnd > insertAfterIndex) insertAfterIndex = spanEnd;
+                }
             });
-            const targetRow = allRows[Math.min(insertIdx, sub(allRows.length, 1))];
+            const lastValidIndex = sub(allRows.length, 1);
+            const targetRow = allRows[Math.min(insertAfterIndex, lastValidIndex)];
+
             const newRow = createBlankStepRow();
             targetRow.parentNode.insertBefore(newRow, targetRow.nextSibling);
-            
-            if (tbody.closest('.step-page')) fitAllStepPages();
-            const cellToFocus = newRow.children[getColIndex(focusedCell)] || newRow.children[3];
-            if (cellToFocus) { focusedCell = cellToFocus; cellToFocus.focus(); }
+
+            if (tbody.closest('.step-page')) {
+                fitAllStepPages();
+            }
+
+            const colIdx = getColIndex(focusedCell);
+            const cellToFocus = newRow.children[colIdx] || newRow.children[3] || newRow.children[0];
+            if (cellToFocus) {
+                focusedCell = cellToFocus;
+                cellToFocus.focus();
+            }
         }
 
+        // XÓA ĐÚNG DÒNG ĐANG ĐẶT CON TRỎ CHUỘT
         function removeRow() {
             if (!focusedCell) return alert("Hãy click chuột vào dòng mà bạn muốn xóa!");
-            const tr = focusedCell.closest('tr');
+            const currentRow = focusedCell.closest('tr');
             const tbody = focusedCell.closest('tbody');
-            if (!tr || !tbody) return;
+            if (!currentRow || !tbody) return;
             
             const rows = Array.from(tbody.querySelectorAll('tr'));
-            if (rows.length <= 1) return alert("Không thể xóa dòng cuối cùng của bảng!");
+            if (rows.length <= 1) {
+                return alert("Không thể xóa dòng cuối cùng của bảng!");
+            }
 
             const rIdx = getRowIndex(focusedCell);
-            let isVerticallyMerged = Array.from(tr.children).some(td => td.rowSpan > 1);
+            let isVerticalMerged = false;
 
-            for (let c = 0; c < tr.children.length; c++) {
-                if (tr.children[c].classList.contains('merged-hidden')) {
+            Array.from(currentRow.children).forEach(td => {
+                if (td.rowSpan && td.rowSpan > 1) {
+                    isVerticalMerged = true;
+                }
+            });
+
+            const currentCells = Array.from(currentRow.children);
+            for (let c = 0; c < currentCells.length; c++) {
+                const td = currentCells[c];
+                if (td.classList.contains('merged-hidden')) {
                     for (let r = sub(rIdx, 1); r >= 0; r = sub(r, 1)) {
                         const cellAbove = rows[r].children[c];
-                        if (cellAbove && cellAbove.rowSpan > 1 && r + cellAbove.rowSpan > rIdx) {
-                            isVerticallyMerged = true; break;
+                        if (cellAbove && cellAbove.rowSpan > 1) {
+                            if (r + cellAbove.rowSpan > rIdx) {
+                                isVerticalMerged = true;
+                                break;
+                            }
                         }
                     }
                 }
             }
 
-            if (isVerticallyMerged) return alert("Dòng này dính với ô gộp dọc. Hãy bấm '✂️ Tách ô' trước khi xóa!");
+            if (isVerticalMerged) {
+                return alert("Dòng này đang dính với ô được gộp dọc (chung với dòng khác). Hãy bấm '✂️ Tách ô' trước khi xóa dòng!");
+            }
 
             saveState();
+
             const colIdx = getColIndex(focusedCell);
-            const nextRow = tr.nextElementSibling || tr.previousElementSibling;
-            tr.remove();
-            
-            if (tbody.closest('.step-page')) fitAllStepPages();
-            if (nextRow && nextRow.children[colIdx]) {
-                focusedCell = nextRow.children[colIdx]; focusedCell.focus();
-            } else { focusedCell = null; }
+            const nextFocusRow = currentRow.nextElementSibling || currentRow.previousElementSibling;
+            currentRow.remove();
+
+            if (tbody.closest('.step-page')) {
+                fitAllStepPages();
+            }
+
+            if (nextFocusRow && nextFocusRow.children[colIdx]) {
+                focusedCell = nextFocusRow.children[colIdx];
+                focusedCell.focus();
+            } else {
+                focusedCell = null;
+            }
         }
 
+        // TÌM VỊ TRÍ ĐẦU TIÊN CỦA CỤM GỘP DỌC (ĐỂ ĐẢM BẢO CHUYỂN TRANG KHÔNG BỊ CẮT LẺ CỤM)
         function getMergeGroupStart(rows, currentIndex) {
             let startIdx = currentIndex;
             while (startIdx > 0) {
-                let isTied = false;
+                let isVerticallyTied = false;
                 for(let r = sub(startIdx, 1); r >= 0; r = sub(r, 1)) {
                     const prevRowCells = Array.from(rows[r].children);
                     for(let c = 0; c < prevRowCells.length; c++) {
-                        if (prevRowCells[c].rowSpan > sub(startIdx, r)) { isTied = true; break; }
+                        if (prevRowCells[c].rowSpan > sub(startIdx, r)) {
+                            isVerticallyTied = true;
+                            break;
+                        }
                     }
-                    if (isTied) break;
+                    if (isVerticallyTied) break;
                 }
-                if (isTied) startIdx = sub(startIdx, 1); else break;
+                if (isVerticallyTied) {
+                    startIdx = sub(startIdx, 1);
+                } else {
+                    break;
+                }
             }
             return startIdx;
         }
 
+        // HÀM TỰ ĐỘNG ĐẨY DÒNG TRÀN SANG TRANG SAU & BÙ DÒNG TRỐNG KHÍT KHỔ GIẤY A4
         function fitAllStepPages() {
             const container = document.getElementById('document-container');
-            const stepPages = Array.from(container.querySelectorAll('.page.step-page'));
+            let stepPages = Array.from(container.querySelectorAll('.page.step-page'));
             if (stepPages.length === 0) return;
-            const lastPage = document.getElementById('page-last');
+
+            const lastPage = container.lastElementChild;
 
             for (let pIdx = 0; pIdx < stepPages.length; pIdx++) {
                 const page = stepPages[pIdx];
@@ -446,19 +841,28 @@
                 const tbody = page.querySelector('tbody');
                 if (!table || !tbody) continue;
 
-                const maxBottom = sub(page.clientHeight, 58);
+                const maxAllowedBottom = sub(page.clientHeight, 58);
 
-                while (tbody.children.length > 1 && (table.offsetTop + table.offsetHeight) > maxBottom) {
+                // 1. NẾU BẢNG VƯỢT QUÁ KHỔ A4 -> XÓA DÒNG TRỐNG Ở ĐÁY HOẶC ĐẨY SANG TRANG KẾ TIẾP
+                while (tbody.children.length > 1 && (table.offsetTop + table.offsetHeight) > maxAllowedBottom) {
                     const rows = Array.from(tbody.children);
                     const lastRow = tbody.lastElementChild;
 
-                    if (isRowEmpty(lastRow)) { lastRow.remove(); continue; }
+                    if (isRowEmpty(lastRow)) {
+                        lastRow.remove();
+                        continue;
+                    }
 
+                    // Tự động phân tích tìm dòng hợp lệ (không dính gộp dọc) để ngắt trang
                     let groupStartIdx = getMergeGroupStart(rows, sub(rows.length, 1));
-                    if (groupStartIdx === 0 && rows.length > 1) break; 
+                    
+                    if (groupStartIdx === 0 && rows.length > 1) {
+                        break; // Tránh treo trình duyệt nếu cả bảng bị gộp thành 1 khối dọc khổng lồ
+                    }
                     if (groupStartIdx === 0) break;
 
                     const rowsToMove = rows.slice(groupStartIdx);
+
                     let nextPage = stepPages[pIdx + 1];
                     if (!nextPage) {
                         nextPage = page.cloneNode(true);
@@ -468,22 +872,30 @@
                         container.insertBefore(nextPage, lastPage);
                         stepPages.push(nextPage);
                     }
+
                     const nextTbody = nextPage.querySelector('tbody');
-                    rowsToMove.forEach(r => nextTbody.insertBefore(r, nextTbody.firstElementChild));
+                    const firstChildOfNext = nextTbody.firstElementChild;
+                    rowsToMove.forEach(r => {
+                        nextTbody.insertBefore(r, firstChildOfNext);
+                    });
                 }
 
+                // 2. NẾU BẢNG CHƯA CHẠM ĐÁY A4 -> TỰ ĐỘNG BÙ THÊM CÁC DÒNG TRỐNG KẺ KHUNG ĐẦY ĐỦ
                 let safetyCount = 0;
-                while ((table.offsetTop + table.offsetHeight) < maxBottom && safetyCount < 40) {
+                while ((table.offsetTop + table.offsetHeight) < maxAllowedBottom && safetyCount < 40) {
                     const blankRow = createBlankStepRow();
                     tbody.appendChild(blankRow);
-                    if ((table.offsetTop + table.offsetHeight) > maxBottom) { blankRow.remove(); break; }
+                    if ((table.offsetTop + table.offsetHeight) > maxAllowedBottom) {
+                        blankRow.remove();
+                        break;
+                    }
                     safetyCount++;
                 }
             }
             updatePageNumbers();
         }
 
-        document.getElementById('document-container').addEventListener('input', e => {
+        document.getElementById('document-container').addEventListener('input', function(e) {
             if (e.target.closest('.step-page')) {
                 clearTimeout(window.fitPageTimer);
                 window.fitPageTimer = setTimeout(fitAllStepPages, 500);
@@ -495,28 +907,45 @@
             saveState();
             const currentPage = btn.closest('.page');
             const newPage = currentPage.cloneNode(true);
+            
             newPage.querySelectorAll('script').forEach(s => s.remove());
-            newPage.querySelectorAll('tbody .editable-field').forEach(field => {
-                field.innerText = ''; field.rowSpan = 1; field.classList.remove('merged-hidden', 'cell-selected');
+            const newFields = newPage.querySelectorAll('tbody .editable-field');
+            newFields.forEach(field => {
+                field.innerText = '';
+                field.rowSpan = 1;
+                field.classList.remove('merged-hidden', 'cell-selected');
                 field.setAttribute('contenteditable', isEditing);
             });
+
             currentPage.parentNode.insertBefore(newPage, currentPage.nextSibling);
             fitAllStepPages();
         }
 
         function deletePage(btn) {
-            if (document.querySelectorAll('.page.step-page').length <= 1) return alert("Phải giữ lại ít nhất 1 trang thao tác!");
-            if (confirm("Xóa trang này?")) {
-                saveState(); btn.closest('.page').remove(); updatePageNumbers();
+            const stepPages = document.querySelectorAll('.page.step-page');
+            if (stepPages.length <= 1) {
+                alert("Phiếu thao tác phải giữ lại ít nhất 1 trang trình tự thao tác!");
+                return;
+            }
+            if (confirm("Bạn có chắc muốn xóa trang thao tác này?")) {
+                saveState();
+                const currentPage = btn.closest('.page');
+                currentPage.remove();
+                updatePageNumbers();
             }
         }
 
         function updatePageNumbers() {
             const pages = document.querySelectorAll('#document-container .page');
-            const total = pages.length;
+            const totalPages = pages.length;
+            
             pages.forEach((page, index) => {
-                const disp = page.querySelector('.page-number-display');
-                if (disp) disp.innerText = `Trang số : ${String(index + 1).padStart(2, '0')}/${String(total).padStart(2, '0')}`;
+                const pageNumDisplay = page.querySelector('.page-number-display');
+                if (pageNumDisplay) {
+                    const currentNum = String(index + 1).padStart(2, '0');
+                    const totalNum = String(totalPages).padStart(2, '0');
+                    pageNumDisplay.innerText = `Trang số : ${currentNum}/${totalNum}`;
+                }
             });
         }
 
@@ -526,23 +955,32 @@
 
         function selectCellRange(cellA, cellB) {
             if (!cellA || !cellB) return;
-            const tbodyA = cellA.closest('tbody'), tbodyB = cellB.closest('tbody');
+            const tbodyA = cellA.closest('tbody');
+            const tbodyB = cellB.closest('tbody');
             if (!tbodyA || tbodyA !== tbodyB) return;
 
-            const cA = getColIndex(cellA), cB = getColIndex(cellB);
-            const rA = getRowIndex(cellA), rB = getRowIndex(cellB);
-            if (cA !== cB && rA !== rB) return; 
+            const colA = getColIndex(cellA);
+            const colB = getColIndex(cellB);
+            const r1 = getRowIndex(cellA);
+            const r2 = getRowIndex(cellB);
+
+            if (colA !== colB && r1 !== r2) return; 
 
             clearCellSelection();
             const rows = Array.from(tbodyA.children);
-            const rMin = Math.min(rA, rB), rMax = Math.max(rA, rB);
-            const cMin = Math.min(cA, cB), cMax = Math.max(cA, cB);
+            const minRow = Math.min(r1, r2);
+            const maxRow = Math.max(r1, r2);
+            const minCol = Math.min(colA, colB);
+            const maxCol = Math.max(colA, colB);
 
-            for (let r = rMin; r <= rMax; r++) {
-                const cells = Array.from(rows[r].children);
-                for (let c = cMin; c <= cMax; c++) {
+            for (let r = minRow; r <= maxRow; r++) {
+                const tr = rows[r];
+                const cells = Array.from(tr.children);
+                for (let c = minCol; c <= maxCol; c++) {
                     const cell = cells[c];
-                    if (cell && (rA === rB || !cell.classList.contains('merged-hidden'))) cell.classList.add('cell-selected');
+                    if (cell && (r1 === r2 || !cell.classList.contains('merged-hidden'))) {
+                        cell.classList.add('cell-selected');
+                    }
                 }
             }
         }
@@ -556,555 +994,1081 @@
             }
             focusedCell = td;
             if (e.shiftKey && startCell && td !== startCell) {
-                e.preventDefault(); window.getSelection().removeAllRanges(); selectCellRange(startCell, td);
+                e.preventDefault();
+                window.getSelection().removeAllRanges();
+                selectCellRange(startCell, td);
             } else {
-                clearCellSelection(); startCell = td; isDraggingCells = true;
+                clearCellSelection();
+                startCell = td;
+                isDraggingCells = true;
             }
         });
 
         document.addEventListener('mouseover', (e) => {
             if (!isEditing || !isDraggingCells || !startCell) return;
             const td = e.target.closest('tbody td.editable-field');
-            if (td && td !== startCell) { window.getSelection().removeAllRanges(); selectCellRange(startCell, td); }
+            if (td && td !== startCell) {
+                window.getSelection().removeAllRanges(); 
+                selectCellRange(startCell, td);
+            }
         });
+
         document.addEventListener('mouseup', () => { isDraggingCells = false; });
 
         function mergeSelectedCells() {
             const selected = Array.from(document.querySelectorAll('td.cell-selected'));
-            if (selected.length < 2) return alert('Chọn ít nhất 2 ô cùng cột/hàng để gộp!');
+            if (selected.length < 2) return alert('Hãy kéo chuột chọn ít nhất 2 ô cùng cột hoặc cùng hàng để gộp!');
             
             saveState();
+
             const firstCell = selected[0];
             const tbody = firstCell.closest('tbody');
             const rows = Array.from(tbody.children);
-            const cIdx = getColIndex(firstCell), rStart = getRowIndex(firstCell);
+            const colIndex = getColIndex(firstCell);
+            const startRow = getRowIndex(firstCell);
+            
             const isHorizontal = (getRowIndex(selected[0]) === getRowIndex(selected[1]));
             let combinedText = [];
             
             if (isHorizontal) {
-                let colSpan = 0;
-                selected.forEach(c => {
-                    colSpan += (c.colSpan || 1);
-                    if (c.innerText.trim() && !c.classList.contains('merged-hidden')) combinedText.push(c.innerText.trim());
+                let totalColSpan = 0;
+                selected.forEach(cell => {
+                    totalColSpan += (cell.colSpan || 1);
+                    const text = cell.innerText.trim();
+                    if (text && !cell.classList.contains('merged-hidden')) combinedText.push(text);
                 });
-                firstCell.colSpan = colSpan; firstCell.innerText = combinedText.join(' '); firstCell.style.textAlign = 'center';
+
+                firstCell.colSpan = totalColSpan;
+                firstCell.innerText = combinedText.join(' ');
+                firstCell.style.textAlign = 'center'; 
+
                 for (let i = 1; i < selected.length; i++) {
-                    selected[i].colSpan = 1; selected[i].innerText = ''; selected[i].classList.add('merged-hidden');
+                    const cell = selected[i];
+                    cell.colSpan = 1;
+                    cell.innerText = '';
+                    cell.classList.add('merged-hidden');
                 }
             } else {
-                let rowSpan = 0;
-                selected.forEach(c => {
-                    rowSpan += (c.rowSpan || 1);
-                    if (c.innerText.trim() && !c.classList.contains('merged-hidden')) combinedText.push(c.innerText.trim());
+                let totalRowSpan = 0;
+                selected.forEach(cell => {
+                    totalRowSpan += (cell.rowSpan || 1);
+                    const text = cell.innerText.trim();
+                    if (text && !cell.classList.contains('merged-hidden')) combinedText.push(text);
                 });
-                firstCell.rowSpan = rowSpan; firstCell.innerText = combinedText.join(' ');
-                for (let r = rStart + 1; r < rStart + rowSpan; r++) {
-                    const cell = rows[r].children[cIdx];
-                    if (cell) { cell.rowSpan = 1; cell.innerText = ''; cell.classList.add('merged-hidden'); }
+                const endLimit = startRow + totalRowSpan;
+
+                firstCell.rowSpan = totalRowSpan;
+                firstCell.innerText = combinedText.join(' ');
+
+                for (let r = startRow + 1; r < endLimit; r++) {
+                    const cell = rows[r].children[colIndex];
+                    if (cell) {
+                        cell.rowSpan = 1;
+                        cell.innerText = '';
+                        cell.classList.add('merged-hidden');
+                    }
                 }
             }
+
             clearCellSelection();
             if (tbody.closest('.step-page')) fitAllStepPages();
         }
 
         function splitSelectedCell() {
-            let target = document.querySelector('td.cell-selected') || (focusedCell?.tagName === 'TD' ? focusedCell : focusedCell?.closest('td'));
-            if (!target || !target.closest('tbody')) return alert('Click vào ô đã gộp cần tách!');
+            let targetCell = document.querySelector('td.cell-selected');
+            if (!targetCell && focusedCell) {
+                targetCell = focusedCell.tagName === 'TD' ? focusedCell : focusedCell.closest('td');
+            }
+            if (!targetCell || !targetCell.closest('tbody')) return alert('Hãy click vào ô đã gộp cần tách!');
             
-            const rSpan = target.rowSpan || 1, cSpan = target.colSpan || 1;
+            const rSpan = targetCell.rowSpan || 1;
+            const cSpan = targetCell.colSpan || 1;
+            
             if (rSpan <= 1 && cSpan <= 1) return alert('Ô này chưa được gộp!');
             
             saveState();
-            const tbody = target.closest('tbody'), rows = Array.from(tbody.children);
-            const cStart = getColIndex(target), rStart = getRowIndex(target);
 
-            if (cSpan > 1 && cStart === 2) target.style.textAlign = 'left';
-            target.rowSpan = 1; target.colSpan = 1;
+            const tbody = targetCell.closest('tbody');
+            const rows = Array.from(tbody.children);
+            const startCol = getColIndex(targetCell);
+            const startRow = getRowIndex(targetCell);
 
-            for (let r = rStart + 1; r < rStart + rSpan; r++) {
-                const cell = rows[r].children[cStart];
-                if (cell) { cell.classList.remove('merged-hidden'); cell.rowSpan = 1; cell.colSpan = 1; }
+            if (cSpan > 1 && startCol === 2) targetCell.style.textAlign = 'left';
+
+            targetCell.rowSpan = 1;
+            targetCell.colSpan = 1;
+
+            for (let r = startRow + 1; r < startRow + rSpan; r++) {
+                const cell = rows[r].children[startCol];
+                if (cell) {
+                    cell.classList.remove('merged-hidden');
+                    cell.rowSpan = 1;
+                    cell.colSpan = 1;
+                }
             }
-            for (let c = cStart + 1; c < cStart + cSpan; c++) {
-                const cell = rows[rStart].children[c];
-                if (cell) { cell.classList.remove('merged-hidden'); cell.rowSpan = 1; cell.colSpan = 1; }
+
+            for (let c = startCol + 1; c < startCol + cSpan; c++) {
+                const cell = rows[startRow].children[c];
+                if (cell) {
+                    cell.classList.remove('merged-hidden');
+                    cell.rowSpan = 1;
+                    cell.colSpan = 1;
+                }
             }
+
             clearCellSelection();
             if (tbody.closest('.step-page')) fitAllStepPages();
         }
 
+        document.addEventListener('paste', function(e) {
+            if (!isEditing) return;
+            let targetCell = e.target.closest('td.editable-field');
+            if (!targetCell) return; 
+
+            let pasteData = (e.clipboardData || window.clipboardData).getData('text');
+            if (!pasteData) return;
+            
+            saveState();
+            e.preventDefault();
+
+            let rowsData = pasteData.trim().split(/\r\n|\n|\r/);
+            let tbody = targetCell.closest('tbody');
+            let tableRows = Array.from(tbody.querySelectorAll('tr'));
+            
+            let startRowIndex = tableRows.indexOf(targetCell.closest('tr'));
+            let startColIndex = Array.from(targetCell.parentElement.children).indexOf(targetCell);
+
+            for (let i = 0; i < rowsData.length; i++) {
+                let colsData = rowsData[i].split('\t');
+                
+                if (startRowIndex + i < tableRows.length) {
+                    let targetRow = tableRows[startRowIndex + i];
+                    for (let j = 0; j < colsData.length; j++) {
+                        if (startColIndex + j < targetRow.children.length) {
+                            let cell = targetRow.children[startColIndex + j];
+                            if (cell.classList.contains('editable-field') && !cell.classList.contains('merged-hidden')) {
+                                cell.innerText = colsData[j].trim();
+                            }
+                        }
+                    }
+                }
+            }
+            if (tbody.closest('.step-page')) fitAllStepPages();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (!isEditing) return;
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                const selectedCells = document.querySelectorAll('td.cell-selected');
+                if (selectedCells.length > 1) {
+                    saveState();
+                    e.preventDefault(); 
+                    selectedCells.forEach(cell => { cell.innerText = ''; });
+                    fitAllStepPages();
+                }
+            }
+        });
+
+        document.addEventListener('copy', function(e) {
+            if (!isEditing) return;
+            const selectedCells = Array.from(document.querySelectorAll('td.cell-selected'));
+            if (selectedCells.length > 1) {
+                e.preventDefault(); 
+                const copiedText = selectedCells.map(cell => cell.innerText).join('\r\n');
+                if (e.clipboardData) {
+                    e.clipboardData.setData('text/plain', copiedText);
+                } else if (window.clipboardData) {
+                    window.clipboardData.setData('Text', copiedText);
+                }
+            }
+        });
+
         // =========================================================
-        // NHẬP TỰ ĐỘNG FILE PDF / DOCX / XLSX
+        // TÍNH NĂNG TỰ ĐỘNG ĐỌC FILE WORD (.DOCX) & EXCEL (.XLSX), PDF
         // =========================================================
-        if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
 
         async function handleFileImport(event) {
             const file = event.target.files[0];
             if (!file) return;
+
             if (isEditing) saveState();
-            const ext = file.name.toLowerCase();
+
+            const fileName = file.name.toLowerCase();
             try {
-                if (ext.endsWith('.pdf')) await importFromPdf(file);
-                else if (ext.endsWith('.docx')) await importFromDocx(file);
-                else if (ext.endsWith('.xlsx') || ext.endsWith('.xls')) await importFromExcel(file);
-                else alert('Chỉ hỗ trợ .pdf, .docx, .xlsx!');
+                if (fileName.endsWith('.pdf')) {
+                    await importFromPdf(file);
+                } else if (fileName.endsWith('.docx')) {
+                    await importFromDocx(file);
+                } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+                    await importFromExcel(file);
+                } else {
+                    alert('Vui lòng chọn file định dạng .pdf, .docx hoặc .xlsx!');
+                }
             } catch (err) {
-                console.error(err); alert('Lỗi đọc file: ' + err.message);
+                console.error(err);
+                alert('Có lỗi khi đọc file: ' + err.message);
             }
             event.target.value = '';
         }
 
+        // --- 1. ĐỌC TRỰC TIẾP FILE PDF VỚI TỌA ĐỘ LINH HOẠT VÀ TÁCH BƯỚC THÔNG MINH ---
         async function importFromPdf(file) {
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            
             const pagesData = [];
-            const dataTrang1 = { soPhieu: '', mucDich: [], batDau: {}, ketThuc: {}, donVi: [], dieuKien: [], luuY: [], giaoNhanTruoc: [] };
-            const dataTrang4 = { giaoNhanSau: [] };
-            
-            // Cờ quản lý khu vực đang thu thập
-            let currentState = 'T1'; // T1: Trang 1, TABLE: Bảng 9 cột, T4: Giao nhận sau
+            let page1Extracted = false;
 
             for (let p = 1; p <= pdf.numPages; p++) {
                 const page = await pdf.getPage(p);
                 const textContent = await page.getTextContent();
+
                 const rawChunks = [];
                 textContent.items.forEach(item => {
                     const str = item.str;
                     if (!str || !str.trim()) return;
-                    rawChunks.push({ x0: item.transform[4], x1: item.transform[4] + (item.width||0), yc: item.transform[5] + (Math.abs(item.height||10) * 0.4), text: str });
-                });
-                
-                rawChunks.sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
-
-                const visualLines = [];
-                rawChunks.forEach(ch => {
-                    const sameLine = visualLines.find(vl => Math.abs(sub(vl.yc, ch.yc)) <= 4.5);
-                    if (sameLine) sameLine.chunks.push(ch); else visualLines.push({ yc: ch.yc, chunks: [ch] });
+                    const x0 = item.transform[4];
+                    const y0 = item.transform[5];
+                    const w = item.width || 0;
+                    const h = Math.abs(item.height || item.transform[0] || 10);
+                    rawChunks.push({ x0: x0, x1: x0 + w, yc: y0 + h * 0.4, text: str });
                 });
 
-                visualLines.forEach(vl => {
-                    vl.chunks.sort((a, b) => sub(a.x0, b.x0));
-                    let txt = ''; let prevX1 = null;
-                    vl.chunks.forEach(ch => {
-                        if (prevX1 !== null && sub(ch.x0, prevX1) > 1.5) txt += ' ';
-                        txt += ch.text; prevX1 = Math.max(prevX1 || 0, ch.x1);
-                    });
-                    vl.text = txt.replace(/\s+/g, ' ').trim();
-                });
+                const fullPageText = rawChunks.map(c => c.text).join(' ');
 
-                // Tách vùng dựa vào Keyword
-                const pageText = visualLines.map(v => v.text).join(' ');
-                
-                // Thu thập Trang 1
-                if (currentState === 'T1') {
-                    extractPage1Data(visualLines, dataTrang1);
-                    if (pageText.includes('Địa điểm') && pageText.includes('Trình tự thao tác')) {
-                        currentState = 'TABLE';
+                // A. KIỂM TRA NẾU TRANG CÓ CHỨA KHUNG ĐỎ TRANG 1 ("Mục đích thao tác" & "Thời gian dự kiến")
+                if (!page1Extracted && fullPageText.includes('Mục đích thao tác') && fullPageText.includes('Thời gian dự kiến')) {
+                    const p1Data = extractPage1RedBoxFromChunks(rawChunks);
+                    if (p1Data) {
+                        populatePage1RedBox(p1Data);
+                        page1Extracted = true;
                     }
                 }
 
-                // Thu thập Bảng 9 cột
-                if (currentState === 'TABLE') {
-                    if (pageText.includes('Địa điểm') || pageText.includes('Nội dung')) {
-                        const tableRows = extractTable9Cols(visualLines);
-                        if (tableRows.length > 0) pagesData.push(tableRows);
-                    }
-                    if (pageText.includes('Giao nhận, nghiệm thu') && pageText.includes('sau khi thao tác')) {
-                        currentState = 'T4';
-                    }
-                }
-
-                // Thu thập Trang 4 (Giao nhận sau)
-                if (currentState === 'T4') {
-                    extractPage4Data(visualLines, dataTrang4);
-                }
-            }
-
-            // Điền dữ liệu Trang 1
-            if (dataTrang1.mucDich.length > 0) populatePage1(dataTrang1);
-            
-            // Dựng Bảng 9 cột
-            if (pagesData.length > 0) {
-                renderImportedStepPages(pagesData);
-            }
-            
-            // Điền dữ liệu Trang 4 (Giao nhận sau)
-            if (dataTrang4.giaoNhanSau.length > 0) populatePage4(dataTrang4);
-            
-            if (dataTrang1.mucDich.length > 0 || pagesData.length > 0) {
-                alert('Đã bóc tách thành công dữ liệu từ PDF!');
-            } else {
-                alert('Không tìm thấy dữ liệu chuẩn trong file PDF!');
-            }
-        }
-
-        // --- CÁC HÀM TRÍCH XUẤT TỪNG PHẦN ---
-        function extractPage1Data(visualLines, data) {
-            let state = 'NONE';
-            let thoiGianStr = '';
-            const gnLines = [];
-
-            for (let i = 0; i < visualLines.length; i++) {
-                const t = visualLines[i].text;
-                if (!t) continue;
-                if (/^(Số\s*phiếu|Trang\s*số)\s*:/i.test(t)) {
-                    const m = t.match(/Số\s*phiếu\s*:\s*([A-Za-z0-9\/\-]+)/i);
-                    if (m && !data.soPhieu) data.soPhieu = m[1];
+                // B. KIỂM TRA BẢNG CÁC BƯỚC THAO TÁC 9 CỘT
+                const hasStepTableCols = fullPageText.includes('Địa điểm') && 
+                    (fullPageText.includes('Nhận lệnh') || fullPageText.includes('Ra lệnh') || fullPageText.includes('Bước'));
+                if (!hasStepTableCols) {
                     continue;
                 }
-                if (/Trình\s*tự\s*hạng\s*mục/i.test(t) || (t.includes('Địa điểm') && t.includes('Trình tự'))) break;
 
-                if (/Mục\s*đích\s*thao\s*tác/i.test(t)) { state = 'MUC_DICH'; const rm = t.replace(/^.*?Mục\s*đích\s*thao\s*tác\s*:?\s*/i, '').trim(); if (rm) data.mucDich.push(rm); continue; }
-                if (/Thời\s*gian\s*dự\s*kiến/i.test(t)) { state = 'THOI_GIAN'; continue; }
-                if (/Đơn\s*vị\s*đề\s*nghị\s*thao\s*tác/i.test(t)) { state = 'DON_VI'; const rm = t.replace(/^.*?Đơn\s*vị\s*đề\s*nghị\s*thao\s*tác\s*:?\s*/i, '').trim(); if (rm) data.donVi.push(rm); continue; }
-                if (/Điều\s*kiện\s*cần\s*có/i.test(t)) { state = 'DIEU_KIEN'; const rm = t.replace(/^.*?Điều\s*kiện\s*cần\s*có\s*để\s*thực\s*hiện\s*:?\s*/i, '').trim(); if (rm) data.dieuKien.push(rm.replace(/^\d+[\.\)]\s*/, '')); continue; }
-                if (/^Lưu\s*ý\s*:?/i.test(t)) { state = 'LUU_Y'; const rm = t.replace(/^Lưu\s*ý\s*:?\s*/i, '').trim(); if (rm) data.luuY.push(rm.replace(/^\d+[\.\)]\s*/, '')); continue; }
-                if (/Giao\s*nhận.*trước\s*khi\s*thao\s*tác/i.test(t)) { state = 'GIAO_NHAN'; continue; }
+                rawChunks.sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
+                const lineGroups = [];
+                rawChunks.forEach(ch => {
+                    const existingLine = lineGroups.find(lg => Math.abs(sub(lg.yc, ch.yc)) <= 3.5);
+                    if (existingLine) {
+                        existingLine.chunks.push(ch);
+                    } else {
+                        lineGroups.push({ yc: ch.yc, chunks: [ch] });
+                    }
+                });
 
-                if (state === 'MUC_DICH') data.mucDich.push(t);
-                else if (state === 'THOI_GIAN') thoiGianStr += t + ' ';
-                else if (state === 'DON_VI') data.donVi.push(t);
-                else if (state === 'DIEU_KIEN') { const m = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/); if (m) data.dieuKien.push(m[2].trim()); else if (data.dieuKien.length > 0) data.dieuKien[sub(data.dieuKien.length, 1)] += ' ' + t; else data.dieuKien.push(t); }
-                else if (state === 'LUU_Y') { const m = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/); if (m) data.luuY.push(m[2].trim()); else if (data.luuY.length > 0) data.luuY[sub(data.luuY.length, 1)] += ' ' + t; else data.luuY.push(t); }
-                else if (state === 'GIAO_NHAN') {
-                    if (t.includes('Thời gian') && t.includes('Nội dung')) continue;
-                    gnLines.push(visualLines[i]);
+                const mergedItems = [];
+                lineGroups.forEach(lg => {
+                    lg.chunks.sort((a, b) => sub(a.x0, b.x0));
+                    let current = null;
+                    lg.chunks.forEach(ch => {
+                        if (!current) {
+                            current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
+                        } else {
+                            const gap = sub(ch.x0, current.x1);
+                            // Bỏ qua ranh giới cứng, chỉ ghép chữ gần nhau
+                            if (gap < 8) {
+                                current.text += (gap > 1.5 ? ' ' : '') + ch.text;
+                                current.x1 = Math.max(current.x1, ch.x1);
+                            } else {
+                                mergedItems.push(current);
+                                current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
+                            }
+                        }
+                    });
+                    if (current) mergedItems.push(current);
+                });
+
+                // Xác định mốc cắt đầu và cuối bảng
+                let anchorHeaderY = null;
+                mergedItems.forEach(it => {
+                    if (it.text.includes('Địa điểm') || it.text.includes('Nhận lệnh') || it.text.includes('Trình tự hạng mục')) {
+                        if (anchorHeaderY === null || it.yc < anchorHeaderY) {
+                            anchorHeaderY = it.yc;
+                        }
+                    }
+                });
+                if (anchorHeaderY === null) continue;
+
+                let headerBottomY = sub(anchorHeaderY, 28);
+                mergedItems.forEach(it => {
+                    const t = it.text.trim();
+                    if (it.yc <= anchorHeaderY && it.yc >= sub(anchorHeaderY, 45)) {
+                        if (t === '4' || t === '3' || /^1\s+2\s+3/.test(t)) {
+                            headerBottomY = Math.min(headerBottomY, it.yc);
+                        }
+                    }
+                });
+
+                let footerStopY = 48;
+                mergedItems.forEach(it => {
+                    if (it.yc < sub(headerBottomY, 5)) {
+                        const t = it.text.trim();
+                        if (t.includes('Giao nhận, nghiệm thu') || t.includes('Giao nhận nghiệm thu') || 
+                            t.includes('Các sự kiện bất thường') || t.includes('Người viết phiếu') || 
+                            t.includes('Người duyệt phiếu') || t.includes('Người thực hiện thao tác') || 
+                            t.includes('Người giám sát') || (t === 'Đơn vị' || t === 'Họ tên') || 
+                            /Ngày\s+\d+\s+tháng\s+\d+\s+năm/i.test(t)) {
+                            footerStopY = Math.max(footerStopY, it.yc + 4);
+                        }
+                    }
+                });
+
+                // TỰ ĐỘNG TÍNH TOÁN RANH GIỚI 4 CỘT CHÍNH TỪ HEADER (Thích ứng file scan nghiêng/lệch lề)
+                let col0_x = 115, col1_x = 165, col2_x = 198;
+                let line1234 = lineGroups.find(lg => {
+                    let txt = lg.chunks.map(c => c.text).join('').replace(/\s/g,'');
+                    return txt.includes('1234');
+                });
+                if (line1234) {
+                    let c1 = line1234.chunks.find(c => c.text.trim() === '1');
+                    let c2 = line1234.chunks.find(c => c.text.trim() === '2');
+                    let c3 = line1234.chunks.find(c => c.text.trim() === '3');
+                    let c4 = line1234.chunks.find(c => c.text.trim() === '4');
+                    if (c1 && c2) col0_x = (c1.x1 + c2.x0) / 2;
+                    if (c2 && c3) col1_x = (c2.x1 + c3.x0) / 2;
+                    if (c3 && c4) col2_x = (c3.x1 + c4.x0) / 2;
                 }
-            }
-            
-            data.batDau = parseDateTimeFull(thoiGianStr, 'Bắt đầu');
-            data.ketThuc = parseDateTimeFull(thoiGianStr, 'Kết thúc');
 
-            if (gnLines.length > 0) {
-                const rObj = { tg: [], dv: [], ht: [], nd: [] };
-                gnLines.forEach(vl => vl.chunks.forEach(ch => {
-                    const txt = ch.text.trim(); if (!txt) return;
-                    if (ch.x0 < 145) rObj.tg.push(txt); else if (ch.x0 < 220) rObj.dv.push(txt); else if (ch.x0 < 300) rObj.ht.push(txt); else rObj.nd.push(txt);
-                }));
-                const tg = rObj.tg.join(' ').replace(/\s+/g, ' ').trim(), dv = rObj.dv.join(' ').replace(/\s+/g, ' ').trim(), ht = rObj.ht.join(' ').replace(/\s+/g, ' ').trim(), nd = rObj.nd.join(' ').replace(/\s+/g, ' ').trim();
-                if (tg||dv||ht||nd) data.giaoNhanTruoc.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
-            }
-        }
+                const cleanItems = [];
+                mergedItems.forEach(it => {
+                    const txt = it.text.trim();
+                    if (!txt || /^1\s+2\s+3/.test(txt)) return;
 
-        function extractTable9Cols(visualLines) {
-            let anchorHeaderY = null; let footerStopY = 48;
-            visualLines.forEach(vl => {
-                if (!anchorHeaderY && (vl.text.includes('Địa điểm') || vl.text.includes('Trình tự hạng mục'))) anchorHeaderY = vl.yc;
-            });
-            if (!anchorHeaderY) return [];
-
-            let headerBottomY = sub(anchorHeaderY, 28);
-            visualLines.forEach(vl => {
-                if (vl.yc <= anchorHeaderY && vl.yc >= sub(anchorHeaderY, 45) && (vl.text.trim() === '4' || /^1\s+2\s+3/.test(vl.text))) {
-                    headerBottomY = Math.min(headerBottomY, vl.yc);
-                }
-                if (vl.yc < sub(headerBottomY, 5) && (vl.text.includes('Giao nhận, nghiệm thu') || vl.text.includes('Các sự kiện bất thường') || /Ngày\s+\d+\s+tháng/.test(vl.text))) {
-                    footerStopY = Math.max(footerStopY, vl.yc + 4);
-                }
-            });
-
-            // Lấy tọa độ động từ dòng 1 2 3 4
-            let col0_x = 115, col1_x = 165, col2_x = 198;
-            let line1234 = visualLines.find(vl => vl.text.replace(/\s/g,'').includes('1234'));
-            if (line1234) {
-                let c1 = line1234.chunks.find(c => c.text.trim() === '1'), c2 = line1234.chunks.find(c => c.text.trim() === '2');
-                let c3 = line1234.chunks.find(c => c.text.trim() === '3'), c4 = line1234.chunks.find(c => c.text.trim() === '4');
-                if (c1 && c2) col0_x = (c1.x1 + c2.x0) / 2; if (c2 && c3) col1_x = (c2.x1 + c3.x0) / 2; if (c3 && c4) col2_x = (c3.x1 + c4.x0) / 2;
-            }
-
-            const cleanChunks = [];
-            visualLines.forEach(vl => {
-                vl.chunks.forEach(ch => {
-                    const txt = ch.text.trim(); if (!txt || /^1\s+2\s+3/.test(txt)) return;
-                    if (ch.yc > sub(headerBottomY, 3) || ch.yc < footerStopY) return;
-                    
-                    if (ch.x0 < col0_x) {
-                        const m3 = txt.match(/^([IVXLCDM]+)\s+(.+?)\s+(\d+)$/);
-                        const m2 = txt.match(/^([IVXLCDM]+)\s+(.+)$/);
-                        if (m3) {
-                            cleanChunks.push({ x0: sub(col0_x, 20), x1: sub(col0_x, 10), yc: ch.yc, text: m3[1] });
-                            cleanChunks.push({ x0: sub(col1_x, 30), x1: sub(col1_x, 10), yc: ch.yc, text: m3[2].trim() });
-                            cleanChunks.push({ x0: sub(col2_x, 20), x1: sub(col2_x, 10), yc: ch.yc, text: m3[3] });
+                    if (it.x0 < col0_x) {
+                        const match3 = txt.match(/^([IVXLCDM]+)\s+(.+?)\s+(\d+)$/);
+                        const match2 = txt.match(/^([IVXLCDM]+)\s+(.+)$/);
+                        if (match3) {
+                            cleanItems.push({ x0: sub(col0_x, 20), x1: sub(col0_x, 10), yc: it.yc, text: match3[1] });
+                            cleanItems.push({ x0: sub(col1_x, 30), x1: sub(col1_x, 10), yc: it.yc, text: match3[2].trim() });
+                            cleanItems.push({ x0: sub(col2_x, 20), x1: sub(col2_x, 10), yc: it.yc, text: match3[3] });
                             return;
-                        } else if (m2) {
-                            cleanChunks.push({ x0: sub(col0_x, 20), x1: sub(col0_x, 10), yc: ch.yc, text: m2[1] });
-                            cleanChunks.push({ x0: sub(col1_x, 30), x1: sub(col1_x, 10), yc: ch.yc, text: m2[2].trim() });
+                        } else if (match2) {
+                            cleanItems.push({ x0: sub(col0_x, 20), x1: sub(col0_x, 10), yc: it.yc, text: match2[1] });
+                            cleanItems.push({ x0: sub(col1_x, 30), x1: sub(col1_x, 10), yc: it.yc, text: match2[2].trim() });
                             return;
                         }
                     }
-                    cleanChunks.push({ x0: ch.x0, x1: ch.x1, yc: ch.yc, text: txt });
+                    cleanItems.push({ x0: it.x0, x1: it.x1, yc: it.yc, text: txt });
                 });
-            });
 
-            // TÁCH BLOCK BƯỚC THAO TÁC THÔNG MINH BẰNG SỐ THỨ TỰ (Sửa lỗi dồn cục bước 1->5)
-            const blocks = [];
-            const bodyLines = [];
-            cleanChunks.sort((a,b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
-            cleanChunks.forEach(ch => {
-                const same = bodyLines.find(bl => Math.abs(sub(bl.yc, ch.yc)) <= 4.5);
-                if (same) same.chunks.push(ch); else bodyLines.push({ yc: ch.yc, chunks: [ch] });
-            });
+                const bodyItems = cleanItems.filter(it => it.yc < sub(headerBottomY, 3) && it.yc > footerStopY);
+                const contentLines = bodyItems.filter(it => it.x0 >= col1_x && (it.x0 >= col2_x || it.x1 > col2_x + 10));
+                contentLines.sort((a, b) => sub(b.yc, a.yc));
 
-            bodyLines.forEach(bl => {
-                bl.chunks.sort((a,b) => sub(a.x0, b.x0));
-                // Tìm xem dòng này có số thứ tự bước độc lập không (ở cột 3)
-                const hasStepNum = bl.chunks.some(ch => ch.x0 >= col1_x && ch.x0 < col2_x + 5 && /^\d+[\.\)]?$/.test(ch.text.trim()));
-                // Tìm xem dòng này có mã La Mã không (ở cột 1)
-                const hasRoman = bl.chunks.some(ch => ch.x0 < col0_x && /^([IVXLCDM]+)$/i.test(ch.text.trim()));
-                
-                // Xác định dòng Span (chữ bắt đầu từ cột 2 nhưng tràn qua cột 3)
-                const c2Chunk = bl.chunks.find(ch => ch.x0 >= col1_x - 5 && ch.x0 < col2_x + 5);
-                const isSpanLine = c2Chunk && (c2Chunk.x1 > col2_x + 15 || !hasStepNum);
-                const isNewSection = isSpanLine && c2Chunk.text.toLowerCase().includes('cô lập');
-
-                if (blocks.length === 0) {
-                    blocks.push({ yTop: bl.yc, yBot: bl.yc, lines: [bl], isSpan: isSpanLine });
-                } else {
-                    const prev = blocks[sub(blocks.length, 1)];
-                    const dy = sub(prev.yBot, bl.yc);
+                // BÓC TÁCH KHỐI DÒNG THÔNG MINH BẰNG NGỮ NGHĨA (Số thứ tự / Số La Mã) ĐỂ TRÁNH DÍNH BƯỚC
+                const blocks = [];
+                contentLines.forEach(cl => {
+                    const isSpanLine = (cl.x0 < col2_x && cl.x0 > col1_x + 10);
                     
-                    // NGẮT BLOCK MỚI KHI: Có số bước, Có La Mã, Có chữ Cô lập, hoặc cách xa nhau quá 16.5
-                    if (hasStepNum || hasRoman || isNewSection || dy > 16.5) {
-                        blocks.push({ yTop: bl.yc, yBot: bl.yc, lines: [bl], isSpan: isSpanLine });
-                    } else {
-                        prev.yBot = bl.yc; prev.lines.push(bl); if (isSpanLine) prev.isSpan = true;
-                    }
-                }
-            });
+                    const hasStepNum = bodyItems.some(it => Math.abs(sub(it.yc, cl.yc)) <= 4.5 && it.x0 >= col1_x && it.x0 < col2_x && /^\d+[\.\)]?$/.test(it.text.trim()));
+                    const hasRoman = bodyItems.some(it => Math.abs(sub(it.yc, cl.yc)) <= 4.5 && it.x0 < col0_x && /^([IVXLCDM]+)$/i.test(it.text.trim()));
+                    const isNewSection = isSpanLine && cl.text.toLowerCase().includes('cô lập');
 
-            const pageRows = [];
-            blocks.forEach(b => {
-                let c0 = [], c1 = [], c2 = [], c3Text = [];
-                b.lines.forEach(bl => {
-                    bl.chunks.forEach(ch => {
-                        if (ch.x0 < col0_x) c0.push(ch.text);
-                        else if (ch.x0 < col1_x) c1.push(ch.text);
-                        else if (ch.x0 < col2_x + 5 && /^\d+[\.\)]?$/.test(ch.text.trim())) c2.push(ch.text);
-                        else c3Text.push(ch.text);
-                    });
+                    if (blocks.length === 0) {
+                        blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpanLine });
+                    } else {
+                        const prev = blocks[sub(blocks.length, 1)];
+                        const dy = sub(prev.yBot, cl.yc);
+                        
+                        if (hasStepNum || hasRoman || isNewSection || dy > 16.5) {
+                            blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpanLine });
+                        } else {
+                            prev.yBot = cl.yc;
+                            prev.lines.push(cl);
+                            if (isSpanLine) prev.isSpan = true;
+                        }
+                    }
                 });
 
-                const text0 = c0.join(' ').trim(), text1 = c1.join(' ').trim();
-                const text2 = c2.join(' ').trim(), text3 = c3Text.join(' ').trim();
-                const isSectionHeader = (text2 === '' && !text3.includes('Kết quả kiểm tra')) || (b.isSpan && text2 === '');
+                if (blocks.length === 0) continue;
 
-                if (isSectionHeader) {
-                    pageRows.push([
-                        { text: text0, colspan: 1, vMerge: null }, { text: text1, colspan: 1, vMerge: null }, { text: text3, colspan: 3, vMerge: null },
-                        { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
-                    ]);
-                } else {
-                    const kqIdx = text3.indexOf('Kết quả kiểm tra');
-                    if (kqIdx > 0) {
-                        const mText = text3.substring(0, kqIdx).trim(), sText = text3.substring(kqIdx).trim();
+                blocks.forEach(b => { b.col0 = []; b.col1 = []; b.col2 = []; });
+                const otherItems = bodyItems.filter(it => !contentLines.includes(it));
+
+                otherItems.forEach(it => {
+                    let bestBlock = blocks[0];
+                    let minDist = 9999;
+                    blocks.forEach(b => {
+                        let dist = 0;
+                        if (it.yc > b.yTop + 5) dist = sub(it.yc, b.yTop);
+                        else if (it.yc < sub(b.yBot, 5)) dist = sub(b.yBot, it.yc);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            bestBlock = b;
+                        }
+                    });
+
+                    if (it.x0 < col0_x) bestBlock.col0.push(it.text);
+                    else if (it.x0 < col1_x) bestBlock.col1.push(it.text);
+                    else if (it.x0 < col2_x) bestBlock.col2.push(it.text);
+                });
+
+                const pageRows = [];
+                blocks.forEach(b => {
+                    const c0 = b.col0.join(' ').trim();
+                    const c1 = b.col1.join(' ').trim();
+                    const c2 = b.col2.join(' ').trim();
+                    const lineTexts = b.lines.map(l => l.text.trim());
+                    const joinedContent = lineTexts.join(' ');
+
+                    const isSectionHeader = (c2 === '' && !joinedContent.includes('Kết quả kiểm tra')) || (b.isSpan && c2 === '');
+
+                    if (isSectionHeader) {
                         pageRows.push([
-                            { text: text0, colspan: 1, vMerge: null }, { text: text1, colspan: 1, vMerge: null }, { text: text2, colspan: 1, vMerge: 'restart' }, { text: mText, colspan: 1, vMerge: null },
-                            { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
-                        ]);
-                        pageRows.push([
-                            { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: 'continue' }, { text: sText, colspan: 1, vMerge: null },
-                            { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
+                            { text: c0, colspan: 1, vMerge: null }, { text: c1, colspan: 1, vMerge: null },
+                            { text: joinedContent, colspan: 3, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
                         ]);
                     } else {
-                        pageRows.push([
-                            { text: text0, colspan: 1, vMerge: null }, { text: text1, colspan: 1, vMerge: null }, { text: text2, colspan: 1, vMerge: null }, { text: text3, colspan: 1, vMerge: null },
-                            { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
-                        ]);
+                        const kqIdx = lineTexts.findIndex(t => t.includes('Kết quả kiểm tra'));
+                        if (kqIdx > 0) {
+                            const mainContent = lineTexts.slice(0, kqIdx).join(' ');
+                            const subContent = lineTexts.slice(kqIdx).join(' ');
+                            pageRows.push([
+                                { text: c0, colspan: 1, vMerge: null }, { text: c1, colspan: 1, vMerge: null },
+                                { text: c2, colspan: 1, vMerge: 'restart' }, { text: mainContent, colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
+                            ]);
+                            pageRows.push([
+                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: 'continue' }, { text: subContent, colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
+                            ]);
+                        } else {
+                            pageRows.push([
+                                { text: c0, colspan: 1, vMerge: null }, { text: c1, colspan: 1, vMerge: null },
+                                { text: c2, colspan: 1, vMerge: null }, { text: joinedContent, colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null },
+                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
+                            ]);
+                        }
                     }
-                }
-            });
-            return pageRows;
+                });
+
+                if (pageRows.length > 0) pagesData.push(pageRows);
+            }
+
+            if (pagesData.length > 0) {
+                renderImportedStepPages(pagesData);
+            } else if (page1Extracted) {
+                alert('Đã trích xuất và điền thành công nội dung khung Trang 1 từ file PDF!');
+            } else {
+                alert('Không tìm thấy dữ liệu Trang 1 hoặc bảng trình tự thao tác trong file PDF này!');
+            }
         }
 
-        function extractPage4Data(visualLines, dataTrang4) {
-            let inGiaoNhan = false;
-            let currentLines = [];
+        // --- HÀM BÓC TÁCH NỘI DUNG TRONG KHUNG ĐỎ TRANG 1 TỪ TỌA ĐỘ PDF ---
+        function extractPage1RedBoxFromChunks(rawChunks) {
+            const sorted = rawChunks.slice().sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
+            const visualLines = [];
+            sorted.forEach(ch => {
+                const sameLine = visualLines.find(vl => Math.abs(sub(vl.yc, ch.yc)) <= 4.5);
+                if (sameLine) {
+                    sameLine.chunks.push(ch);
+                } else {
+                    visualLines.push({ yc: ch.yc, chunks: [ch] });
+                }
+            });
+
+            visualLines.forEach(vl => {
+                vl.chunks.sort((a, b) => sub(a.x0, b.x0));
+                let txt = '';
+                let prevX1 = null;
+                vl.chunks.forEach(ch => {
+                    if (prevX1 !== null && sub(ch.x0, prevX1) > 1.5) {
+                        txt += ' ';
+                    }
+                    txt += ch.text;
+                    prevX1 = Math.max(prevX1 || 0, ch.x1);
+                });
+                vl.text = txt.replace(/\s+/g, ' ').trim();
+            });
+
+            const data = {
+                soPhieu: '',
+                tenPhieu: '',
+                nguoiViet: '',
+                nguoiDuyet: '',
+                mucDich: [],
+                batDau: { gio: '', phut: '', ngay: '', thang: '', nam: '' },
+                ketThuc: { gio: '', phut: '', ngay: '', thang: '', nam: '' },
+                donVi: [],
+                dieuKien: [],
+                luuY: [],
+                giaoNhanTruoc: []
+            };
+
+            const fullText = visualLines.map(vl => vl.text).join(' | ');
+            const spMatch = fullText.match(/Số\s*phiếu\s*:\s*([A-Za-z0-9\/\-]+)/i);
+            if (spMatch) data.soPhieu = spMatch[1];
+            
+            const tpMatch = fullText.match(/Tên\s*phiếu\s*thao\s*tác\s*:\s*([^\|]+)/i);
+            if (tpMatch) data.tenPhieu = tpMatch[1].trim();
+            
+            let state = 'NONE';
+            let thoiGianStr = '';
+            const giaoNhanLines = [];
 
             for (let i = 0; i < visualLines.length; i++) {
                 const vl = visualLines[i];
                 const t = vl.text;
                 if (!t) continue;
 
-                if (t.includes('Giao nhận, nghiệm thu') && t.includes('sau khi thao tác')) {
-                    inGiaoNhan = true; continue;
+                if (/^(Số\s*phiếu|Trang\s*số)\s*:/i.test(t)) continue;
+                if (/Trình\s*tự\s*hạng\s*mục/i.test(t) || (t.includes('Địa điểm') && t.includes('Trình tự'))) {
+                    break;
                 }
 
-                // Kết thúc lấy bảng Giao nhận khi gặp chữ ký hoặc sự kiện bất thường
-                if (inGiaoNhan) {
-                    if (/Ngày\s+\d+\s+tháng/.test(t) || t.includes('Người viết phiếu') || t.includes('Người duyệt phiếu') || t.includes('Các sự kiện bất thường')) {
-                        inGiaoNhan = false; break;
+                if (/Mục\s*đích\s*thao\s*tác/i.test(t)) {
+                    state = 'MUC_DICH';
+                    const rem = t.replace(/^.*?Mục\s*đích\s*thao\s*tác\s*:?\s*/i, '').trim();
+                    if (rem) data.mucDich.push(rem);
+                    continue;
+                }
+
+                if (/Thời\s*gian\s*dự\s*kiến/i.test(t)) {
+                    state = 'THOI_GIAN';
+                    continue;
+                }
+
+                if (/Đơn\s*vị\s*đề\s*nghị\s*thao\s*tác/i.test(t)) {
+                    state = 'DON_VI';
+                    const rem = t.replace(/^.*?Đơn\s*vị\s*đề\s*nghị\s*thao\s*tác\s*:?\s*/i, '').trim();
+                    if (rem) data.donVi.push(rem);
+                    continue;
+                }
+
+                if (/Điều\s*kiện\s*cần\s*có/i.test(t)) {
+                    state = 'DIEU_KIEN';
+                    const rem = t.replace(/^.*?Điều\s*kiện\s*cần\s*có\s*để\s*thực\s*hiện\s*:?\s*/i, '').trim();
+                    if (rem) {
+                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
+                        if (cleanRem) data.dieuKien.push(cleanRem);
                     }
-                    if (t.includes('Thời gian') && t.includes('Nội dung')) continue; // Bỏ qua Header bảng
-                    currentLines.push(vl);
+                    continue;
+                }
+
+                if (/^Lưu\s*ý\s*:?/i.test(t)) {
+                    state = 'LUU_Y';
+                    const rem = t.replace(/^Lưu\s*ý\s*:?\s*/i, '').trim();
+                    if (rem) {
+                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
+                        if (cleanRem) data.luuY.push(cleanRem);
+                    }
+                    continue;
+                }
+
+                if (/Giao\s*nhận.*trước\s*khi\s*thao\s*tác/i.test(t)) {
+                    state = 'GIAO_NHAN';
+                    continue;
+                }
+
+                if (state === 'MUC_DICH') {
+                    data.mucDich.push(t);
+                } else if (state === 'THOI_GIAN') {
+                    thoiGianStr += t + ' '; // Gom chuỗi để quét mảng rộng (tránh cắt dòng tháng năm)
+                } else if (state === 'DON_VI') {
+                    data.donVi.push(t);
+                } else if (state === 'DIEU_KIEN') {
+                    const numMatch = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/);
+                    if (numMatch) {
+                        data.dieuKien.push(numMatch[2].trim());
+                    } else if (data.dieuKien.length > 0) {
+                        const lastIdx = sub(data.dieuKien.length, 1);
+                        data.dieuKien[lastIdx] += ' ' + t;
+                    } else {
+                        data.dieuKien.push(t);
+                    }
+                } else if (state === 'LUU_Y') {
+                    const numMatch = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/);
+                    if (numMatch) {
+                        data.luuY.push(numMatch[2].trim());
+                    } else if (data.luuY.length > 0) {
+                        const lastIdx = sub(data.luuY.length, 1);
+                        data.luuY[lastIdx] += ' ' + t;
+                    } else {
+                        data.luuY.push(t);
+                    }
+                } else if (state === 'GIAO_NHAN') {
+                    if (t.includes('Thời gian') && (t.includes('Đơn vị') || t.includes('Nội dung'))) {
+                        continue;
+                    }
+                    giaoNhanLines.push(vl);
+                }
+            }
+            
+            data.batDau = parseDateTimeFull(thoiGianStr, 'Bắt đầu');
+            data.ketThuc = parseDateTimeFull(thoiGianStr, 'Kết thúc');
+
+            if (giaoNhanLines.length > 0) {
+                const rowObj = { thoiGian: [], donVi: [], hoTen: [], noiDung: [] };
+                giaoNhanLines.forEach(vl => {
+                    vl.chunks.forEach(ch => {
+                        const txt = ch.text.trim();
+                        if (!txt) return;
+                        if (ch.x0 < 145) rowObj.thoiGian.push(txt);
+                        else if (ch.x0 < 220) rowObj.donVi.push(txt);
+                        else if (ch.x0 < 300) rowObj.hoTen.push(txt);
+                        else rowObj.noiDung.push(txt);
+                    });
+                });
+
+                const tg = rowObj.thoiGian.join(' ').replace(/\s+/g, ' ').trim();
+                const dv = rowObj.donVi.join(' ').replace(/\s+/g, ' ').trim();
+                const ht = rowObj.hoTen.join(' ').replace(/\s+/g, ' ').trim();
+                const nd = rowObj.noiDung.join(' ').replace(/\s+/g, ' ').trim();
+                if (tg || dv || ht || nd) {
+                    data.giaoNhanTruoc.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
                 }
             }
 
-            if (currentLines.length > 0) {
-                const rObj = { tg: [], dv: [], ht: [], nd: [] };
-                currentLines.forEach(vl => vl.chunks.forEach(ch => {
-                    const txt = ch.text.trim(); if (!txt) return;
-                    if (ch.x0 < 145) rObj.tg.push(txt); else if (ch.x0 < 220) rObj.dv.push(txt); else if (ch.x0 < 300) rObj.ht.push(txt); else rObj.nd.push(txt);
-                }));
-                const tg = rObj.tg.join(' ').replace(/\s+/g, ' ').trim(), dv = rObj.dv.join(' ').replace(/\s+/g, ' ').trim(), ht = rObj.ht.join(' ').replace(/\s+/g, ' ').trim(), nd = rObj.nd.join(' ').replace(/\s+/g, ' ').trim();
-                if (tg||dv||ht||nd) dataTrang4.giaoNhanSau.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
-            }
+            return data;
         }
 
-        function populatePage1(data) {
-            const p1 = document.getElementById('page-1');
-            if (!p1) return;
-
-            if (data.soPhieu) {
-                document.querySelectorAll('.header-right .editable-field, .header-right-page2 .editable-field').forEach(f => f.innerText = data.soPhieu);
-            }
-
-            const rows = Array.from(p1.querySelectorAll('.form-row'));
-            
-            const mRow = rows.find(r => r.innerText.includes('Mục đích thao tác'));
-            if (mRow && data.mucDich.length > 0) {
-                mRow.style.alignItems = 'flex-start';
-                mRow.querySelector('.form-label').style.fontWeight = 'bold';
-                const f = mRow.querySelector('.editable-field');
-                f.innerText = data.mucDich.join(' ').replace(/\s+/g, ' ').trim();
-                f.style.paddingLeft = '6px'; f.style.textAlign = 'justify'; f.style.lineHeight = '1.35';
-                if (mRow.nextElementSibling && !mRow.nextElementSibling.querySelector('.form-label')) mRow.nextElementSibling.style.display = 'none';
-            }
-
-            const bdRow = rows.find(r => r.innerText.includes('Bắt đầu'));
-            if (bdRow) {
-                const fs = bdRow.querySelectorAll('.editable-field');
-                fs[0].innerText = data.batDau.gio; fs[1].innerText = data.batDau.phut; fs[2].innerText = data.batDau.ngay; fs[3].innerText = data.batDau.thang; fs[4].innerText = data.batDau.nam;
-            }
-            const ktRow = rows.find(r => r.innerText.includes('Kết thúc'));
-            if (ktRow) {
-                const fs = ktRow.querySelectorAll('.editable-field');
-                fs[0].innerText = data.ketThuc.gio; fs[1].innerText = data.ketThuc.phut; fs[2].innerText = data.ketThuc.ngay; fs[3].innerText = data.ketThuc.thang; fs[4].innerText = data.ketThuc.nam;
-            }
-
-            const dvRow = rows.find(r => r.innerText.includes('Đơn vị đề nghị'));
-            if (dvRow && data.donVi.length > 0) {
-                dvRow.querySelector('.form-label').style.fontWeight = 'bold';
-                const f = dvRow.querySelector('.editable-field');
-                f.innerText = data.donVi.join(' ').replace(/\s+/g, ' ').trim(); f.style.paddingLeft = '10px'; f.style.fontWeight = 'bold';
-            }
-
-            const olLists = p1.querySelectorAll('ol.numbered-list');
-            if (olLists.length >= 1 && data.dieuKien.length > 0) {
-                olLists[0].innerHTML = ''; olLists[0].style.lineHeight = '1.35';
-                data.dieuKien.forEach(t => { const li = document.createElement('li'); li.innerHTML = `<div class="dotted-line"><span class="editable-field" style="text-align: justify;">${t}</span></div>`; olLists[0].appendChild(li); });
-            }
-            if (olLists.length >= 2 && data.luuY.length > 0) {
-                olLists[1].innerHTML = ''; olLists[1].style.lineHeight = '1.35';
-                data.luuY.forEach(t => { const li = document.createElement('li'); li.innerHTML = `<div class="dotted-line"><span class="editable-field" style="text-align: justify;">${t}</span></div>`; olLists[1].appendChild(li); });
-            }
-
-            const tb = document.getElementById('table-giao-nhan-truoc');
-            if (tb && data.giaoNhanTruoc.length > 0) {
-                const tbody = tb.querySelector('tbody') || tb;
-                Array.from(tb.querySelectorAll('tr')).slice(1).forEach(tr => tr.remove());
-                data.giaoNhanTruoc.forEach(r => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td class="editable-field" style="height: 32px;">${r.thoiGian}</td><td class="editable-field" style="font-weight: bold;">${r.donVi}</td><td class="editable-field">${r.hoTen}</td><td class="editable-field" style="text-align: left; padding-left: 8px;">${r.noiDung}</td>`;
-                    tbody.appendChild(tr);
-                });
-            }
-            rows.forEach(r => { r.style.marginBottom = '5px'; r.style.lineHeight = '1.35'; });
-            const sig = p1.querySelector('.signature-grid'); if (sig) { sig.style.rowGap = '8px'; sig.style.margin = '8px 0 6px 0'; }
-        }
-
-        function populatePage4(data) {
-            const tb = document.getElementById('table-giao-nhan-sau');
-            if (!tb || data.giaoNhanSau.length === 0) return;
-            const tbody = tb.querySelector('tbody') || tb;
-            Array.from(tb.querySelectorAll('tr')).slice(1).forEach(tr => tr.remove());
-            data.giaoNhanSau.forEach(r => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td class="editable-field" style="height: 32px;">${r.thoiGian}</td><td class="editable-field" style="font-weight: bold;">${r.donVi}</td><td class="editable-field">${r.hoTen}</td><td class="editable-field" style="text-align: left; padding-left: 8px; text-align: justify;">${r.noiDung}</td>`;
-                tbody.appendChild(tr);
-            });
-        }
-
+        // Tách giờ, phút, ngày, tháng, năm bằng Regex phổ rộng chống cắt dòng
         function parseDateTimeFull(str, prefix) {
             const res = { gio: '', phut: '', ngay: '', thang: '', nam: '' };
             const regex = new RegExp(prefix + "\\s*(\\d{1,2})\\s*[hH:]\\s*(\\d{0,2}).*?ngày\\s*(\\d{1,2})\\s*tháng\\s*(\\d{1,2})\\s*năm\\s*(\\d{4})", "i");
             const match = str.match(regex);
-            if (match) { res.gio = match[1]; res.phut = match[2]; res.ngay = match[3]; res.thang = match[4]; res.nam = match[5]; } 
-            else {
-                const mTime = str.match(new RegExp(prefix + "\\s*(\\d{1,2})\\s*[hH:]\\s*(\\d{0,2})", "i"));
+            if (match) {
+                res.gio = match[1]; res.phut = match[2]; res.ngay = match[3]; res.thang = match[4]; res.nam = match[5];
+            } else {
+                const timeRegex = new RegExp(prefix + "\\s*(\\d{1,2})\\s*[hH:]\\s*(\\d{0,2})", "i");
+                const mTime = str.match(timeRegex);
                 if (mTime) { res.gio = mTime[1]; res.phut = mTime[2]; }
             }
             return res;
         }
 
-        // TỰ ĐỘNG IMPORT TỪ WORD
+        // --- HÀM ĐỔ DỮ LIỆU KHUNG ĐỎ VÀO TRANG 1 TRÊN GIAO DIỆN ---
+        function populatePage1RedBox(data) {
+            const page1 = document.querySelector('#document-container .page:first-child');
+            if (!page1) return;
+
+            if (data.soPhieu) {
+                const soPhieuFields = document.querySelectorAll('.header-right .editable-field, .header-right-page2 .editable-field');
+                soPhieuFields.forEach(f => f.innerText = data.soPhieu);
+            }
+
+            const formRows = Array.from(page1.querySelectorAll('.form-row'));
+
+            const mucDichText = data.mucDich.join(' ').replace(/\s+/g, ' ').trim();
+            const mucDichRow = formRows.find(r => r.innerText.includes('Mục đích thao tác'));
+            if (mucDichRow && mucDichText) {
+                mucDichRow.style.alignItems = 'flex-start';
+                const label = mucDichRow.querySelector('.form-label');
+                if (label) label.style.fontWeight = 'bold';
+                const field = mucDichRow.querySelector('.editable-field');
+                if (field) {
+                    field.innerText = mucDichText;
+                    field.style.paddingLeft = '6px';
+                    field.style.textAlign = 'justify';
+                    field.style.lineHeight = '1.35';
+                }
+                const nextRow = mucDichRow.nextElementSibling;
+                if (nextRow && nextRow.classList.contains('form-row') && !nextRow.querySelector('.form-label')) {
+                    nextRow.style.display = 'none';
+                }
+            }
+
+            const batDauRow = formRows.find(r => r.innerText.includes('Bắt đầu'));
+            if (batDauRow) {
+                const fields = batDauRow.querySelectorAll('.editable-field');
+                if (fields.length >= 5) {
+                    fields[0].innerText = data.batDau.gio;
+                    fields[1].innerText = data.batDau.phut;
+                    fields[2].innerText = data.batDau.ngay;
+                    fields[3].innerText = data.batDau.thang;
+                    fields[4].innerText = data.batDau.nam;
+                }
+            }
+
+            const ketThucRow = formRows.find(r => r.innerText.includes('Kết thúc'));
+            if (ketThucRow) {
+                const fields = ketThucRow.querySelectorAll('.editable-field');
+                if (fields.length >= 5) {
+                    fields[0].innerText = data.ketThuc.gio;
+                    fields[1].innerText = data.ketThuc.phut;
+                    fields[2].innerText = data.ketThuc.ngay;
+                    fields[3].innerText = data.ketThuc.thang;
+                    fields[4].innerText = data.ketThuc.nam;
+                }
+            }
+
+            const donViText = data.donVi.join(' ').replace(/\s+/g, ' ').trim();
+            const donViRow = formRows.find(r => r.innerText.includes('Đơn vị đề nghị'));
+            if (donViRow && donViText) {
+                const label = donViRow.querySelector('.form-label');
+                if (label) label.style.fontWeight = 'bold';
+                const field = donViRow.querySelector('.editable-field');
+                if (field) {
+                    field.innerText = donViText;
+                    field.style.paddingLeft = '10px';
+                    field.style.fontWeight = 'bold';
+                }
+            }
+
+            const olLists = page1.querySelectorAll('ol.numbered-list');
+            if (olLists.length >= 1 && data.dieuKien.length > 0) {
+                const olDieuKien = olLists[0];
+                olDieuKien.innerHTML = '';
+                olDieuKien.style.lineHeight = '1.35';
+                data.dieuKien.forEach(itemTxt => {
+                    const li = document.createElement('li');
+                    li.style.marginBottom = '2px';
+                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
+                    li.querySelector('.editable-field').innerText = itemTxt;
+                    olDieuKien.appendChild(li);
+                });
+            }
+
+            if (olLists.length >= 2 && data.luuY.length > 0) {
+                const olLuuY = olLists[1];
+                olLuuY.innerHTML = '';
+                olLuuY.style.lineHeight = '1.35';
+                data.luuY.forEach(itemTxt => {
+                    const li = document.createElement('li');
+                    li.style.marginBottom = '2px';
+                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
+                    li.querySelector('.editable-field').innerText = itemTxt;
+                    olLuuY.appendChild(li);
+                });
+            }
+
+            const table = page1.querySelector('table');
+            if (table && data.giaoNhanTruoc.length > 0) {
+                const allTrs = Array.from(table.querySelectorAll('tr'));
+                const tbody = table.querySelector('tbody') || table;
+                allTrs.slice(1).forEach(tr => tr.remove());
+
+                data.giaoNhanTruoc.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="editable-field" contenteditable="${isEditing}" style="height: 32px;"></td>
+                        <td class="editable-field" contenteditable="${isEditing}" style="font-weight: bold;"></td>
+                        <td class="editable-field" contenteditable="${isEditing}"></td>
+                        <td class="editable-field" contenteditable="${isEditing}" style="text-align: left; padding-left: 8px;"></td>
+                    `;
+                    const tds = tr.querySelectorAll('td');
+                    tds[0].innerText = row.thoiGian;
+                    tds[1].innerText = row.donVi;
+                    tds[2].innerText = row.hoTen;
+                    tds[3].innerText = row.noiDung;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            formRows.forEach(r => { r.style.marginBottom = '5px'; r.style.lineHeight = '1.35'; });
+            const sigGrid = page1.querySelector('.signature-grid');
+            if (sigGrid) {
+                sigGrid.style.rowGap = '8px';
+                sigGrid.style.marginTop = '8px';
+                sigGrid.style.marginBottom = '6px';
+            }
+        }
+
+        // --- 2. ĐỌC FILE WORD (.DOCX) - LỌC BỎ BẢNG GIAO NHẬN & CHỮ KÝ ---
         async function importFromDocx(file) {
-            const arrayBuffer = await file.arrayBuffer(); const zip = await JSZip.loadAsync(arrayBuffer);
-            const docXmlFile = zip.file("word/document.xml"); if (!docXmlFile) return alert("Lỗi file Word.");
-            const xmlText = await docXmlFile.async("string"); const xmlDoc = new DOMParser().parseFromString(xmlText, "application/xml");
+            const arrayBuffer = await file.arrayBuffer();
+            const zip = await JSZip.loadAsync(arrayBuffer);
+            const docXmlFile = zip.file("word/document.xml");
+            if (!docXmlFile) throw new Error("Không tìm thấy cấu trúc word/document.xml trong file Word.");
+
+            const xmlText = await docXmlFile.async("string");
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+
             const tables = Array.from(xmlDoc.getElementsByTagName("w:tbl"));
-            if (tables.length === 0) return alert("Không tìm thấy bảng trong file Word!");
+            if (tables.length === 0) {
+                alert("Không tìm thấy bảng thao tác nào trong file Word!");
+                return;
+            }
 
             const pagesData = [];
+
             tables.forEach(tbl => {
-                if (!tbl.textContent.includes("Địa điểm") && !tbl.textContent.includes("Trình tự thao tác")) return; 
+                const tableFullText = tbl.textContent || "";
+                if (!tableFullText.includes("Địa điểm") && !tableFullText.includes("Trình tự thao tác")) {
+                    return; 
+                }
+
+                const trs = Array.from(tbl.getElementsByTagName("w:tr"));
                 const pageRows = [];
-                Array.from(tbl.getElementsByTagName("w:tr")).forEach(tr => {
+
+                for (let r = 0; r < trs.length; r++) {
+                    const tr = trs[r];
+                    const tcs = Array.from(tr.children).filter(el => el.tagName === "w:tc");
                     const rowCells = [];
-                    Array.from(tr.children).filter(el => el.tagName === "w:tc").forEach(tc => {
-                        const pTexts = Array.from(tc.getElementsByTagName("w:p")).map(p => Array.from(p.getElementsByTagName("w:t")).map(t => t.textContent).join("")).filter(txt => txt.trim() !== "");
-                        let colspan = 1, vMerge = null;
+
+                    tcs.forEach(tc => {
+                        const paragraphs = Array.from(tc.getElementsByTagName("w:p"));
+                        const pTexts = paragraphs.map(p => {
+                            return Array.from(p.getElementsByTagName("w:t"))
+                                .map(t => t.textContent)
+                                .join("");
+                        }).filter(txt => txt.trim() !== "");
+                        const cellText = pTexts.join(" ").replace(/\s+/g, " ").trim();
+
+                        let colspan = 1;
+                        let vMerge = null;
                         const tcPr = Array.from(tc.children).find(el => el.tagName === "w:tcPr");
                         if (tcPr) {
-                            const gs = Array.from(tcPr.children).find(el => el.tagName === "w:gridSpan"); if (gs) colspan = parseInt(gs.getAttribute("w:val")||"1", 10);
-                            const vm = Array.from(tcPr.children).find(el => el.tagName === "w:vMerge"); if (vm) vMerge = vm.getAttribute("w:val")||"continue";
+                            const gridSpanEl = Array.from(tcPr.children).find(el => el.tagName === "w:gridSpan");
+                            if (gridSpanEl) {
+                                colspan = parseInt(gridSpanEl.getAttribute("w:val") || "1", 10);
+                            }
+                            const vMergeEl = Array.from(tcPr.children).find(el => el.tagName === "w:vMerge");
+                            if (vMergeEl) {
+                                vMerge = vMergeEl.getAttribute("w:val") || "continue";
+                            }
                         }
-                        rowCells.push({ text: pTexts.join(" ").replace(/\s+/g, " ").trim(), colspan, vMerge });
+
+                        rowCells.push({ text: cellText, colspan, vMerge });
                     });
-                    const jRow = rowCells.map(c => c.text).join(" ");
-                    if (jRow.includes("Giao nhận, nghiệm thu") || jRow.includes("Người viết phiếu") || (jRow.includes("Đơn vị") && jRow.includes("Họ tên"))) return;
-                    if (jRow.includes("Trình tự thao tác") || jRow.includes("Nhận lệnh") || (rowCells[0].text==="1" && rowCells[1].text==="2")) return;
+
+                    const rowTexts = rowCells.map(c => c.text);
+                    const joinedRow = rowTexts.join(" ");
+
+                    if (
+                        joinedRow.includes("Giao nhận, nghiệm thu") ||
+                        joinedRow.includes("Giao nhận nghiệm thu") ||
+                        joinedRow.includes("Các sự kiện bất thường") ||
+                        joinedRow.includes("Người viết phiếu") ||
+                        (rowTexts.includes("Đơn vị") && rowTexts.includes("Họ tên"))
+                    ) {
+                        break;
+                    }
+
+                    if (isHeaderRow(rowTexts)) continue;
+
                     pageRows.push(rowCells);
-                });
-                if (pageRows.length > 0) pagesData.push(pageRows);
+                }
+
+                if (pageRows.length > 0) {
+                    pagesData.push(pageRows);
+                }
             });
-            if (pagesData.length === 0) return alert("Không tìm thấy bảng 9 cột hợp lệ trong file Word!");
+
+            if (pagesData.length === 0) {
+                alert("Không tìm thấy bảng trình tự thao tác 9 cột nào trong file Word!");
+                return;
+            }
+
             renderImportedStepPages(pagesData);
         }
 
-        // TỰ ĐỘNG IMPORT TỪ EXCEL
+        // --- 3. ĐỌC FILE EXCEL (.XLSX) - CHỈ LẤY CÁC DÒNG TRONG BẢNG 9 CỘT ---
         async function importFromExcel(file) {
-            const arrayBuffer = await file.arrayBuffer(); const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+            const arrayBuffer = await file.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
             const pagesData = [];
+
             workbook.SheetNames.forEach(sheetName => {
-                const ws = workbook.Sheets[sheetName]; const rawRows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" }); const merges = ws['!merges'] || [];
-                let currentPageRows = []; let isInside = false;
+                const ws = workbook.Sheets[sheetName];
+                const rawRows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
+                const merges = ws['!merges'] || [];
+
+                let currentPageRows = [];
+                let isInsideStepTable = false;
+
                 for (let r = 0; r < rawRows.length; r++) {
                     const row = rawRows[r].map(v => String(v || "").replace(/\s+/g, " ").trim());
                     if (row.every(cell => cell === "")) continue;
-                    const jRow = row.join(" ");
-                    if (jRow.includes("Giao nhận, nghiệm thu") || jRow.includes("Điều kiện cần có") || jRow.includes("Người viết phiếu") || (row.includes("Đơn vị") && row.includes("Họ tên"))) { isInside = false; continue; }
-                    if ((row[0]==="1" && row[1]==="2" && row[2]==="3") || jRow.includes("Trình tự hạng mục") || (row[0]==="Mục" && row[1]==="Địa điểm")) {
-                        if (currentPageRows.length > 0) { pagesData.push(currentPageRows); currentPageRows = []; }
-                        isInside = true; continue;
+
+                    const joinedRow = row.join(" ");
+
+                    if (
+                        joinedRow.includes("Giao nhận, nghiệm thu") ||
+                        joinedRow.includes("Giao nhận nghiệm thu") ||
+                        joinedRow.includes("Điều kiện cần có") ||
+                        joinedRow.includes("Các sự kiện bất thường") ||
+                        joinedRow.includes("Người viết phiếu") ||
+                        (row.includes("Đơn vị") && row.includes("Họ tên"))
+                    ) {
+                        isInsideStepTable = false;
+                        continue;
                     }
-                    if (!isInside) continue;
+
+                    if (row[0] === "1" && row[1] === "2" && row[2] === "3" && row[3] === "4") {
+                        if (currentPageRows.length > 0) {
+                            pagesData.push(currentPageRows);
+                            currentPageRows = [];
+                        }
+                        isInsideStepTable = true;
+                        continue;
+                    }
+
+                    if (
+                        row[0].includes("Trình tự hạng mục") ||
+                        (row[0] === "Mục" && row[1] === "Địa điểm") ||
+                        (row[2] === "Bước" && row[3] === "Nội dung")
+                    ) {
+                        isInsideStepTable = true;
+                        continue;
+                    }
+
+                    if (!isInsideStepTable) continue;
 
                     const isSectionHeader = merges.some(m => m.s.r === r && m.s.c === 2 && m.e.c >= 4);
                     const vMergeStart = merges.some(m => m.s.r === r && m.s.c === 2 && m.e.r > r);
                     const vMergeCont = merges.some(m => r > m.s.r && r <= m.e.r && m.s.c === 2);
-                    const m9 = [row[0]||"", row[1]||"", row[2]||"", row[3]||row[4]||"", row[5]||"", row[6]||"", row[7]||"", row[8]||"", row[9]||""];
+
+                    const mapped9Cols = [
+                        row[0] || "", row[1] || "", row[2] || "", row[3] || row[4] || "",
+                        row[5] || "", row[6] || "", row[7] || "", row[8] || "", row[9] || ""
+                    ];
+
                     if (isSectionHeader) {
-                        currentPageRows.push([{text: m9[0], colspan: 1}, {text: m9[1], colspan: 1}, {text: m9[2]||m9[3], colspan: 3}, {text: m9[5], colspan: 1}, {text: m9[6], colspan: 1}, {text: m9[7], colspan: 1}, {text: m9[8], colspan: 1}]);
+                        currentPageRows.push([
+                            { text: mapped9Cols[0], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[1], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[2] || mapped9Cols[3], colspan: 3, vMerge: null },
+                            { text: mapped9Cols[5], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[6], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[7], colspan: 1, vMerge: null },
+                            { text: mapped9Cols[8], colspan: 1, vMerge: null }
+                        ]);
                     } else {
-                        currentPageRows.push(m9.map((txt, idx) => ({ text: txt, colspan: 1, vMerge: idx===2 ? (vMergeStart ? "restart" : (vMergeCont ? "continue" : null)) : null })));
+                        currentPageRows.push(mapped9Cols.map((txt, idx) => ({
+                            text: txt,
+                            colspan: 1,
+                            vMerge: idx === 2 ? (vMergeStart ? "restart" : (vMergeCont ? "continue" : null)) : null
+                        })));
                     }
                 }
-                if (currentPageRows.length > 0) pagesData.push(currentPageRows);
+
+                if (currentPageRows.length > 0) {
+                    pagesData.push(currentPageRows);
+                }
             });
-            if (pagesData.length === 0) return alert("Không tìm thấy bảng bước thao tác trong file Excel!");
+
+            if (pagesData.length === 0) {
+                alert("Không tìm thấy dữ liệu bước thao tác hợp lệ trong file Excel!");
+                return;
+            }
+
             renderImportedStepPages(pagesData);
         }
+
+        function isHeaderRow(texts) {
+            const joined = texts.join("|");
+            if (joined.includes("Trình tự thao tác") || joined.includes("Địa điểm")) return true;
+            if (joined.includes("Nội dung") && joined.includes("Nhận lệnh")) return true;
+            if (texts[0] === "1" && texts[1] === "2" && texts[2] === "3" && texts[3] === "4") return true;
+            return false;
+        }
+
+        // --- 4. DỰNG LẠI CÁC TRANG THAO TÁC VỪA KHÍT KHỔ GIẤY A4 ---
+        function renderImportedStepPages(pagesData) {
+            const container = document.getElementById('document-container');
+            const existingStepPages = Array.from(container.querySelectorAll('.page.step-page'));
+            if (existingStepPages.length === 0) return;
+
+            const templatePage = existingStepPages[0].cloneNode(true);
+            templatePage.querySelectorAll('script').forEach(s => s.remove());
+
+            const lastPage = container.lastElementChild;
+            existingStepPages.forEach(p => p.remove());
+
+            const firstStepPage = templatePage.cloneNode(true);
+            const tbody = firstStepPage.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            const ctrl = firstStepPage.querySelector('.page-controls');
+            if (ctrl) ctrl.style.display = isEditing ? "flex" : "none";
+
+            const allRowsData = pagesData.flat();
+
+            allRowsData.forEach(rowCells => {
+                const tr = document.createElement('tr');
+
+                if (rowCells.length === 7 && rowCells[2].colspan === 3) {
+                    for (let c = 0; c < 9; c++) {
+                        const td = document.createElement('td');
+                        td.className = 'editable-field';
+                        td.setAttribute('contenteditable', isEditing);
+                        if (c === 0) {
+                            td.style.fontWeight = 'bold';
+                            td.style.height = '28px';
+                            td.innerText = rowCells[0].text;
+                        } else if (c === 1) {
+                            td.innerText = rowCells[1].text;
+                        } else if (c === 2) {
+                            td.colSpan = 3;
+                            td.style.fontWeight = 'bold';
+                            td.style.textAlign = 'left';
+                            td.innerText = rowCells[2].text;
+                        } else if (c === 3 || c === 4) {
+                            td.classList.add('merged-hidden');
+                        } else {
+                            const mappedIdx = sub(c, 2);
+                            td.innerText = rowCells[mappedIdx] ? rowCells[mappedIdx].text : '';
+                        }
+                        tr.appendChild(td);
+                    }
+                } else {
+                    for (let c = 0; c < 9; c++) {
+                        const cellData = rowCells[c] || { text: '', colspan: 1, vMerge: null };
+                        const td = document.createElement('td');
+                        td.className = 'editable-field';
+                        td.setAttribute('contenteditable', isEditing);
+
+                        if (c === 0) {
+                            td.style.fontWeight = 'bold';
+                            td.style.height = '28px';
+                        }
+                        if (c === 3) {
+                            td.style.textAlign = 'left';
+                        }
+
+                        if (cellData.vMerge === 'continue') {
+                            td.classList.add('merged-hidden');
+                            const prevTr = tbody.lastElementChild;
+                            if (prevTr && prevTr.children[c]) {
+                                prevTr.children[c].rowSpan = (prevTr.children[c].rowSpan || 1) + 1;
+                            }
+                        } else {
+                            td.innerText = cellData.text;
+                        }
+                        tr.appendChild(td);
+                    }
+                }
+                tbody.appendChild(tr);
+            });
+
+            container.insertBefore(firstStepPage, lastPage);
+            fitAllStepPages();
+
+            const totalStepPages = container.querySelectorAll('.page.step-page').length;
+            alert(`Đã nhập dữ liệu và tự động căn chuẩn vào ${totalStepPages} trang thao tác A4!`);
+        }
+
+        window.addEventListener('load', fitAllStepPages);
+
+        function updateMobileScale() {
+            if (window.innerWidth <= 850) {
+                const scale = Math.min(1, sub(window.innerWidth, 16) / 794);
+                document.documentElement.style.setProperty('--mobile-scale', scale.toFixed(4));
+            } else {
+                document.documentElement.style.removeProperty('--mobile-scale');
+            }
+        }
+        window.addEventListener('resize', updateMobileScale);
+        window.addEventListener('load', updateMobileScale);
+        updateMobileScale();
 
     </script>
 </body>
