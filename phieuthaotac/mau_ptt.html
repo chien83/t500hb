@@ -1488,7 +1488,7 @@
                         if (!txt) return;
                         if (ch.x0 < 145) rObj.tg.push(txt);
                         else if (ch.x0 < 220) rObj.dv.push(txt);
-                        else if (ch.x0 < 300) rObj.ht.push(txt);
+                        // Bất kỳ chữ nào nằm qua mốc 220 đều đưa hết vào cột Nội dung
                         else rObj.nd.push(txt);
                     });
                 });
