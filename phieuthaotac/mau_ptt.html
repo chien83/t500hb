@@ -1431,10 +1431,15 @@
                         }
                     });
 
-                    const isStepNum = /^\d+[\.\)]?$/.test(it.text.trim());
-                    if (it.x0 < col0_x) bestBlock.col0.push(it.text);
-                    else if (it.x0 < col1_x) bestBlock.col1.push(it.text);
-                    else if (it.x0 < col2_x || (isStepNum && it.x0 < col2_x + 20)) bestBlock.col2.push(it.text);
+                    const txt = it.text.trim();
+                    const isStepNum = /^\d+[\.\)]?$/.test(txt);
+                    
+                    if (it.x0 < col0_x) bestBlock.col0.push(txt);
+                    else if (it.x0 < col1_x) bestBlock.col1.push(txt);
+                    // SỬA LẠI ĐIỀU KIỆN CHIA CỘT CHÍNH XÁC HƠN
+                    else if (isStepNum && it.x0 < col2_x + 30) bestBlock.col2.push(txt);
+                    else if (!isStepNum && it.x0 > col2_x - 5) bestBlock.col2.push(txt); // Đây thực chất là text của cột Nội dung (col3), nhưng ở block quy định gom chung vào c2 tạm, hàm dưới sẽ tách
+                    else bestBlock.col2.push(txt);
                 });
 
                 const pageRows = [];
