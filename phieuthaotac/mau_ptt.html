@@ -1817,6 +1817,16 @@
                 sigGrid.style.marginTop = '8px';
                 sigGrid.style.marginBottom = '6px';
             }
+
+            // TỰ ĐỘNG THU NHỎ FONT TRANG 1 NẾU NỘI DUNG QUÁ DÀI
+            let fontSize = 13; 
+            while (page1.scrollHeight > page1.clientHeight && fontSize > 9) {
+                fontSize -= 0.5;
+                page1.style.fontSize = fontSize + 'pt';
+                page1.querySelectorAll('.editable-field, .form-label, th, td').forEach(el => {
+                    el.style.fontSize = fontSize + 'pt';
+                });
+            }
         }
 
         // Tự động điền bảng Giao nhận sau (Trang cuối)
