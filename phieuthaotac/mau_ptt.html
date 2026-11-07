@@ -1545,122 +1545,37 @@
             return res;
         }
 
-        // --- HÀM ĐỔ DỮ LIỆU VÀO TRANG 1 & TRANG 4 ---
-        function populatePage1RedBox(data) {
-            const page1 = document.querySelector('#document-container .page:first-child');
-            if (!page1) return;
-
-            if (data.soPhieu) {
-                const soPhieuFields = document.querySelectorAll('.header-right .editable-field, .header-right-page2 .editable-field');
-                soPhieuFields.forEach(f => f.innerText = data.soPhieu);
-            }
-
-            const formRows = Array.from(page1.querySelectorAll('.form-row'));
-
-            const mucDichText = data.mucDich.join(' ').replace(/\s+/g, ' ').trim();
-            const mucDichRow = formRows.find(r => r.innerText.includes('Mục đích thao tác'));
-            if (mucDichRow && mucDichText) {
-                mucDichRow.style.alignItems = 'flex-start';
-                const label = mucDichRow.querySelector('.form-label');
-                if (label) label.style.fontWeight = 'bold';
-                const field = mucDichRow.querySelector('.editable-field');
-                if (field) {
-                    field.innerText = mucDichText;
-                    field.style.paddingLeft = '6px';
-                    field.style.textAlign = 'justify';
-                    field.style.lineHeight = '1.35';
-                }
-                const nextRow = mucDichRow.nextElementSibling;
-                if (nextRow && nextRow.classList.contains('form-row') && !nextRow.querySelector('.form-label')) {
-                    nextRow.style.display = 'none';
-                }
-            }
-
-            const batDauRow = formRows.find(r => r.innerText.includes('Bắt đầu'));
-            if (batDauRow) {
-                const fields = batDauRow.querySelectorAll('.editable-field');
-                if (fields.length >= 5) {
-                    fields[0].innerText = data.batDau.gio; fields[1].innerText = data.batDau.phut;
-                    fields[2].innerText = data.batDau.ngay; fields[3].innerText = data.batDau.thang; fields[4].innerText = data.batDau.nam;
-                }
-            }
-
-            const ketThucRow = formRows.find(r => r.innerText.includes('Kết thúc'));
-            if (ketThucRow) {
-                const fields = ketThucRow.querySelectorAll('.editable-field');
-                if (fields.length >= 5) {
-                    fields[0].innerText = data.ketThuc.gio; fields[1].innerText = data.ketThuc.phut;
-                    fields[2].innerText = data.ketThuc.ngay; fields[3].innerText = data.ketThuc.thang; fields[4].innerText = data.ketThuc.nam;
-                }
-            }
-
-            const donViText = data.donVi.join(' ').replace(/\s+/g, ' ').trim();
-            const donViRow = formRows.find(r => r.innerText.includes('Đơn vị đề nghị'));
-            if (donViRow && donViText) {
-                const label = donViRow.querySelector('.form-label');
-                if (label) label.style.fontWeight = 'bold';
-                const field = donViRow.querySelector('.editable-field');
-                if (field) {
-                    field.innerText = donViText;
-                    field.style.paddingLeft = '10px';
-                    field.style.fontWeight = 'bold';
-                }
-            }
-
-            const olLists = page1.querySelectorAll('ol.numbered-list');
-            if (olLists.length >= 1 && data.dieuKien.length > 0) {
-                const olDieuKien = olLists[0];
-                olDieuKien.innerHTML = '';
-                olDieuKien.style.lineHeight = '1.35';
-                data.dieuKien.forEach(itemTxt => {
-                    const li = document.createElement('li');
-                    li.style.marginBottom = '2px';
-                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
-                    li.querySelector('.editable-field').innerText = itemTxt;
-                    olDieuKien.appendChild(li);
-                });
-            }
-
-            if (olLists.length >= 2 && data.luuY.length > 0) {
-                const olLuuY = olLists[1];
-                olLuuY.innerHTML = '';
-                olLuuY.style.lineHeight = '1.35';
-                data.luuY.forEach(itemTxt => {
-                    const li = document.createElement('li');
-                    li.style.marginBottom = '2px';
-                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
-                    li.querySelector('.editable-field').innerText = itemTxt;
-                    olLuuY.appendChild(li);
-                });
-            }
-
-            const table = page1.querySelector('#table-giao-nhan-truoc') || page1.querySelector('table');
-            if (table && data.giaoNhanTruoc.length > 0) {
+        // Tự động điền bảng Giao nhận sau (Trang cuối)
+        function populatePage4RedBox(data) {
+            // Lấy trang cuối cùng (nếu bảng lớn sinh ra nhiều trang, thì nó luôn nằm ở trang cuối)
+            const pages = document.querySelectorAll('#document-container .page');
+            const pageLast = pages[pages.length - 1]; 
+            
+            if (!pageLast || data.giaoNhanSau.length === 0) return;
+            
+            // Tìm bảng cuối cùng trong trang đó
+            const tables = pageLast.querySelectorAll('table');
+            if (tables.length === 0) return;
+            const table = tables[tables.length - 1];
+            
+            if (table) {
                 const allTrs = Array.from(table.querySelectorAll('tr'));
                 const tbody = table.querySelector('tbody') || table;
                 allTrs.slice(1).forEach(tr => tr.remove());
 
-                data.giaoNhanTruoc.forEach(row => {
+                data.giaoNhanSau.forEach(row => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td class="editable-field" contenteditable="${isEditing}" style="height: 32px;"></td>
+                        <td class="editable-field" contenteditable="${isEditing}" style="height: 35px;"></td>
                         <td class="editable-field" contenteditable="${isEditing}" style="font-weight: bold;"></td>
                         <td class="editable-field" contenteditable="${isEditing}"></td>
-                        <td class="editable-field" contenteditable="${isEditing}" style="text-align: left; padding-left: 8px;"></td>
+                        <td class="editable-field" contenteditable="${isEditing}" style="text-align: justify; padding: 5px 8px;"></td>
                     `;
                     const tds = tr.querySelectorAll('td');
                     tds[0].innerText = row.thoiGian; tds[1].innerText = row.donVi;
                     tds[2].innerText = row.hoTen; tds[3].innerText = row.noiDung;
                     tbody.appendChild(tr);
                 });
-            }
-
-            formRows.forEach(r => { r.style.marginBottom = '5px'; r.style.lineHeight = '1.35'; });
-            const sigGrid = page1.querySelector('.signature-grid');
-            if (sigGrid) {
-                sigGrid.style.rowGap = '8px';
-                sigGrid.style.marginTop = '8px';
-                sigGrid.style.marginBottom = '6px';
             }
         }
 
