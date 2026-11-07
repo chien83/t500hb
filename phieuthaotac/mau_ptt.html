@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
-<!-- PHIÊN BẢN: Ver 2.1 -->
+<!-- PHIÊN BẢN: Ver 2.2 -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -295,7 +295,7 @@
     </style>
 </head>
 <body>
-    <div style="position: fixed; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: lime; padding: 2px 5px; font-size: 10pt; z-index: 2000; border-radius: 3px;">Ver 2.1</div>
+    <div style="position: fixed; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: lime; padding: 2px 5px; font-size: 10pt; z-index: 2000; border-radius: 3px;">Ver 2.2</div>
     <div class="control-panel">
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
         
@@ -1208,7 +1208,7 @@
             event.target.value = '';
         }
 
-        // --- 1. ĐỌC TRỰC TIẾP FILE PDF VỚI TỌA ĐỘ LINH HOẠT VÀ TÁCH BƯỚC THÔNG MINH (VER 2.1) ---
+        // --- 1. ĐỌC TRỰC TIẾP FILE PDF VỚI TỌA ĐỘ LINH HOẠT VÀ TÁCH BƯỚC THÔNG MINH (VER 2.2) ---
         async function importFromPdf(file) {
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -1254,27 +1254,6 @@
                     }
                 });
 
-                const mergedItems = [];
-                lineGroups.forEach(lg => {
-                    lg.chunks.sort((a, b) => sub(a.x0, b.x0));
-                    let current = null;
-                    lg.chunks.forEach(ch => {
-                        if (!current) {
-                            current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
-                        } else {
-                            const gap = sub(ch.x0, current.x1);
-                            if (gap < 8) {
-                                current.text += (gap > 1.5 ? ' ' : '') + ch.text;
-                                current.x1 = Math.max(current.x1, ch.x1);
-                            } else {
-                                mergedItems.push(current);
-                                current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
-                            }
-                        }
-                    });
-                    if (current) mergedItems.push(current);
-                });
-
                 // C. BẮT TÍN HIỆU GIAO NHẬN SAU KHI THAO TÁC (Chạy song song quét trang)
                 lineGroups.forEach(lg => {
                     const t = lg.chunks.map(c => c.text).join(' ').trim();
@@ -1296,6 +1275,45 @@
                 if (!hasStepTableCols) {
                     continue;
                 }
+
+                // TỰ ĐỘNG TÍNH TOÁN RANH GIỚI CỘT TRƯỚC KHI GHÉP CHỮ (Tránh dính cột Bước và cột Nội dung)
+                let col0_x = 110, col1_x = 158, col2_x = 186;
+                let line1234 = lineGroups.find(lg => {
+                    let txt = lg.chunks.map(c => c.text).join('').replace(/\s/g,'');
+                    return txt.includes('1234') || txt.includes('1243');
+                });
+                if (line1234) {
+                    let c1 = line1234.chunks.find(c => c.text.trim() === '1');
+                    let c2 = line1234.chunks.find(c => c.text.trim() === '2');
+                    let c3 = line1234.chunks.find(c => c.text.trim() === '3');
+                    if (c1 && c2) col0_x = (c1.x1 + c2.x0) / 2;
+                    if (c2 && c3) col1_x = (c2.x1 + c3.x0) / 2;
+                    // Cột 3 ("Bước") là cột hẹp nên vạch kẻ phải nằm cách số "3" khoảng 12pt (không lấy trung bình với số "4")
+                    if (c3) col2_x = c3.x1 + 12;
+                }
+
+                const mergedItems = [];
+                lineGroups.forEach(lg => {
+                    lg.chunks.sort((a, b) => sub(a.x0, b.x0));
+                    let current = null;
+                    lg.chunks.forEach(ch => {
+                        if (!current) {
+                            current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
+                        } else {
+                            const gap = sub(ch.x0, current.x1);
+                            const crossesBoundary = [col0_x, col1_x, col2_x, 360].some(bx => current.x1 < bx && ch.x0 >= sub(bx, 3));
+                            const curIsStep = /^\d{1,2}[\.\)]?$/.test(current.text.trim()) && current.x0 >= sub(col1_x, 12) && current.x0 < col2_x + 8;
+                            if (gap < 8 && !crossesBoundary && !curIsStep) {
+                                current.text += (gap > 1.5 ? ' ' : '') + ch.text;
+                                current.x1 = Math.max(current.x1, ch.x1);
+                            } else {
+                                mergedItems.push(current);
+                                current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
+                            }
+                        }
+                    });
+                    if (current) mergedItems.push(current);
+                });
 
                 // Xác định mốc cắt đầu và cuối bảng
                 let anchorHeaderY = null;
@@ -1332,41 +1350,19 @@
                     }
                 });
 
-                // TỰ ĐỘNG TÍNH TOÁN RANH GIỚI 4 CỘT CHÍNH TỪ HEADER (Thích ứng file scan nghiêng/lệch lề)
-                let col0_x = 115, col1_x = 165, col2_x = 198;
-                let line1234 = lineGroups.find(lg => {
-                    let txt = lg.chunks.map(c => c.text).join('').replace(/\s/g,'');
-                    return txt.includes('1234');
-                });
-                if (line1234) {
-                    let c1 = line1234.chunks.find(c => c.text.trim() === '1');
-                    let c2 = line1234.chunks.find(c => c.text.trim() === '2');
-                    let c3 = line1234.chunks.find(c => c.text.trim() === '3');
-                    let c4 = line1234.chunks.find(c => c.text.trim() === '4');
-                    if (c1 && c2) col0_x = (c1.x1 + c2.x0) / 2;
-                    if (c2 && c3) col1_x = (c2.x1 + c3.x0) / 2;
-                    if (c3 && c4) col2_x = (c3.x1 + c4.x0) / 2;
-                }
-
                 const cleanItems = [];
                 mergedItems.forEach(it => {
                     const txt = it.text.trim();
                     if (!txt || /^1\s+2\s+3/.test(txt)) return;
 
-                    // TRỊ LỖI ÉP DÍNH (I T500 SL 1): Tách Số La Mã + Tên Trạm + Số Bước
+                    // 1. Tách trường hợp Số La Mã + Tên Trạm (+ Số Bước) bị dính ở cột đầu
                     if (it.x0 < col0_x) {
-                        const match3 = txt.match(/^([IVXLCDM]+)\s+(.+?)\s+(\d+)$/);
-                        const match2 = txt.match(/^([IVXLCDM]+)\s+(.+)$/);
+                        const match3 = txt.match(/^([IVXLCDM\u2160-\u216F]+)\s+(.+?)\s+(\d+[\.\)]?)$/);
+                        const match2 = txt.match(/^([IVXLCDM\u2160-\u216F]+)\s+(.+)$/);
                         if (match3) {
                             cleanItems.push({ x0: sub(col0_x, 20), x1: sub(col0_x, 10), yc: it.yc, text: match3[1] });
                             cleanItems.push({ x0: sub(col1_x, 30), x1: sub(col1_x, 10), yc: it.yc, text: match3[2].trim() });
-                            // Đẩy số bước lệch xuống 2px (yc + 2) để nó tách khỏi dòng tiêu đề và sinh ra block mới
-                            cleanItems.push({ x0: sub(col2_x, 20), x1: sub(col2_x, 10), yc: it.yc + 2, text: match3[3] });
-                            return;
-                        } else if (match2) {
-                            cleanItems.push({ x0: sub(col0_x, 20), x1: sub(col0_x, 10), yc: it.yc, text: match3[1] });
-                            cleanItems.push({ x0: sub(col1_x, 30), x1: sub(col1_x, 10), yc: it.yc, text: match3[2].trim() });
-                            cleanItems.push({ x0: sub(col2_x, 20), x1: sub(col2_x, 10), yc: it.yc, text: match3[3] });
+                            cleanItems.push({ x0: sub(col2_x, 15), x1: sub(col2_x, 5), yc: it.yc, text: match3[3].replace(/[\.\)]$/, '') });
                             return;
                         } else if (match2) {
                             cleanItems.push({ x0: sub(col0_x, 20), x1: sub(col0_x, 10), yc: it.yc, text: match2[1] });
@@ -1374,26 +1370,38 @@
                             return;
                         }
                     }
+
+                    // 2. Tách trường hợp Số Bước bị dính liền với chữ Nội dung (Vd: "1 Cắt MC 580")
+                    if (it.x0 >= sub(col1_x, 12) && it.x0 < col2_x + 15) {
+                        const matchStepContent = txt.match(/^(\d{1,2}[\.\)]?)\s+(.+)$/);
+                        if (matchStepContent) {
+                            cleanItems.push({ x0: sub(col2_x, 15), x1: sub(col2_x, 5), yc: it.yc, text: matchStepContent[1].replace(/[\.\)]$/, '') });
+                            cleanItems.push({ x0: col2_x + 5, x1: Math.max(it.x1, col2_x + 50), yc: it.yc, text: matchStepContent[2].trim() });
+                            return;
+                        }
+                    }
+
                     cleanItems.push({ x0: it.x0, x1: it.x1, yc: it.yc, text: txt });
                 });
 
                 const bodyItems = cleanItems.filter(it => it.yc < sub(headerBottomY, 3) && it.yc > footerStopY);
                 
-                // Mấu chốt sửa lỗi mất cột 3 (Số thứ tự bước)
+                // Lọc lấy các dòng thuộc cột Nội dung (cột 4): Bao gồm cả các câu ngắn như "Cắt MC 580" (bước 1->4)
                 const contentLines = bodyItems.filter(it => {
-                    const isStepNum = /^\d+[\.\)]?$/.test(it.text.trim()) && it.x0 >= col1_x - 15 && it.x0 < col2_x + 20;
+                    const txt = it.text.trim();
+                    const isStepNum = /^\d+[\.\)]?$/.test(txt) && it.x0 >= sub(col1_x, 15) && it.x0 < col2_x + 15;
                     if (isStepNum) return false; // Trả lại cho otherItems để nhét vào mảng Bước (c2)
-                    return it.x0 >= col1_x && (it.x0 >= col2_x || it.x1 > col2_x + 10);
+                    return it.x0 >= col1_x && it.x0 < 365 && (it.x0 >= sub(col2_x, 4) || it.x1 > col2_x + 8);
                 });
                 contentLines.sort((a, b) => sub(b.yc, a.yc));
 
                 // BÓC TÁCH KHỐI DÒNG THÔNG MINH BẰNG NGỮ NGHĨA (Số thứ tự / Số La Mã) ĐỂ TRÁNH DÍNH BƯỚC
                 const blocks = [];
                 contentLines.forEach(cl => {
-                    const isSpanLine = (cl.x0 < col2_x && cl.x0 > col1_x + 10);
+                    const isSpanLine = (cl.x0 < sub(col2_x, 2) && cl.x0 > col1_x + 5);
                     
-                    const hasStepNum = bodyItems.some(it => Math.abs(sub(it.yc, cl.yc)) <= 4.5 && it.x0 >= col1_x - 15 && it.x0 < col2_x + 20 && /^\d+[\.\)]?$/.test(it.text.trim()));
-                    const hasRoman = bodyItems.some(it => Math.abs(sub(it.yc, cl.yc)) <= 4.5 && it.x0 < col0_x + 20 && /^([IVXLCDM]+)$/i.test(it.text.trim()));
+                    const hasStepNum = bodyItems.some(it => Math.abs(sub(it.yc, cl.yc)) <= 5.5 && it.x0 >= sub(col1_x, 15) && it.x0 < col2_x + 15 && /^\d+[\.\)]?$/.test(it.text.trim()));
+                    const hasRoman = bodyItems.some(it => Math.abs(sub(it.yc, cl.yc)) <= 5.5 && it.x0 < col0_x + 15 && /^([IVXLCDM\u2160-\u216F]+)$/i.test(it.text.trim()));
                     const isNewSection = isSpanLine && cl.text.toLowerCase().includes('cô lập');
 
                     if (blocks.length === 0) {
@@ -1402,7 +1410,7 @@
                         const prev = blocks[sub(blocks.length, 1)];
                         const dy = sub(prev.yBot, cl.yc);
                         
-                        // Buộc ngắt block khi có số đếm mới
+                        // Buộc ngắt block khi có số đếm bước mới hoặc mục La Mã mới
                         if (hasStepNum || hasRoman || isNewSection || dy > 16.5) {
                             blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpanLine });
                         } else {
@@ -1436,10 +1444,8 @@
                     
                     if (it.x0 < col0_x) bestBlock.col0.push(txt);
                     else if (it.x0 < col1_x) bestBlock.col1.push(txt);
-                    // SỬA LẠI ĐIỀU KIỆN CHIA CỘT CHÍNH XÁC HƠN
-                    else if (isStepNum && it.x0 < col2_x + 30) bestBlock.col2.push(txt);
-                    else if (!isStepNum && it.x0 > col2_x - 5) bestBlock.col2.push(txt); // Đây thực chất là text của cột Nội dung (col3), nhưng ở block quy định gom chung vào c2 tạm, hàm dưới sẽ tách
-                    else bestBlock.col2.push(txt);
+                    else if (isStepNum && it.x0 < col2_x + 20) bestBlock.col2.push(txt.replace(/[\.\)]$/, ''));
+                    else if (it.x0 < col2_x) bestBlock.col2.push(txt);
                 });
 
                 const pageRows = [];
