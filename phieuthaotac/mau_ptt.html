@@ -1231,11 +1231,12 @@
             event.target.value = '';
         }
 
-        // --- 1. ĐỌC TRỰC TIẾP FILE PDF (CHỈ LẤY BẢNG 9 CỘT TỪ BƯỚC 1 ĐẾN HẾT) ---
+        // --- 1. ĐỌC TRỰC TIẾP FILE PDF (LẤY KHUNG ĐỎ TRANG 1 + BẢNG CÁC BƯỚC THAO TÁC) ---
         async function importFromPdf(file) {
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             const pagesData = [];
+            let page1Extracted = false;
 
             for (let p = 1; p <= pdf.numPages; p++) {
                 const page = await pdf.getPage(p);
@@ -1257,16 +1258,25 @@
                     });
                 });
 
-                // 1. BỎ QUA TRANG THỪA (Trang công văn ban hành, Trang 1 thông tin chung, Trang ký duyệt riêng)
-                // Bắt buộc trang phải có đủ các từ khóa đặc trưng của bảng 9 cột: "Địa điểm" và ("Nhận lệnh" hoặc "Ra lệnh" hoặc "Bước")
                 const fullPageText = rawChunks.map(c => c.text).join(' ');
+
+                // A. KIỂM TRA NẾU TRANG PDF NÀY CÓ CHỨA KHUNG ĐỎ TRANG 1 ("Mục đích thao tác" & "Thời gian dự kiến")
+                if (!page1Extracted && fullPageText.includes('Mục đích thao tác') && fullPageText.includes('Thời gian dự kiến')) {
+                    const p1Data = extractPage1RedBoxFromChunks(rawChunks);
+                    if (p1Data) {
+                        populatePage1RedBox(p1Data);
+                        page1Extracted = true;
+                    }
+                }
+
+                // B. KIỂM TRA NẾU TRANG PDF NÀY CÓ BẢNG 9 CỘT CÁC BƯỚC THAO TÁC
                 const hasStepTableCols = fullPageText.includes('Địa điểm') && 
                     (fullPageText.includes('Nhận lệnh') || fullPageText.includes('Ra lệnh') || fullPageText.includes('Bước'));
                 if (!hasStepTableCols) {
                     continue;
                 }
 
-                // 2. Gom các mảnh chữ nằm cùng 1 dòng ngang
+                // Gom các mảnh chữ nằm cùng 1 dòng ngang
                 rawChunks.sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
                 const lineGroups = [];
                 rawChunks.forEach(ch => {
@@ -1300,8 +1310,7 @@
                     if (current) mergedItems.push(current);
                 });
 
-                // 3. XÁC ĐỊNH VẠCH CẮT ĐẦU BẢNG (headerBottomY):
-                // Neo chính xác vào vị trí chữ "Địa điểm" / "Nhận lệnh" của bảng 9 cột để loại bỏ hoàn toàn mục Lưu ý & Giao nhận trước thao tác nếu nằm ở nửa trên cùng trang
+                // Xác định vạch cắt đầu bảng 9 cột
                 let anchorHeaderY = null;
                 mergedItems.forEach(it => {
                     if (it.text.includes('Địa điểm') || it.text.includes('Nhận lệnh') || it.text.includes('Trình tự hạng mục')) {
@@ -1312,7 +1321,6 @@
                 });
                 if (anchorHeaderY === null) continue;
 
-                // Tìm dòng đánh số thứ tự cột (1 2 3 4 5 6 7 8 9) nằm ngay dưới tiêu đề "Địa điểm" (trong phạm vi 45pt)
                 let headerBottomY = sub(anchorHeaderY, 28);
                 mergedItems.forEach(it => {
                     const t = it.text.trim();
@@ -1323,8 +1331,7 @@
                     }
                 });
 
-                // 4. XÁC ĐỊNH VẠCH CẮT ĐÁY BẢNG (footerStopY):
-                // Cắt bỏ hoàn toàn bảng "Giao nhận, nghiệm thu sau khi thao tác", chữ ký và "Các sự kiện bất thường" ở cuối trang
+                // Xác định vạch cắt đáy bảng 9 cột (bỏ qua phần Giao nhận sau thao tác & Chữ ký)
                 let footerStopY = 48;
                 mergedItems.forEach(it => {
                     if (it.yc < sub(headerBottomY, 5)) {
@@ -1345,7 +1352,6 @@
                     }
                 });
 
-                // 5. Tách các chuỗi bị dính cột trong PDF
                 const cleanItems = [];
                 mergedItems.forEach(it => {
                     const txt = it.text.trim();
@@ -1369,9 +1375,7 @@
                     cleanItems.push({ x0: it.x0, x1: it.x1, yc: it.yc, text: txt });
                 });
 
-                // Chỉ giữ lại các dòng nằm giữa Đỉnh bảng thao tác (headerBottomY) và Đáy bảng thao tác (footerStopY)
                 const bodyItems = cleanItems.filter(it => it.yc < sub(headerBottomY, 3) && it.yc > footerStopY);
-
                 const contentLines = bodyItems.filter(it => it.x0 >= 164 && it.x0 < 363 && (it.x0 >= 191 || it.x1 > 210));
                 contentLines.sort((a, b) => sub(b.yc, a.yc));
 
@@ -1484,12 +1488,338 @@
                 }
             }
 
-            if (pagesData.length === 0) {
-                alert('Không tìm thấy bảng trình tự thao tác nào trong file PDF này!');
-                return;
+            if (pagesData.length > 0) {
+                renderImportedStepPages(pagesData);
+            } else if (page1Extracted) {
+                alert('Đã trích xuất và điền thành công nội dung khung Trang 1 từ file PDF!');
+            } else {
+                alert('Không tìm thấy dữ liệu Trang 1 hoặc bảng trình tự thao tác trong file PDF này!');
+            }
+        }
+
+        // --- HÀM BÓC TÁCH NỘI DUNG TRONG KHUNG ĐỎ TRANG 1 TỪ TỌA ĐỘ PDF ---
+        function extractPage1RedBoxFromChunks(rawChunks) {
+            // Gom các mảnh chữ thành từng dòng ngang từ trên xuống dưới (yc giảm dần)
+            const sorted = rawChunks.slice().sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
+            const visualLines = [];
+            sorted.forEach(ch => {
+                const sameLine = visualLines.find(vl => Math.abs(sub(vl.yc, ch.yc)) <= 4.5);
+                if (sameLine) {
+                    sameLine.chunks.push(ch);
+                } else {
+                    visualLines.push({ yc: ch.yc, chunks: [ch] });
+                }
+            });
+
+            visualLines.forEach(vl => {
+                vl.chunks.sort((a, b) => sub(a.x0, b.x0));
+                let txt = '';
+                let prevX1 = null;
+                vl.chunks.forEach(ch => {
+                    if (prevX1 !== null && sub(ch.x0, prevX1) > 1.5) {
+                        txt += ' ';
+                    }
+                    txt += ch.text;
+                    prevX1 = Math.max(prevX1 || 0, ch.x1);
+                });
+                vl.text = txt.replace(/\s+/g, ' ').trim();
+            });
+
+            const data = {
+                mucDich: [],
+                batDau: { gio: '', phut: '', ngay: '', thang: '', nam: '' },
+                ketThuc: { gio: '', phut: '', ngay: '', thang: '', nam: '' },
+                donVi: [],
+                dieuKien: [],
+                luuY: [],
+                giaoNhanTruoc: []
+            };
+
+            let state = 'NONE';
+            const giaoNhanLines = [];
+
+            for (let i = 0; i < visualLines.length; i++) {
+                const vl = visualLines[i];
+                const t = vl.text;
+                if (!t) continue;
+
+                // Bỏ qua dòng số phiếu / số trang ở góc
+                if (/^(Số\s*phiếu|Trang\s*số)\s*:/i.test(t)) continue;
+
+                // Ngắt nếu chạm tới bảng Trình tự hạng mục thao tác
+                if (/Trình\s*tự\s*hạng\s*mục/i.test(t) || (t.includes('Địa điểm') && t.includes('Trình tự'))) {
+                    break;
+                }
+
+                // 1. Mục đích thao tác
+                if (/Mục\s*đích\s*thao\s*tác/i.test(t)) {
+                    state = 'MUC_DICH';
+                    const rem = t.replace(/^.*?Mục\s*đích\s*thao\s*tác\s*:?\s*/i, '').trim();
+                    if (rem) data.mucDich.push(rem);
+                    continue;
+                }
+
+                // 2. Thời gian dự kiến
+                if (/Thời\s*gian\s*dự\s*kiến/i.test(t)) {
+                    state = 'THOI_GIAN';
+                    continue;
+                }
+
+                // 3. Đơn vị đề nghị thao tác
+                if (/Đơn\s*vị\s*đề\s*nghị\s*thao\s*tác/i.test(t)) {
+                    state = 'DON_VI';
+                    const rem = t.replace(/^.*?Đơn\s*vị\s*đề\s*nghị\s*thao\s*tác\s*:?\s*/i, '').trim();
+                    if (rem) data.donVi.push(rem);
+                    continue;
+                }
+
+                // 4. Điều kiện cần có để thực hiện
+                if (/Điều\s*kiện\s*cần\s*có/i.test(t)) {
+                    state = 'DIEU_KIEN';
+                    const rem = t.replace(/^.*?Điều\s*kiện\s*cần\s*có\s*để\s*thực\s*hiện\s*:?\s*/i, '').trim();
+                    if (rem) {
+                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
+                        if (cleanRem) data.dieuKien.push(cleanRem);
+                    }
+                    continue;
+                }
+
+                // 5. Lưu ý
+                if (/^Lưu\s*ý\s*:?/i.test(t)) {
+                    state = 'LUU_Y';
+                    const rem = t.replace(/^Lưu\s*ý\s*:?\s*/i, '').trim();
+                    if (rem) {
+                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
+                        if (cleanRem) data.luuY.push(cleanRem);
+                    }
+                    continue;
+                }
+
+                // 6. Giao nhận, nghiệm thu trước khi thao tác
+                if (/Giao\s*nhận.*trước\s*khi\s*thao\s*tác/i.test(t)) {
+                    state = 'GIAO_NHAN';
+                    continue;
+                }
+
+                // Xử lý dòng văn bản theo từng vùng (State)
+                if (state === 'MUC_DICH') {
+                    data.mucDich.push(t);
+                } else if (state === 'THOI_GIAN') {
+                    if (/Bắt\s*đầu/i.test(t)) {
+                        data.batDau = parseDateTimeLine(t);
+                    } else if (/Kết\s*thúc/i.test(t)) {
+                        data.ketThuc = parseDateTimeLine(t);
+                    }
+                } else if (state === 'DON_VI') {
+                    data.donVi.push(t);
+                } else if (state === 'DIEU_KIEN') {
+                    const numMatch = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/);
+                    if (numMatch) {
+                        data.dieuKien.push(numMatch[2].trim());
+                    } else if (data.dieuKien.length > 0) {
+                        const lastIdx = sub(data.dieuKien.length, 1);
+                        data.dieuKien[lastIdx] += ' ' + t;
+                    } else {
+                        data.dieuKien.push(t);
+                    }
+                } else if (state === 'LUU_Y') {
+                    const numMatch = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/);
+                    if (numMatch) {
+                        data.luuY.push(numMatch[2].trim());
+                    } else if (data.luuY.length > 0) {
+                        const lastIdx = sub(data.luuY.length, 1);
+                        data.luuY[lastIdx] += ' ' + t;
+                    } else {
+                        data.luuY.push(t);
+                    }
+                } else if (state === 'GIAO_NHAN') {
+                    // Bỏ qua dòng tiêu đề bảng "Thời gian | Đơn vị | Họ tên | Nội dung"
+                    if (t.includes('Thời gian') && (t.includes('Đơn vị') || t.includes('Nội dung'))) {
+                        continue;
+                    }
+                    giaoNhanLines.push(vl);
+                }
             }
 
-            renderImportedStepPages(pagesData);
+            // Phân tích các cột của bảng Giao nhận trước khi thao tác (Thời gian | Đơn vị | Họ tên | Nội dung)
+            if (giaoNhanLines.length > 0) {
+                const rowObj = { thoiGian: [], donVi: [], hoTen: [], noiDung: [] };
+                giaoNhanLines.forEach(vl => {
+                    vl.chunks.forEach(ch => {
+                        const txt = ch.text.trim();
+                        if (!txt) return;
+                        if (ch.x0 < 145) {
+                            rowObj.thoiGian.push(txt);
+                        } else if (ch.x0 < 220) {
+                            rowObj.donVi.push(txt);
+                        } else if (ch.x0 < 300) {
+                            rowObj.hoTen.push(txt);
+                        } else {
+                            rowObj.noiDung.push(txt);
+                        }
+                    });
+                });
+
+                const tg = rowObj.thoiGian.join(' ').replace(/\s+/g, ' ').trim();
+                const dv = rowObj.donVi.join(' ').replace(/\s+/g, ' ').trim();
+                const ht = rowObj.hoTen.join(' ').replace(/\s+/g, ' ').trim();
+                const nd = rowObj.noiDung.join(' ').replace(/\s+/g, ' ').trim();
+                if (tg || dv || ht || nd) {
+                    data.giaoNhanTruoc.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
+                }
+            }
+
+            return data;
+        }
+
+        // Tách giờ, phút, ngày, tháng, năm từ dòng Bắt đầu / Kết thúc
+        function parseDateTimeLine(lineText) {
+            const res = { gio: '', phut: '', ngay: '', thang: '', nam: '' };
+            const timeMatch = lineText.match(/(\d{1,2})\s*[hH:]\s*(\d{0,2})/);
+            if (timeMatch) {
+                res.gio = timeMatch[1] || '';
+                res.phut = timeMatch[2] || '';
+            }
+            const dayMatch = lineText.match(/ngày\s*(\d{1,2})/i);
+            if (dayMatch) res.ngay = dayMatch[1];
+
+            const monthMatch = lineText.match(/tháng\s*(\d{1,2})/i);
+            if (monthMatch) res.thang = monthMatch[1];
+
+            const yearMatch = lineText.match(/năm\s*(\d{4})/i);
+            if (yearMatch) res.nam = yearMatch[1];
+
+            return res;
+        }
+
+        // --- HÀM ĐỔ DỮ LIỆU KHUNG ĐỎ VÀO TRANG 1 TRÊN GIAO DIỆN ---
+        function populatePage1RedBox(data) {
+            const page1 = document.querySelector('#document-container .page:first-child');
+            if (!page1) return;
+
+            const formRows = Array.from(page1.querySelectorAll('.form-row'));
+
+            // 1. Điền "Mục đích thao tác"
+            const mucDichText = data.mucDich.join(' ').replace(/\s+/g, ' ').trim();
+            const mucDichRow = formRows.find(r => r.innerText.includes('Mục đích thao tác'));
+            if (mucDichRow && mucDichText) {
+                mucDichRow.style.alignItems = 'flex-start';
+                const label = mucDichRow.querySelector('.form-label');
+                if (label) label.style.fontWeight = 'bold';
+                const field = mucDichRow.querySelector('.editable-field');
+                if (field) {
+                    field.innerText = mucDichText;
+                    field.style.paddingLeft = '6px';
+                    field.style.textAlign = 'justify';
+                    field.style.lineHeight = '1.35';
+                }
+                // Ẩn dòng chấm trống thứ 2 của Mục đích thao tác để tránh dư khoảng trắng
+                const nextRow = mucDichRow.nextElementSibling;
+                if (nextRow && nextRow.classList.contains('form-row') && !nextRow.querySelector('.form-label')) {
+                    nextRow.style.display = 'none';
+                }
+            }
+
+            // 2. Điền "Thời gian dự kiến" (Bắt đầu & Kết thúc)
+            const batDauRow = formRows.find(r => r.innerText.includes('Bắt đầu'));
+            if (batDauRow) {
+                const fields = batDauRow.querySelectorAll('.editable-field');
+                if (fields.length >= 5) {
+                    fields[0].innerText = data.batDau.gio;
+                    fields[1].innerText = data.batDau.phut;
+                    fields[2].innerText = data.batDau.ngay;
+                    fields[3].innerText = data.batDau.thang;
+                    fields[4].innerText = data.batDau.nam;
+                }
+            }
+
+            const ketThucRow = formRows.find(r => r.innerText.includes('Kết thúc'));
+            if (ketThucRow) {
+                const fields = ketThucRow.querySelectorAll('.editable-field');
+                if (fields.length >= 5) {
+                    fields[0].innerText = data.ketThuc.gio;
+                    fields[1].innerText = data.ketThuc.phut;
+                    fields[2].innerText = data.ketThuc.ngay;
+                    fields[3].innerText = data.ketThuc.thang;
+                    fields[4].innerText = data.ketThuc.nam;
+                }
+            }
+
+            // 3. Điền "Đơn vị đề nghị thao tác"
+            const donViText = data.donVi.join(' ').replace(/\s+/g, ' ').trim();
+            const donViRow = formRows.find(r => r.innerText.includes('Đơn vị đề nghị'));
+            if (donViRow && donViText) {
+                const label = donViRow.querySelector('.form-label');
+                if (label) label.style.fontWeight = 'bold';
+                const field = donViRow.querySelector('.editable-field');
+                if (field) {
+                    field.innerText = donViText;
+                    field.style.paddingLeft = '10px';
+                    field.style.fontWeight = 'bold';
+                }
+            }
+
+            // 4. Điền danh sách "Điều kiện cần có để thực hiện" & "Lưu ý"
+            const olLists = page1.querySelectorAll('ol.numbered-list');
+            if (olLists.length >= 1 && data.dieuKien.length > 0) {
+                const olDieuKien = olLists[0];
+                olDieuKien.innerHTML = '';
+                olDieuKien.style.lineHeight = '1.35';
+                data.dieuKien.forEach(itemTxt => {
+                    const li = document.createElement('li');
+                    li.style.marginBottom = '2px';
+                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
+                    li.querySelector('.editable-field').innerText = itemTxt;
+                    olDieuKien.appendChild(li);
+                });
+            }
+
+            if (olLists.length >= 2 && data.luuY.length > 0) {
+                const olLuuY = olLists[1];
+                olLuuY.innerHTML = '';
+                olLuuY.style.lineHeight = '1.35';
+                data.luuY.forEach(itemTxt => {
+                    const li = document.createElement('li');
+                    li.style.marginBottom = '2px';
+                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
+                    li.querySelector('.editable-field').innerText = itemTxt;
+                    olLuuY.appendChild(li);
+                });
+            }
+
+            // 5. Điền bảng "Giao nhận, nghiệm thu đường dây, thiết bị điện trước khi thao tác"
+            const table = page1.querySelector('table');
+            if (table && data.giaoNhanTruoc.length > 0) {
+                const allTrs = Array.from(table.querySelectorAll('tr'));
+                const headerTr = allTrs[0];
+                const tbody = table.querySelector('tbody') || table;
+                allTrs.slice(1).forEach(tr => tr.remove());
+
+                data.giaoNhanTruoc.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="editable-field" contenteditable="${isEditing}" style="height: 32px;"></td>
+                        <td class="editable-field" contenteditable="${isEditing}" style="font-weight: bold;"></td>
+                        <td class="editable-field" contenteditable="${isEditing}"></td>
+                        <td class="editable-field" contenteditable="${isEditing}" style="text-align: left; padding-left: 8px;"></td>
+                    `;
+                    const tds = tr.querySelectorAll('td');
+                    tds[0].innerText = row.thoiGian;
+                    tds[1].innerText = row.donVi;
+                    tds[2].innerText = row.hoTen;
+                    tds[3].innerText = row.noiDung;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // 6. Tự động tinh chỉnh khoảng cách dòng trên Trang 1 để không bị tràn khổ giấy A4 (297mm)
+            formRows.forEach(r => { r.style.marginBottom = '5px'; r.style.lineHeight = '1.35'; });
+            const sigGrid = page1.querySelector('.signature-grid');
+            if (sigGrid) {
+                sigGrid.style.rowGap = '8px';
+                sigGrid.style.marginTop = '8px';
+                sigGrid.style.marginBottom = '6px';
+            }
         }
 
         // --- 2. ĐỌC FILE WORD (.DOCX) - LỌC BỎ BẢNG GIAO NHẬN & CHỮ KÝ ---
