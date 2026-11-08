@@ -1385,6 +1385,13 @@
                     const h = Math.abs(item.height || item.transform[0] || 10);
                     rawChunks.push({ x0: x0, x1: x0 + w, yc: y0 + h * 0.4, text: str });
                 });
+                // tiếp tục 
+                let isScannedPage = false;
+                if (rawChunks.length < 15) {
+                    isScannedPage = true;
+                    const scannedChunks = await ocrPdfPageToChunks(page, p, pdf.numPages);
+                    rawChunks.push(...scannedChunks);
+                }
 
                 const fullPageText = rawChunks.map(c => c.text).join(' ');
 
