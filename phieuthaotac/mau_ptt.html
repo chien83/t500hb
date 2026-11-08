@@ -1930,19 +1930,6 @@
             return res;
         }
 
-        function parseDateTimeFull(str, prefix) {
-            const res = { gio: '', phut: '', ngay: '', thang: '', nam: '' };
-            const regex = new RegExp(prefix + "\\s*(\\d{1,2})\\s*[hH:]\\s*(\\d{0,2}).*?ngày\\s*(\\d{1,2})\\s*tháng\\s*(\\d{1,2})\\s*năm\\s*(\\d{4})", "i");
-            const match = str.match(regex);
-            if (match) {
-                res.gio = match[1]; res.phut = match[2]; res.ngay = match[3]; res.thang = match[4]; res.nam = match[5];
-            } else {
-                const timeRegex = new RegExp(prefix + "\\s*(\\d{1,2})\\s*[hH:]\\s*(\\d{0,2})", "i");
-                const mTime = str.match(timeRegex);
-                if (mTime) { res.gio = mTime[1]; res.phut = mTime[2]; }
-            }
-            return res;
-        }
 
         // --- HÀM ĐỔ DỮ LIỆU VÀO TRANG 1 & TRANG 4 ---
         function populatePage1(data) {
