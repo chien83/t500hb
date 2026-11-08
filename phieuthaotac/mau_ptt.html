@@ -1217,6 +1217,151 @@
             event.target.value = '';
         }
 
+        // =========================================================
+        // BỘ XỬ LÝ OCR CHO FILE PDF DẠNG ẢNH SCAN (TESSERACT.JS)
+        // =========================================================
+        let ocrWorker = null;
+
+        function showOcrProgress(msg) {
+            let box = document.getElementById('ocr-status-box');
+            if (!box) {
+                box = document.createElement('div');
+                box.id = 'ocr-status-box';
+                box.style.cssText = 'position:fixed; top:35%; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.88); color:#fff; padding:20px 30px; border-radius:10px; z-index:9999; font-family:sans-serif; font-size:13pt; text-align:center; box-shadow:0 6px 20px rgba(0,0,0,0.5);';
+                document.body.appendChild(box);
+            }
+            box.style.display = 'block';
+            box.innerHTML = msg;
+        }
+
+        function hideOcrProgress() {
+            const box = document.getElementById('ocr-status-box');
+            if (box) box.style.display = 'none';
+        }
+
+        // Tự động sửa các lỗi nhận diện chữ (OCR) phổ biến trên Phiếu Thao Tác Scan
+        function fixElectricalOcrText(str) {
+            if (!str) return '';
+            return str
+                .replace(/\b(Cất|Cát|Cắt|CM|Cát)\s+(MC|DCL|DTĐ|DTD|AB)\b/gi, 'Cắt $2')
+                .replace(/\b(Đông|Đồng)\s+(MC|DCL|DTĐ|DTD|AB)\b/gi, 'Đóng $2')
+                .replace(/\b(DTD|DTĐD|ĐTĐ)\b/g, 'DTĐ')
+                .replace(/\b(đông tốt|đóng tối|đồng tối|đông tối|đồng tốt)\b/gi, 'đóng tốt')
+                .replace(/\b(cất tốt|cát tốt)\b/gi, 'cắt tốt')
+                .replace(/^10\s+đã\s+cô\s+lập/i, 'A0 đã cô lập');
+        }
+
+        // Tẩy trắng đường kẻ ngang/dọc của bảng trên ảnh Scan để OCR không đọc nhầm vạch kẻ thành chữ "I", "1", "|"
+        function cleanTableLinesOnCanvas(ctx, width, height) {
+            const imgData = ctx.getImageData(0, 0, width, height);
+            const data = imgData.data;
+            const isDark = new Uint8Array(width * height);
+
+            for (let i = 0; i < data.length; i += 4) {
+                const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                const idx = i >> 2;
+                if (gray < 175) {
+                    isDark[idx] = 1;
+                    data[i] = data[i + 1] = data[i + 2] = 0;
+                } else {
+                    data[i] = data[i + 1] = data[i + 2] = 255;
+                }
+            }
+
+            const toRemove = new Uint8Array(width * height);
+            const minHLine = Math.floor(width * 0.08);
+            const minVLine = Math.floor(height * 0.025);
+
+            // 1. Tìm đường kẻ ngang
+            for (let y = 0; y < height; y++) {
+                let run = 0;
+                const rowOffset = y * width;
+                for (let x = 0; x < width; x++) {
+                    if (isDark[rowOffset + x]) {
+                        run++;
+                    } else {
+                        if (run >= minHLine) {
+                            for (let k = sub(x, run); k < x; k++) toRemove[rowOffset + k] = 1;
+                        }
+                        run = 0;
+                    }
+                }
+                if (run >= minHLine) {
+                    for (let k = sub(width, run); k < width; k++) toRemove[rowOffset + k] = 1;
+                }
+            }
+
+            // 2. Tìm đường kẻ dọc
+            for (let x = 0; x < width; x++) {
+                let run = 0;
+                for (let y = 0; y < height; y++) {
+                    if (isDark[y * width + x]) {
+                        run++;
+                    } else {
+                        if (run >= minVLine) {
+                            for (let k = sub(y, run); k < y; k++) toRemove[k * width + x] = 1;
+                        }
+                        run = 0;
+                    }
+                }
+                if (run >= minVLine) {
+                    for (let k = sub(height, run); k < height; k++) toRemove[k * width + x] = 1;
+                }
+            }
+
+            // Xóa trắng các điểm thuộc đường kẻ bảng
+            for (let idx = 0; idx < toRemove.length; idx++) {
+                if (toRemove[idx]) {
+                    const p = idx << 2;
+                    data[p] = data[p + 1] = data[p + 2] = 255;
+                }
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        // Chuyển 1 trang PDF Scan thành mảng rawChunks có tọa độ chuẩn giống hệt PDF thường
+        async function ocrPdfPageToChunks(page, pageNum, totalPages) {
+            if (!window.Tesseract) {
+                alert('Không tải được thư viện OCR Tesseract.js! Hãy kiểm tra kết nối mạng.');
+                return [];
+            }
+
+            const scale = 2.5;
+            const viewport = page.getViewport({ scale });
+            const baseViewport = page.getViewport({ scale: 1.0 });
+
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+
+            showOcrProgress(`🔍 Phát hiện PDF dạng ảnh Scan!<br>Đang xử lý ảnh & đọc chữ trang <b>${pageNum}/${totalPages}</b>...<br><span style="font-size:10pt; color:#ccc;">(Vui lòng đợi vài giây)</span>`);
+
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            cleanTableLinesOnCanvas(ctx, canvas.width, canvas.height);
+
+            if (!ocrWorker) {
+                ocrWorker = await Tesseract.createWorker('vie');
+            }
+
+            const ret = await ocrWorker.recognize(canvas);
+            const ocrChunks = [];
+
+            (ret.data.words || []).forEach(w => {
+                const txt = (w.text || '').replace(/^[|_—~]+|[|_—~]+$/g, '').trim();
+                if (!txt || w.confidence < 30) return;
+
+                const x0 = w.bbox.x0 / scale;
+                const x1 = w.bbox.x1 / scale;
+                const yBottom = sub(baseViewport.height, w.bbox.y1 / scale);
+                const h = sub(w.bbox.y1, w.bbox.y0) / scale;
+                const yc = yBottom + h * 0.4;
+
+                ocrChunks.push({ x0, x1, yc, text: txt });
+            });
+
+            return ocrChunks;
+        }        
         // --- 1. ĐỌC TRỰC TIẾP FILE PDF VỚI TỌA ĐỘ LINH HOẠT VÀ TÁCH BƯỚC THÔNG MINH (VER 2.2) ---
         async function importFromPdf(file) {
             const arrayBuffer = await file.arrayBuffer();
