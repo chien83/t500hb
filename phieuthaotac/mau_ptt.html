@@ -1531,7 +1531,7 @@
                 const cleanItems = [];
                 mergedItems.forEach(it => {
                     const txt = it.text.trim();
-                    if (!txt || /^1\s+2\s+3/.test(txt)) return;
+                    if (!txt || /^1\s+2\s+3/.test(txt) || /^([1-9]\s*){3,9}$/.test(txt)) return;
 
                     // 1. Tách trường hợp Số La Mã + Tên Trạm (+ Số Bước) bị dính ở cột đầu
                     if (it.x0 < col0_x) {
