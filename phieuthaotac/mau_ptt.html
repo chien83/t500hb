@@ -942,10 +942,10 @@
             
             pages.forEach((page, index) => {
                 const pageNumDisplay = page.querySelector('.page-number-display');
-                if (pageNumDisplay) {
+                if (pageNumDisplay && !pageNumDisplay.dataset.edited) {
                     const currentNum = String(index + 1).padStart(2, '0');
                     const totalNum = String(totalPages).padStart(2, '0');
-                    pageNumDisplay.innerText = `Trang số : ${currentNum}/${totalNum}`;
+                    pageNumDisplay.innerText = `${currentNum}/${totalNum}`;
                 }
             });
         }
