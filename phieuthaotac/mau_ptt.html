@@ -1224,18 +1224,53 @@
         // =========================================================
         let ocrWorker = null;
 
-        // Lưu / Nhập Gemini API Key vào trình duyệt
-        function setupGeminiApiKey() {
-            const currentKey = localStorage.getItem('GEMINI_API_KEY') || '';
-            const inputKey = prompt(
-                'Nhập mã Google Gemini API Key (Lấy miễn phí tại https://aistudio.google.com/apikey) để kích hoạt AI đọc chuẩn 100% file PDF Scan:',
-                currentKey
-            );
-            if (inputKey !== null) {
-                localStorage.setItem('GEMINI_API_KEY', inputKey.trim());
-                alert(inputKey.trim() ? '✅ Đã lưu Gemini API Key! Từ giờ khi tải PDF Scan, hệ thống sẽ dùng AI để đọc chính xác 100%.' : 'Đã xóa API Key (Hệ thống sẽ dùng OCR thường).');
+// Cập nhật giao diện nút bấm theo trạng thái Đăng nhập / Đăng xuất AI
+        function updateAiButtonState() {
+            const btnAi = document.getElementById('btnAiKey');
+            if (!btnAi) return;
+            const hasKey = !!localStorage.getItem('GEMINI_API_KEY');
+            if (hasKey) {
+                btnAi.innerHTML = '🟢 AI Đã bật<br><span style="font-size:8.5pt; font-weight:normal;">(Bấm để thoát)</span>';
+                btnAi.style.backgroundColor = '#27ae60';
+                btnAi.title = 'AI đang kích hoạt (Mã Key đã được ẩn bảo mật). Bấm vào đây để Đăng xuất / Xóa Key.';
+            } else {
+                btnAi.innerHTML = '🔑 Cài đặt AI';
+                btnAi.style.backgroundColor = '#8e44ad';
+                btnAi.title = 'Bấm để nhập Gemini API Key kích hoạt AI đọc PDF Scan';
             }
         }
+
+        // Chế độ Đăng nhập / Đăng xuất API Key (Không bao giờ hiển thị lại Key cũ)
+        function setupGeminiApiKey() {
+            const currentKey = localStorage.getItem('GEMINI_API_KEY');
+
+            // 1. NẾU ĐÃ ĐĂNG NHẬP -> Hỏi xác nhận ĐĂNG XUẤT (Không hiện Key)
+            if (currentKey) {
+                const wantLogout = confirm(
+                    '🔒 AI đang được kích hoạt (Mã API Key đã được ẩn bảo mật).\n\nBạn có muốn ĐĂNG XUẤT (xóa API Key khỏi trình duyệt này) không?'
+                );
+                if (wantLogout) {
+                    localStorage.removeItem('GEMINI_API_KEY');
+                    updateAiButtonState();
+                    alert('Đã đăng xuất và xóa API Key khỏi trình duyệt!');
+                }
+                return;
+            }
+
+            // 2. NẾU CHƯA ĐĂNG NHẬP -> Mở ô nhập trống hoàn toàn
+            const inputKey = prompt(
+                '🔑 ĐĂNG NHẬP AI:\nNhập mã Google Gemini API Key (Lấy miễn phí tại https://aistudio.google.com/apikey) để kích hoạt AI đọc chuẩn 100% file PDF Scan:',
+                ''
+            );
+            if (inputKey !== null && inputKey.trim() !== '') {
+                localStorage.setItem('GEMINI_API_KEY', inputKey.trim());
+                updateAiButtonState();
+                alert('✅ Đăng nhập AI thành công! Mã Key đã được lưu ẩn bảo mật.');
+            }
+        }
+
+        // Tự động kiểm tra trạng thái nút AI ngay khi mở trang
+        window.addEventListener('DOMContentLoaded', updateAiButtonState);
 
         function showOcrProgress(msg) {
             let box = document.getElementById('ocr-status-box');
