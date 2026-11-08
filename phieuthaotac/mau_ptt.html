@@ -1766,7 +1766,7 @@
                     txt += ch.text;
                     prevX1 = Math.max(prevX1 || 0, ch.x1);
                 });
-                vl.text = txt.replace(/\s+/g, ' ').trim();
+                vl.text = fixElectricalOcrText(txt.replace(/\s+/g, ' ').trim());
             });
 
             const data = {
