@@ -1739,12 +1739,12 @@
             }
         }
 
-        // --- HÀM BÓC TÁCH NỘI DUNG TRONG KHUNG ĐỎ TRANG 1 TỪ TỌA ĐỘ PDF ---
+        // --- HÀM BÓC TÁCH NỘI DUNG TRONG KHUNG ĐỎ TRANG 1 TỪ TỌA ĐỘ PDF (VER 2.4) ---
         function extractPage1RedBoxFromChunks(rawChunks) {
             const sorted = rawChunks.slice().sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
             const visualLines = [];
             sorted.forEach(ch => {
-                const sameLine = visualLines.find(vl => Math.abs(sub(vl.yc, ch.yc)) <= 4.5);
+                const sameLine = visualLines.find(vl => Math.abs(sub(vl.yc, ch.yc)) <= 5.5);
                 if (sameLine) {
                     sameLine.chunks.push(ch);
                 } else {
@@ -1781,10 +1781,10 @@
             };
 
             const fullText = visualLines.map(vl => vl.text).join(' | ');
-            const spMatch = fullText.match(/Số\s*phiếu\s*:\s*([A-Za-z0-9\/\-]+)/i);
+            const spMatch = fullText.match(/S[ốôo]\s*phi[ếêe]u\s*:\s*([A-Za-z0-9\/\-]+)/i);
             if (spMatch) data.soPhieu = spMatch[1];
             
-            const tpMatch = fullText.match(/Tên\s*phiếu\s*thao\s*tác\s*:\s*([^\|]+)/i);
+            const tpMatch = fullText.match(/T[êe]n\s*phi[ếêe]u\s*thao\s*t[áa]c\s*:\s*([^\|]+)/i);
             if (tpMatch) data.tenPhieu = tpMatch[1].trim();
             
             let state = 'NONE';
@@ -1796,43 +1796,45 @@
                 const t = vl.text;
                 if (!t) continue;
 
-                if (/^(Số\s*phiếu|Trang\s*số)\s*:/i.test(t)) continue;
-                if (/Trình\s*tự\s*hạng\s*mục/i.test(t) || (t.includes('Địa điểm') && t.includes('Trình tự'))) {
+                if (/^(S[ốôo]\s*phi[ếêe]u|Trang\s*s[ốôo])\s*:/i.test(t)) continue;
+                if (/Tr[ìi]nh\s*t[ựư]\s*h[ạa]ng\s*m[ụu]c/i.test(t) || (/[ĐD][ịi]a\s*[đd]i/i.test(t) && /Tr[ìi]nh\s*t[ựư]/i.test(t))) {
                     break;
                 }
 
-                if (/Mục\s*đích\s*thao\s*tác/i.test(t)) {
+                if (/M[ụu]c\s*[đd][íi]ch\s*thao\s*t[áa]c/i.test(t)) {
                     state = 'MUC_DICH';
-                    const rem = t.replace(/^.*?Mục\s*đích\s*thao\s*tác\s*:?\s*/i, '').trim();
+                    const rem = t.replace(/^.*?M[ụu]c\s*[đd][íi]ch\s*thao\s*t[áa]c\s*:?\s*/i, '').trim();
                     if (rem) data.mucDich.push(rem);
                     continue;
                 }
 
-                if (/Thời\s*gian\s*dự\s*kiến/i.test(t)) {
+                if (/Th[ờơ]i\s*gian\s*d[ựư]\s*ki[ếêe]n/i.test(t)) {
                     state = 'THOI_GIAN';
+                    const rem = t.replace(/^.*?Th[ờơ]i\s*gian\s*d[ựư]\s*ki[ếêe]n\s*:?\s*/i, '').trim();
+                    if (rem) thoiGianStr += rem + ' ';
                     continue;
                 }
 
-                if (/Đơn\s*vị\s*đề\s*nghị\s*thao\s*tác/i.test(t)) {
+                if (/[ĐD][ơo]n\s*v[ịi]\s*[đd][ềêe]\s*ngh[ịi]/i.test(t)) {
                     state = 'DON_VI';
-                    const rem = t.replace(/^.*?Đơn\s*vị\s*đề\s*nghị\s*thao\s*tác\s*:?\s*/i, '').trim();
+                    const rem = t.replace(/^.*?[ĐD][ơo]n\s*v[ịi]\s*[đd][ềêe]\s*ngh[ịi].*?(thao\s*t[áa]c)?\s*:?\s*/i, '').trim();
                     if (rem) data.donVi.push(rem);
                     continue;
                 }
 
-                if (/Điều\s*kiện\s*cần\s*có/i.test(t)) {
+                if (/[ĐD]i[ềêe]u\s*ki[ệêe]n\s*c[ầâa]n\s*c[óo]/i.test(t)) {
                     state = 'DIEU_KIEN';
-                    const rem = t.replace(/^.*?Điều\s*kiện\s*cần\s*có\s*để\s*thực\s*hiện\s*:?\s*/i, '').trim();
-                    if (rem) {
+                    const rem = t.replace(/^.*?[ĐD]i[ềêe]u\s*ki[ệêe]n\s*c[ầâa]n\s*c[óo].*?hi[ệêe]n\s*:?\s*/i, '').trim();
+                    if (rem && !/[ĐD]i[ềêe]u\s*ki[ệêe]n/i.test(rem)) {
                         const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
                         if (cleanRem) data.dieuKien.push(cleanRem);
                     }
                     continue;
                 }
 
-                if (/^Lưu\s*ý\s*:?/i.test(t)) {
+                if (/^L[ưu]u\s*[ýy]\s*:?/i.test(t)) {
                     state = 'LUU_Y';
-                    const rem = t.replace(/^Lưu\s*ý\s*:?\s*/i, '').trim();
+                    const rem = t.replace(/^L[ưu]u\s*[ýy]\s*:?\s*/i, '').trim();
                     if (rem) {
                         const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
                         if (cleanRem) data.luuY.push(cleanRem);
@@ -1840,7 +1842,7 @@
                     continue;
                 }
 
-                if (/Giao\s*nhận.*trước\s*khi\s*thao\s*tác/i.test(t)) {
+                if (/Giao\s*nh[ậa]n.*?(tr[ưự][ớơ]c|thi[ếêe]t\s*b[ịi])/i.test(t)) {
                     state = 'GIAO_NHAN';
                     continue;
                 }
@@ -1850,7 +1852,14 @@
                 } else if (state === 'THOI_GIAN') {
                     thoiGianStr += t + ' ';
                 } else if (state === 'DON_VI') {
-                    data.donVi.push(t);
+                    // Nếu dòng tháng/năm của Kết thúc bị lệch xuống dưới chữ Đơn vị đề nghị thì trả về cho Thời gian
+                    if (/th[áa]ng\s*\d+\s*n[ăa]m\s*\d{4}/i.test(t)) {
+                        thoiGianStr += t + ' ';
+                        const cleanDv = t.replace(/.*?n[ăa]m\s*\d{4}\s*/i, '').trim();
+                        if (cleanDv) data.donVi.push(cleanDv);
+                    } else {
+                        data.donVi.push(t);
+                    }
                 } else if (state === 'DIEU_KIEN') {
                     const numMatch = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/);
                     if (numMatch) {
@@ -1872,15 +1881,15 @@
                         data.luuY.push(t);
                     }
                 } else if (state === 'GIAO_NHAN') {
-                    if (t.includes('Thời gian') && (t.includes('Đơn vị') || t.includes('Nội dung'))) {
+                    if (/Th[ờơ]i\s*gian/i.test(t) && (/[ĐD][ơo]n\s*v[ịi]/i.test(t) || /N[ộôo]i\s*dung/i.test(t))) {
                         continue;
                     }
                     giaoNhanLines.push(vl);
                 }
             }
             
-            data.batDau = parseDateTimeFull(thoiGianStr, 'Bắt đầu');
-            data.ketThuc = parseDateTimeFull(thoiGianStr, 'Kết thúc');
+            data.batDau = parseDateTimeFull(thoiGianStr, 'B[ắăấâa]t\\s*[đd][ầâa]u');
+            data.ketThuc = parseDateTimeFull(thoiGianStr, 'K[ếêe]t\\s*th[úu]c');
 
             if (giaoNhanLines.length > 0) {
                 const rowObj = { thoiGian: [], donVi: [], hoTen: [], noiDung: [] };
@@ -1898,13 +1907,27 @@
                 const tg = rowObj.thoiGian.join(' ').replace(/\s+/g, ' ').trim();
                 const dv = rowObj.donVi.join(' ').replace(/\s+/g, ' ').trim();
                 const ht = rowObj.hoTen.join(' ').replace(/\s+/g, ' ').trim();
-                const nd = rowObj.noiDung.join(' ').replace(/\s+/g, ' ').trim();
+                const nd = fixElectricalOcrText(rowObj.noiDung.join(' ').replace(/\s+/g, ' ').trim());
                 if (tg || dv || ht || nd) {
                     data.giaoNhanTruoc.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
                 }
             }
 
             return data;
+        }
+
+        function parseDateTimeFull(str, prefixPattern) {
+            const res = { gio: '', phut: '', ngay: '', thang: '', nam: '' };
+            const regex = new RegExp(prefixPattern + "[\\s:\\-]*(\\d{1,2})\\s*[hH:]\\s*(\\d{0,2}).*?ng[àa]y\\s*(\\d{1,2}).*?th[áa]ng\\s*(\\d{1,2}).*?n[ăa]m\\s*(\\d{4})", "i");
+            const match = str.match(regex);
+            if (match) {
+                res.gio = match[1]; res.phut = match[2]; res.ngay = match[3]; res.thang = match[4]; res.nam = match[5];
+            } else {
+                const timeRegex = new RegExp(prefixPattern + "[\\s:\\-]*(\\d{1,2})\\s*[hH:]\\s*(\\d{0,2})", "i");
+                const mTime = str.match(timeRegex);
+                if (mTime) { res.gio = mTime[1]; res.phut = mTime[2]; }
+            }
+            return res;
         }
 
         function parseDateTimeFull(str, prefix) {
