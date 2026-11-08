@@ -1434,8 +1434,8 @@
                 });
 
                 // B. KIỂM TRA BẢNG CÁC BƯỚC THAO TÁC 9 CỘT
-                const hasStepTableCols = fullPageText.includes('Địa điểm') && 
-                    (fullPageText.includes('Nhận lệnh') || fullPageText.includes('Ra lệnh') || fullPageText.includes('Bước'));
+                const hasStepTableCols = /[ĐD][ịi]a\s*[đd]i[ểê]m/i.test(fullPageText) && 
+                    (/Nh[ậa]n\s*l[ệê]nh/i.test(fullPageText) || /Ra\s*l[ệê]nh/i.test(fullPageText) || /B[ưự][ớơ]c/i.test(fullPageText));
                 if (!hasStepTableCols) {
                     continue;
                 }
