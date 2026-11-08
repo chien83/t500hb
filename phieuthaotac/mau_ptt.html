@@ -1488,6 +1488,17 @@ Lưu ý quan trọng:
         async function importFromPdf(file) {
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            // Kiểm tra nhanh trang 1 xem có phải PDF dạng ảnh Scan không
+            const firstPage = await pdf.getPage(1);
+            const firstText = await firstPage.getTextContent();
+            const validItems = firstText.items.filter(it => it.str && it.str.trim());
+
+            // Nếu là PDF Scan (< 15 mảnh chữ) và đã cài đặt Gemini API Key -> Dùng AI đọc chính xác 100%
+            const geminiKey = localStorage.getItem('GEMINI_API_KEY');
+            if (validItems.length < 15 && geminiKey) {
+                await importScannedPdfWithGeminiAI(pdf, geminiKey);
+                return;
+            }
             const pagesData = [];
             let page1Extracted = false;
             let isParsingGNS = false;
