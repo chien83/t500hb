@@ -1643,7 +1643,10 @@ Lưu ý quan trọng:
                         }
                     }
                 });
-                if (anchorHeaderY === null) anchorHeaderY = 755;
+                if (anchorHeaderY === null) {
+                    if (line1234) anchorHeaderY = line1234.yc + 25;
+                    else continue;
+                }
 
                 let headerBottomY = (line1234 && line1234.yc > sub(anchorHeaderY, 70)) ? line1234.yc : sub(anchorHeaderY, 32);
                 mergedItems.forEach(it => {
