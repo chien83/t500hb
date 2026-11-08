@@ -1385,7 +1385,7 @@
                     const h = Math.abs(item.height || item.transform[0] || 10);
                     rawChunks.push({ x0: x0, x1: x0 + w, yc: y0 + h * 0.4, text: str });
                 });
-                // tiếp tục 
+            
                 let isScannedPage = false;
                 if (rawChunks.length < 15) {
                     isScannedPage = true;
@@ -1444,7 +1444,7 @@
                 let line1234 = lineGroups.find(lg => {
                     lg.chunks.sort((a, b) => sub(a.x0, b.x0));
                     let txt = lg.chunks.map(c => c.text).join('').replace(/\s/g,'');
-                    return txt.includes('1234') || txt.includes('1243');
+                    return txt.includes('1234') || txt.includes('1243') || /^[1-9]{4,9}$/.test(txt);
                 });
                 if (line1234) {
                     let c1 = line1234.chunks.find(c => c.text.trim() === '1');
@@ -1452,8 +1452,15 @@
                     let c3 = line1234.chunks.find(c => c.text.trim() === '3');
                     if (c1 && c2) col0_x = (c1.x1 + c2.x0) / 2;
                     if (c2 && c3) col1_x = (c2.x1 + c3.x0) / 2;
-                    // Cột 3 ("Bước") là cột hẹp nên vạch kẻ phải nằm cách số "3" khoảng 12pt (không lấy trung bình với số "4")
                     if (c3) col2_x = c3.x1 + 12;
+                } else {
+                    const diaChunk = rawChunks.find(c => c.text.includes('Địa') || c.text.includes('điểm'));
+                    const buocChunk = rawChunks.find(c => c.text === 'Bước');
+                    if (diaChunk) col0_x = sub(diaChunk.x0, 8);
+                    if (buocChunk) {
+                        col1_x = sub(buocChunk.x0, 6);
+                        col2_x = buocChunk.x1 + 10;
+                    }
                 }
 
                 const mergedItems = [];
