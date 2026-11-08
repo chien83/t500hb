@@ -1568,10 +1568,11 @@ Lưu ý quan trọng:
                 });
 
                 // B. KIỂM TRA BẢNG CÁC BƯỚC THAO TÁC 9 CỘT (Hỗ trợ cả PDF chuẩn và PDF Scan)
-                const hasStepTableCols = (
-                    /[ĐD][ịi]a\s*[đd]i/i.test(fullPageText) ||
-                    /Tr[ìi]nh\s*t[ựư]\s*(h[ạa]ng|thao)/i.test(fullPageText) ||
-                    (/N[ộôo]i\s*dung/i.test(fullPageText) && /(B[ưự][ớơ]c|Nh[ậa]n|Ra\s*l[ệêe]nh)/i.test(fullPageText))
+                const isNotStepPage = /M[ụu]c\s*[đd][íi]ch\s*thao\s*t[áa]c/i.test(fullPageText) || /PHI[ẾÊE]U\s*[ĐD][ĂA]NG\s*K[ÝY]/i.test(fullPageText);
+                const hasStepTableCols = !isNotStepPage && (
+                    /Tr[ìi]nh\s*t[ựư]\s*(h[ạa]ng\s*m[ụu]c|thao\s*t[áa]c)/i.test(fullPageText) ||
+                    (/[ĐD][ịi]a\s*[đd]i[ểêe]m/i.test(fullPageText) && /(B[ưự][ớơ]c|Nh[ậa]n\s*l[ệêe]nh|Ra\s*l[ệêe]nh)/i.test(fullPageText)) ||
+                    (/N[ộôo]i\s*dung/i.test(fullPageText) && /(Nh[ậa]n\s*l[ệêe]nh|Ra\s*l[ệêe]nh)/i.test(fullPageText))
                 );
                 if (!hasStepTableCols) {
                     continue;
