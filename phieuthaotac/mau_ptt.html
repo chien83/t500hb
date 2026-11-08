@@ -1449,9 +1449,12 @@
                     }
                 });
 
-                // B. KIỂM TRA BẢNG CÁC BƯỚC THAO TÁC 9 CỘT
-                const hasStepTableCols = /[ĐD][ịi]a\s*[đd]i[ểê]m/i.test(fullPageText) && 
-                    (/Nh[ậa]n\s*l[ệê]nh/i.test(fullPageText) || /Ra\s*l[ệê]nh/i.test(fullPageText) || /B[ưự][ớơ]c/i.test(fullPageText));
+                // B. KIỂM TRA BẢNG CÁC BƯỚC THAO TÁC 9 CỘT (Hỗ trợ cả PDF chuẩn và PDF Scan)
+                const hasStepTableCols = (
+                    /[ĐD][ịi]a\s*[đd]i/i.test(fullPageText) ||
+                    /Tr[ìi]nh\s*t[ựư]\s*(h[ạa]ng|thao)/i.test(fullPageText) ||
+                    (/N[ộôo]i\s*dung/i.test(fullPageText) && /(B[ưự][ớơ]c|Nh[ậa]n|Ra\s*l[ệêe]nh)/i.test(fullPageText))
+                );
                 if (!hasStepTableCols) {
                     continue;
                 }
