@@ -1700,7 +1700,19 @@ Lưu ý quan trọng:
                     cleanItems.push({ x0: it.x0, x1: it.x1, yc: it.yc, text: txt });
                 });
 
-                const bodyItems = cleanItems.filter(it => it.yc < sub(headerBottomY, 3) && it.yc > footerStopY);
+                // Lấy mốc Y của dòng "Giao nhận sau" (nếu có ở trang hiện tại) để chặn bảng 9 cột không quét lố
+                let yGiaoNhanSau = 0;
+                cleanItems.forEach(it => {
+                    if (it.text.includes('Giao nhận, nghiệm thu') && it.text.includes('sau khi thao tác')) {
+                        yGiaoNhanSau = it.yc;
+                    }
+                });
+
+                const bodyItems = cleanItems.filter(it => {
+                    // Nếu chữ nằm dưới vạch Giao nhận sau -> Bỏ qua, không cho vào bảng 9 cột
+                    if (yGiaoNhanSau > 0 && it.yc <= yGiaoNhanSau + 5) return false;
+                    return it.yc < sub(headerBottomY, 3) && it.yc > footerStopY;
+                });
                 
                 // Lọc lấy các dòng thuộc cột Nội dung (cột 4): Bao gồm cả các câu ngắn như "Cắt MC 580" (bước 1->4)
                 const contentLines = bodyItems.filter(it => {
