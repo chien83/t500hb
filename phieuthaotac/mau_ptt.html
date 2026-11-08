@@ -1726,7 +1726,7 @@
             if (!page1) return;
 
             if (data.soPhieu) {
-                const soPhieuFields = document.querySelectorAll('.header-right .editable-field, .header-right-page2 .editable-field');
+                const soPhieuFields = document.querySelectorAll('.header-right .editable-field:not(.page-number-display), .header-right-page2 .editable-field:not(.page-number-display)');
                 soPhieuFields.forEach(f => f.innerText = data.soPhieu);
             }
 
