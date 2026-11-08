@@ -1474,16 +1474,23 @@
                             const gap = sub(ch.x0, current.x1);
                             const crossesBoundary = [col0_x, col1_x, col2_x, 360].some(bx => current.x1 < bx && ch.x0 >= sub(bx, 3));
                             const curIsStep = /^\d{1,2}[\.\)]?$/.test(current.text.trim()) && current.x0 >= sub(col1_x, 12) && current.x0 < col2_x + 8;
-                            if (gap < 8 && !crossesBoundary && !curIsStep) {
+                            const bothInContentCol = current.x0 >= sub(col2_x, 2) && ch.x1 < 365;
+                            const maxGap = (isScannedPage && bothInContentCol) ? 35 : 8;
+
+                            if (gap < maxGap && !crossesBoundary && !curIsStep) {
                                 current.text += (gap > 1.5 ? ' ' : '') + ch.text;
                                 current.x1 = Math.max(current.x1, ch.x1);
                             } else {
+                                current.text = fixElectricalOcrText(current.text);
                                 mergedItems.push(current);
                                 current = { x0: ch.x0, x1: ch.x1, yc: lg.yc, text: ch.text };
                             }
                         }
                     });
-                    if (current) mergedItems.push(current);
+                    if (current) {
+                        current.text = fixElectricalOcrText(current.text);
+                        mergedItems.push(current);
+                    }
                 });
 
                 // Xác định mốc cắt đầu và cuối bảng
