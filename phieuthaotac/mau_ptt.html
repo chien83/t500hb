@@ -1320,7 +1320,9 @@ Lưu ý quan trọng:
             });
 
             if (!response.ok) {
-                throw new Error('Không thể kết nối Gemini API (Kiểm tra lại mã API Key).');
+                const errorData = await response.json();
+                const errMsg = errorData.error ? errorData.error.message : response.statusText;
+                throw new Error(`Google API từ chối: ${errMsg}`);
             }
 
             const result = await response.json();
