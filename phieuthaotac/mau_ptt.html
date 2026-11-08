@@ -1211,6 +1211,7 @@
                     alert('Vui lòng chọn file định dạng .pdf, .docx hoặc .xlsx!');
                 }
             } catch (err) {
+                hideOcrProgress();
                 console.error(err);
                 alert('Có lỗi khi đọc file: ' + err.message);
             }
