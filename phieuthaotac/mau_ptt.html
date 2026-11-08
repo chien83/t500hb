@@ -1621,6 +1621,15 @@
                     const isStepNum = /^\d+[\.\)]?$/.test(txt);
                     const isRoman = /^([IVXLCDM\u2160-\u216F]+)$/i.test(txt);
                     
+                    // Nếu nằm ở cột Mục (< col0_x) mà OCR đọc nhầm I, II, III thành 1, 11, 111 thì đổi về số La Mã
+                    if (it.x0 < col0_x) {
+                        const romanFixed = txt.replace(/^1$/, 'I').replace(/^11$/, 'II').replace(/^111$/, 'III');
+                        if (/^([IVXLCDM\u2160-\u216F]+)$/i.test(romanFixed)) {
+                            bestBlock.col0.push(romanFixed);
+                            return;
+                        }
+                    }
+
                     if (it.x0 < col1_x && isRoman) bestBlock.col0.push(txt);
                     else if (it.x0 < col1_x && !isStepNum) bestBlock.col1.push(txt);
                     else if (isStepNum && it.x0 < col2_x + 20) bestBlock.col2.push(txt.replace(/[\.\)]$/, ''));
