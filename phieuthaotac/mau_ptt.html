@@ -1709,29 +1709,6 @@
                 populatePage4(dataTrang4);
             }
 
-            // Xử lý và điền Bảng Giao nhận sau (Trang 4)
-            const dataTrang4 = { giaoNhanSau: [] };
-            if (giaoNhanSauRaw.length > 0) {
-                const rObj = { tg: [], dv: [], ht: [], nd: [] };
-                giaoNhanSauRaw.forEach(vl => {
-                    vl.chunks.forEach(ch => {
-                        const txt = ch.text.trim();
-                        if (!txt) return;
-                        if (ch.x0 < 145) rObj.tg.push(txt);
-                        else if (ch.x0 < 220) rObj.dv.push(txt);
-                        // Bất kỳ chữ nào nằm qua mốc 220 đều đưa hết vào cột Nội dung
-                        else rObj.nd.push(txt);
-                    });
-                });
-                const tg = rObj.tg.join(' ').replace(/\s+/g, ' ').trim();
-                const dv = rObj.dv.join(' ').replace(/\s+/g, ' ').trim();
-                const ht = rObj.ht.join(' ').replace(/\s+/g, ' ').trim();
-                const nd = rObj.nd.join(' ').replace(/\s+/g, ' ').trim();
-                if (tg || dv || ht || nd) {
-                    dataTrang4.giaoNhanSau.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
-                }
-                populatePage4(dataTrang4);
-            }
 
             if (pagesData.length > 0) {
                 renderImportedStepPages(pagesData);
