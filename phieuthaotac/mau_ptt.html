@@ -1585,9 +1585,11 @@ Lưu ý quan trọng:
                     return txt.includes('1234') || txt.includes('1243') || /^[1-9]{4,9}$/.test(txt);
                 });
                 if (line1234) {
-                    let c1 = line1234.chunks.find(c => c.text.trim() === '1');
-                    let c2 = line1234.chunks.find(c => c.text.trim() === '2');
-                    let c3 = line1234.chunks.find(c => c.text.trim() === '3');
+                    // Quét tìm số 1, 2, 3 trong vùng lân cận dòng 1234 (phòng trường hợp bản scan bị nghiêng làm số 3 lệch dòng)
+                    const nearChunks = rawChunks.filter(c => Math.abs(sub(c.yc, line1234.yc)) <= 8);
+                    let c1 = nearChunks.find(c => c.text.trim() === '1');
+                    let c2 = nearChunks.find(c => c.text.trim() === '2');
+                    let c3 = nearChunks.find(c => c.text.trim() === '3');
                     if (c1 && c2) col0_x = (c1.x1 + c2.x0) / 2;
                     if (c2 && c3) col1_x = (c2.x1 + c3.x0) / 2;
                     if (c3) col2_x = c3.x1 + 12;
@@ -1631,27 +1633,28 @@ Lưu ý quan trọng:
                     }
                 });
 
-                // Xác định mốc cắt đầu và cuối bảng (Hỗ trợ cả PDF thường và PDF Scan)
+                // Xác định mốc cắt ĐẦU BẢNG 9 cột: Lấy vị trí CAO NHẤT (it.yc > anchorHeaderY) để không bắt nhầm bảng Giao nhận bên dưới
                 let anchorHeaderY = null;
                 mergedItems.forEach(it => {
-                    if (it.yc > 500 && /(Tr[ìi]nh\s*t[ựư]|[ĐD][ịi]a\s*[đd]i|N[ộôo]i\s*dung|Nh[ậa]n|Ra\s*l[ệêe]nh|B[ưự][ớơ]c)/i.test(it.text)) {
-                        if (anchorHeaderY === null || it.yc < anchorHeaderY) {
+                    if (it.yc > 500 && /(Tr[ìi]nh\s*t[ựư]\s*(h[ạa]ng|thao)|[ĐD][ịi]a\s*[đd]i|Nh[ậa]n\s*l[ệêe]nh|Ra\s*l[ệêe]nh|B[ưự][ớơ]c)/i.test(it.text)) {
+                        if (anchorHeaderY === null || it.yc > anchorHeaderY) {
                             anchorHeaderY = it.yc;
                         }
                     }
                 });
-                if (anchorHeaderY === null) anchorHeaderY = 735;
+                if (anchorHeaderY === null) anchorHeaderY = 755;
 
-                let headerBottomY = line1234 ? line1234.yc : sub(anchorHeaderY, 22);
+                let headerBottomY = (line1234 && line1234.yc > sub(anchorHeaderY, 70)) ? line1234.yc : sub(anchorHeaderY, 32);
                 mergedItems.forEach(it => {
                     const t = it.text.trim();
-                    if (it.yc <= anchorHeaderY && it.yc >= sub(anchorHeaderY, 60)) {
-                        if (t === '4' || t === '3' || /^1\s+2\s+3/.test(t) || /^(Bước|Nội dung|Bắt|Kết|đầu|thúc|lệnh)$/i.test(t)) {
+                    if (it.yc <= anchorHeaderY && it.yc >= sub(anchorHeaderY, 55)) {
+                        if (t === '4' || t === '3' || /^1\s+2\s+3/.test(t) || /^(Bước|Bắt|Kết|đầu|thúc|lệnh)$/i.test(t)) {
                             headerBottomY = Math.min(headerBottomY, it.yc);
                         }
                     }
                 });
 
+                // Xác định mốc cắt ĐÁY BẢNG 9 cột (Dừng ngay khi chạm dòng Giao nhận sau thao tác hoặc Chữ ký)
                 let footerStopY = 48;
                 mergedItems.forEach(it => {
                     if (it.yc < sub(headerBottomY, 5)) {
@@ -1700,19 +1703,7 @@ Lưu ý quan trọng:
                     cleanItems.push({ x0: it.x0, x1: it.x1, yc: it.yc, text: txt });
                 });
 
-                // Lấy mốc Y của dòng "Giao nhận sau" (nếu có ở trang hiện tại) để chặn bảng 9 cột không quét lố
-                let yGiaoNhanSau = 0;
-                cleanItems.forEach(it => {
-                    if (it.text.includes('Giao nhận, nghiệm thu') && it.text.includes('sau khi thao tác')) {
-                        yGiaoNhanSau = it.yc;
-                    }
-                });
-
-                const bodyItems = cleanItems.filter(it => {
-                    // Nếu chữ nằm dưới vạch Giao nhận sau -> Bỏ qua, không cho vào bảng 9 cột
-                    if (yGiaoNhanSau > 0 && it.yc <= yGiaoNhanSau + 5) return false;
-                    return it.yc < sub(headerBottomY, 3) && it.yc > footerStopY;
-                });
+                const bodyItems = cleanItems.filter(it => it.yc < sub(headerBottomY, 3) && it.yc > footerStopY);
                 
                 // Lọc lấy các dòng thuộc cột Nội dung (cột 4): Bao gồm cả các câu ngắn như "Cắt MC 580" (bước 1->4)
                 const contentLines = bodyItems.filter(it => {
