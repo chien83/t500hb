@@ -1406,8 +1406,9 @@
 
                 rawChunks.sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
                 const lineGroups = [];
+                const lineTol = isScannedPage ? 5.0 : 3.5; // Trang scan cho phép lệch dòng 5pt
                 rawChunks.forEach(ch => {
-                    const existingLine = lineGroups.find(lg => Math.abs(sub(lg.yc, ch.yc)) <= 3.5);
+                    const existingLine = lineGroups.find(lg => Math.abs(sub(lg.yc, ch.yc)) <= lineTol);
                     if (existingLine) {
                         existingLine.chunks.push(ch);
                     } else {
@@ -1417,14 +1418,15 @@
 
                 // C. BẮT TÍN HIỆU GIAO NHẬN SAU KHI THAO TÁC (Chạy song song quét trang)
                 lineGroups.forEach(lg => {
-                    const t = lg.chunks.map(c => c.text).join(' ').trim();
+                    lg.chunks.sort((a, b) => sub(a.x0, b.x0));
+                    const t = fixElectricalOcrText(lg.chunks.map(c => c.text).join(' ').trim());
                     if (t.includes('Giao nhận, nghiệm thu') && t.includes('sau khi thao tác')) {
                         isParsingGNS = true;
                     }
                     if (isParsingGNS) {
                         if (/Ngày\s+\d+\s+tháng/.test(t) || t.includes('Người viết phiếu') || t.includes('Người duyệt phiếu') || t.includes('Các sự kiện bất thường')) {
                             isParsingGNS = false;
-                        } else if (!t.includes('Thời gian') && !t.includes('Nội dung') && !t.includes('sau khi thao tác')) {
+                        } else if (!(t.includes('Thời gian') && (t.includes('Đơn vị') || t.includes('Nội dung'))) && !t.includes('sau khi thao tác')) {
                             giaoNhanSauRaw.push(lg);
                         }
                     }
