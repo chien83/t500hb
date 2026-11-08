@@ -1847,7 +1847,7 @@ Lưu ý quan trọng:
 
 
             if (pagesData.length > 0) {
-                renderImportedStepPages(pagesData);
+                setTimeout(() => renderImportedStepPages(pagesData), 50);
             } else if (page1Extracted) {
                 alert('Đã trích xuất thành công nội dung Trang 1 từ file PDF!');
             } else {
