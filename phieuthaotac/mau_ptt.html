@@ -1397,7 +1397,7 @@
                 const fullPageText = rawChunks.map(c => c.text).join(' ');
 
                 // A. KIỂM TRA KHUNG ĐỎ TRANG 1 ("Mục đích thao tác" & "Thời gian dự kiến")
-                if (!page1Extracted && fullPageText.includes('Mục đích thao tác') && fullPageText.includes('Thời gian dự kiến')) {
+                if (!page1Extracted && /[MМ][ụu]c\s*[đd][íi]ch\s*thao\s*t[áa]c/i.test(fullPageText) && /Th[ờơ]i\s*gian\s*d[ựư]\s*ki[ếê]n/i.test(fullPageText)) {
                     const p1Data = extractPage1RedBoxFromChunks(rawChunks);
                     if (p1Data) {
                         populatePage1(p1Data);
