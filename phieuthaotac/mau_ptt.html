@@ -2068,6 +2068,16 @@ Lưu ý quan trọng:
 
             const formRows = Array.from(page1.querySelectorAll('.form-row'));
 
+            // Tự động điền Tên phiếu thao tác vào Trang 1
+            const tenPhieuRow = formRows.find(r => r.innerText.includes('Tên phiếu thao tác'));
+            if (tenPhieuRow && data.tenPhieu) {
+                const field = tenPhieuRow.querySelector('.editable-field');
+                if (field) {
+                    field.innerText = data.tenPhieu;
+                    field.style.fontWeight = 'bold';
+                }
+            }
+
             const mucDichText = data.mucDich.join(' ').replace(/\s+/g, ' ').trim();
             const mucDichRow = formRows.find(r => r.innerText.includes('Mục đích thao tác'));
             if (mucDichRow && mucDichText) {
