@@ -833,7 +833,23 @@
             return startIdx;
         }
 
-        // HÀM TỰ ĐỘNG ĐẨY DÒNG TRÀN SANG TRANG SAU & BÙ DÒNG TRỐNG KHÍT KHỔ GIẤY A4
+        // TÌM VỊ TRÍ CUỐI CÙNG CỦA CỤM GỘP DỌC (ĐỂ KHI KÉO LÊN TRANG TRƯỚC KHÔNG BỊ CẮT LẺ CỤM)
+        function getMergeGroupEnd(rows, startIndex) {
+            let endIdx = startIndex;
+            for (let r = startIndex; r <= endIdx && r < rows.length; r++) {
+                const cells = Array.from(rows[r].children);
+                for (let c = 0; c < cells.length; c++) {
+                    const span = cells[c].rowSpan || 1;
+                    if (span > 1) {
+                        const targetEnd = sub(r + span, 1);
+                        if (targetEnd > endIdx) endIdx = targetEnd;
+                    }
+                }
+            }
+            return Math.min(endIdx, sub(rows.length, 1));
+        }
+
+        // HÀM TỰ ĐỘNG ĐẨY DÒNG TRÀN XUỐNG, KÉO DÒNG DƯỚI LÊN & BÙ DÒNG TRỐNG KHÍT KHỔ GIẤY A4
         function fitAllStepPages() {
             const container = document.getElementById('document-container');
             let stepPages = Array.from(container.querySelectorAll('.page.step-page'));
@@ -859,12 +875,7 @@
                         continue;
                     }
 
-                    // Tự động phân tích tìm dòng hợp lệ (không dính gộp dọc) để ngắt trang
                     let groupStartIdx = getMergeGroupStart(rows, sub(rows.length, 1));
-                    
-                    if (groupStartIdx === 0 && rows.length > 1) {
-                        break; // Tránh treo trình duyệt nếu cả bảng bị gộp thành 1 khối dọc khổng lồ
-                    }
                     if (groupStartIdx === 0) break;
 
                     const rowsToMove = rows.slice(groupStartIdx);
@@ -886,7 +897,54 @@
                     });
                 }
 
-                // 2. NẾU BẢNG CHƯA CHẠM ĐÁY A4 -> TỰ ĐỘNG BÙ THÊM CÁC DÒNG TRỐNG KẺ KHUNG ĐẦY ĐỦ
+                // 2. NẾU TRANG HIỆN TẠI CÒN CHỖ -> TỰ ĐỘNG KÉO CÁC BƯỚC TỪ ĐẦU TRANG SAU LÊN
+                let nextPage = stepPages[pIdx + 1];
+                if (nextPage) {
+                    const nextTbody = nextPage.querySelector('tbody');
+                    if (nextTbody && Array.from(nextTbody.children).some(r => !isRowEmpty(r))) {
+                        // Xóa tạm các dòng trống đang lót ở đáy trang hiện tại để nhường chỗ kéo bước từ trang sau lên
+                        while (tbody.children.length > 0 && isRowEmpty(tbody.lastElementChild)) {
+                            tbody.lastElementChild.remove();
+                        }
+
+                        let pulledAnyRow = false;
+                        while (nextTbody.children.length > 0) {
+                            // Nếu dòng đầu của trang sau là dòng trống thì bỏ qua để lấy dòng có chữ
+                            if (isRowEmpty(nextTbody.firstElementChild)) {
+                                if (Array.from(nextTbody.children).some(r => !isRowEmpty(r))) {
+                                    nextTbody.firstElementChild.remove();
+                                    continue;
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            const nextRows = Array.from(nextTbody.children);
+                            const groupEndIdx = getMergeGroupEnd(nextRows, 0);
+                            const rowsToPull = nextRows.slice(0, groupEndIdx + 1);
+
+                            // Thử đưa bước đầu tiên của trang sau lên cuối trang hiện tại
+                            rowsToPull.forEach(r => tbody.appendChild(r));
+
+                            // Nếu đưa lên mà vượt quá đáy A4 -> Trả lại về đầu trang sau và dừng kéo
+                            if ((table.offsetTop + table.offsetHeight) > maxAllowedBottom && tbody.children.length > rowsToPull.length) {
+                                const firstChildOfNext = nextTbody.firstElementChild;
+                                rowsToPull.forEach(r => nextTbody.insertBefore(r, firstChildOfNext));
+                                break;
+                            } else {
+                                pulledAnyRow = true;
+                            }
+                        }
+
+                        // Nếu kéo hết bước khiến trang sau chỉ còn toàn dòng trống -> Tự động xóa trang thừa
+                        if (pulledAnyRow && stepPages.length > 1 && Array.from(nextTbody.children).every(r => isRowEmpty(r))) {
+                            nextPage.remove();
+                            stepPages.splice(pIdx + 1, 1);
+                        }
+                    }
+                }
+
+                // 3. NẾU BẢNG VẪN CHƯA CHẠM ĐÁY A4 -> BÙ THÊM DÒNG TRỐNG KẺ KHUNG CHO ĐẸP
                 let safetyCount = 0;
                 while ((table.offsetTop + table.offsetHeight) < maxAllowedBottom && safetyCount < 40) {
                     const blankRow = createBlankStepRow();
