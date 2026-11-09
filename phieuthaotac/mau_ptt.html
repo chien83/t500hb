@@ -2010,6 +2010,14 @@ Lưu ý quan trọng:
             }
             // Kết thúc vòng lặp for duyệt qua các trang PDF
             hideOcrProgress();
+            // Đổ toàn bộ dữ liệu phần mở đầu (gồm cả Trang 1 + Trang 2 nối tiếp nếu có)
+            if (page1CombinedChunks.length > 0) {
+                const p1Data = extractPage1RedBoxFromChunks(page1CombinedChunks);
+                if (p1Data) {
+                    populatePage1(p1Data);
+                    page1Extracted = true;
+                }
+            }
 
             // Xử lý và điền Bảng Giao nhận sau (Trang 4)
             const dataTrang4 = { giaoNhanSau: [] };
