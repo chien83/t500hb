@@ -1248,29 +1248,53 @@
         function setupGeminiApiKey() {
             const currentKey = localStorage.getItem('GEMINI_API_KEY');
 
-            // 1. NẾU ĐÃ ĐĂNG NHẬP -> Hỏi xác nhận ĐĂNG XUẤT (Không hiện Key)
+            // Nếu đã có Key -> Hỏi đăng xuất ngay
             if (currentKey) {
-                const wantLogout = confirm(
-                    '🔒 AI đang được kích hoạt (Mã API Key đã được ẩn bảo mật).\n\nBạn có muốn ĐĂNG XUẤT (xóa API Key khỏi trình duyệt này) không?'
-                );
-                if (wantLogout) {
+                if (confirm('🔒 AI đang hoạt động (Key đã ẩn bảo mật).\n\nBạn có muốn ĐĂNG XUẤT (Xóa API Key) không?')) {
                     localStorage.removeItem('GEMINI_API_KEY');
                     updateAiButtonState();
-                    alert('Đã đăng xuất và xóa API Key khỏi trình duyệt!');
                 }
                 return;
             }
 
-            // 2. NẾU CHƯA ĐĂNG NHẬP -> Mở ô nhập trống hoàn toàn
-            const inputKey = prompt(
-                '🔑 ĐĂNG NHẬP AI:\nNhập mã Google Gemini API Key (Lấy miễn phí tại https://aistudio.google.com/apikey) để kích hoạt AI đọc chuẩn 100% file PDF Scan:',
-                ''
-            );
-            if (inputKey !== null && inputKey.trim() !== '') {
-                localStorage.setItem('GEMINI_API_KEY', inputKey.trim());
-                updateAiButtonState();
-                alert('✅ Đăng nhập AI thành công! Mã Key đã được lưu ẩn bảo mật.');
+            // Nếu chưa có Key -> Tạo hộp thoại Modal đẹp mắt, có link click được và ô mật khẩu che dấu ••••
+            let modal = document.getElementById('ai-key-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'ai-key-modal';
+                modal.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; display:flex; align-items:center; justify-content:center; font-family:sans-serif;';
+                modal.innerHTML = `
+                    <div style="background:#fff; padding:20px; border-radius:10px; width:380px; max-width:92%; box-shadow:0 8px 25px rgba(0,0,0,0.4);">
+                        <h3 style="margin-bottom:10px; font-size:13pt; color:#2c3e50;">🔑 Đăng nhập Google Gemini AI</h3>
+                        <p style="font-size:10pt; color:#555; margin-bottom:12px; line-height:1.4;">
+                            Dán mã API Key của bạn vào bên dưới (mã sẽ được che bảo mật).<br>
+                            👉 <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#0284c7; text-decoration:none; font-weight:bold;">Nhấn vào đây để lấy mã miễn phí từ Google</a>
+                        </p>
+                        <input type="password" id="ai-key-input" placeholder="Nhập API Key (••••••)..." style="width:100%; padding:9px 10px; border:1px solid #ccc; border-radius:6px; font-size:11pt; margin-bottom:15px;" autocomplete="off">
+                        <div style="display:flex; justify-content:flex-end; gap:8px;">
+                            <button id="ai-btn-cancel" style="padding:7px 14px; border:none; border-radius:5px; background:#95a5a6; color:#fff; cursor:pointer; font-weight:bold;">Huỷ</button>
+                            <button id="ai-btn-save" style="padding:7px 16px; border:none; border-radius:5px; background:#27ae60; color:#fff; cursor:pointer; font-weight:bold;">Đăng nhập</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                modal.querySelector('#ai-btn-cancel').onclick = () => { modal.style.display = 'none'; };
+                modal.querySelector('#ai-btn-save').onclick = () => {
+                    const val = modal.querySelector('#ai-key-input').value.trim();
+                    if (!val) return alert('Vui lòng nhập mã API Key!');
+                    localStorage.setItem('GEMINI_API_KEY', val);
+                    modal.querySelector('#ai-key-input').value = '';
+                    modal.style.display = 'none';
+                    updateAiButtonState();
+                    alert('✅ Đăng nhập AI thành công! Mã Key đã được lưu ẩn bảo mật.');
+                };
             }
+
+            modal.style.display = 'flex';
+            const inputEl = modal.querySelector('#ai-key-input');
+            inputEl.value = '';
+            setTimeout(() => inputEl.focus(), 50);
         }
 
         // Tự động kiểm tra trạng thái nút AI ngay khi mở trang
