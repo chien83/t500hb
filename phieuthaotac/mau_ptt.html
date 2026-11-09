@@ -1396,12 +1396,18 @@ Lưu ý quan trọng:
             }
 
             if (parsed.steps && parsed.steps.length > 0) {
+                let lastMuc = '';
+                let lastDiaDiem = '';
+
                 const pageRows = parsed.steps.map(st => {
                     const isSec = st.isSection || (!st.buoc && st.noiDung);
                     if (isSec) {
+                        // Khi gặp dòng tiêu đề gộp ngang (Vd: Cô lập MC...), reset lại bộ nhớ Mục
+                        lastMuc = '';
+                        lastDiaDiem = '';
                         return [
-                            { text: st.muc || '', colspan: 1, vMerge: null },
-                            { text: st.diaDiem || '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
                             { text: st.noiDung || '', colspan: 3, vMerge: null },
                             { text: '', colspan: 1, vMerge: null },
                             { text: '', colspan: 1, vMerge: null },
@@ -1409,9 +1415,26 @@ Lưu ý quan trọng:
                             { text: '', colspan: 1, vMerge: null }
                         ];
                     }
+
+                    const rawMuc = String(st.muc || '').trim();
+                    const rawDiaDiem = String(st.diaDiem || '').trim();
+                    let displayMuc = rawMuc;
+                    let displayDiaDiem = rawDiaDiem;
+
+                    // NẾU MỤC LA MÃ HOẶC ĐỊA ĐIỂM BỊ AI LẶP LẠI GIỐNG DÒNG TRÊN -> TỰ ĐỘNG ĐỂ TRỐNG
+                    if (rawMuc && rawMuc === lastMuc) {
+                        displayMuc = '';
+                        displayDiaDiem = '';
+                    } else if (!rawMuc && rawDiaDiem && rawDiaDiem === lastDiaDiem) {
+                        displayDiaDiem = '';
+                    }
+
+                    if (rawMuc) lastMuc = rawMuc;
+                    if (rawDiaDiem) lastDiaDiem = rawDiaDiem;
+
                     return [
-                        { text: st.muc || '', colspan: 1, vMerge: null },
-                        { text: st.diaDiem || '', colspan: 1, vMerge: null },
+                        { text: displayMuc, colspan: 1, vMerge: null },
+                        { text: displayDiaDiem, colspan: 1, vMerge: null },
                         { text: String(st.buoc || '').replace(/[\.\)]$/, ''), colspan: 1, vMerge: null },
                         { text: st.noiDung || '', colspan: 1, vMerge: null },
                         { text: '', colspan: 1, vMerge: null },
