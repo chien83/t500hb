@@ -2052,7 +2052,7 @@ Lưu ý quan trọng:
             }
         }
 
-        // --- HÀM BÓC TÁCH NỘI DUNG TRONG KHUNG ĐỎ TRANG 1 TỪ TỌA ĐỘ PDF (VER 2.4) ---
+        // --- HÀM BÓC TÁCH NỘI DUNG TRANG 1 & TRANG PHỤ NỐI TIẾP TỪ TỌA ĐỘ PDF ---
         function extractPage1RedBoxFromChunks(rawChunks) {
             const sorted = rawChunks.slice().sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
             const visualLines = [];
@@ -2097,8 +2097,14 @@ Lưu ý quan trọng:
             const spMatch = fullText.match(/S[ốôo]\s*phi[ếêe]u\s*:\s*([A-Za-z0-9\/\-]+)/i);
             if (spMatch) data.soPhieu = spMatch[1];
             
-            const tpMatch = fullText.match(/T[êe]n\s*phi[ếêe]u\s*thao\s*t[áa]c\s*:\s*([^\|]+)/i);
-            if (tpMatch) data.tenPhieu = tpMatch[1].trim();
+            // Lấy trọn vẹn Tên phiếu thao tác kể cả khi bị ngắt xuống 2 dòng
+            const tpMatch = fullText.match(/T[êe]n\s*phi[ếêe]u\s*thao\s*t[áa]c\s*:\s*(.+?)(?=\s*\|\s*(?:Ng[ưự][ờơ]i\s*(?:vi[ếêe]t|duy[ệêe]t)|Ch[ứự]c\s*v[ụu]|M[ụu]c\s*[đd][íi]ch)|$)/i);
+            if (tpMatch) {
+                data.tenPhieu = tpMatch[1]
+                    .replace(/\s*\|\s*Ng[ưự][ờơ]i\s*vi[ếêe]t.*$/i, '')
+                    .replace(/\s*\|\s*/g, ' ')
+                    .trim();
+            }
             
             let state = 'NONE';
             let thoiGianStr = '';
@@ -2109,8 +2115,9 @@ Lưu ý quan trọng:
                 const t = vl.text;
                 if (!t) continue;
 
+                // Bỏ qua dòng Số phiếu / Trang số ở đầu trang nối tiếp (Trang 02/04)
                 if (/^(S[ốôo]\s*phi[ếêe]u|Trang\s*s[ốôo])\s*:/i.test(t)) continue;
-                if (/Tr[ìi]nh\s*t[ựư]\s*h[ạa]ng\s*m[ụu]c/i.test(t) || (/[ĐD][ịi]a\s*[đd]i/i.test(t) && /Tr[ìi]nh\s*t[ựư]/i.test(t))) {
+                if (/Tr[ìi]nh\s*t[ựư]\s*h[ạa]ng\s*m[ụu]c/i.test(t) || (/[ĐD][ịi]a\s*[đd]i[ểêe]m/i.test(t) && /Tr[ìi]nh\s*t[ựư]/i.test(t))) {
                     break;
                 }
 
@@ -2139,8 +2146,8 @@ Lưu ý quan trọng:
                     state = 'DIEU_KIEN';
                     const rem = t.replace(/^.*?[ĐD]i[ềêe]u\s*ki[ệêe]n\s*c[ầâa]n\s*c[óo].*?hi[ệêe]n\s*:?\s*/i, '').trim();
                     if (rem && !/[ĐD]i[ềêe]u\s*ki[ệêe]n/i.test(rem)) {
-                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
-                        if (cleanRem) data.dieuKien.push(cleanRem);
+                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '').trim();
+                        if (cleanRem) data.dieuKien.push({ num: 1, text: cleanRem });
                     }
                     continue;
                 }
@@ -2149,8 +2156,8 @@ Lưu ý quan trọng:
                     state = 'LUU_Y';
                     const rem = t.replace(/^L[ưu]u\s*[ýy]\s*:?\s*/i, '').trim();
                     if (rem) {
-                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
-                        if (cleanRem) data.luuY.push(cleanRem);
+                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '').trim();
+                        if (cleanRem) data.luuY.push({ num: 1, text: cleanRem });
                     }
                     continue;
                 }
@@ -2165,7 +2172,6 @@ Lưu ý quan trọng:
                 } else if (state === 'THOI_GIAN') {
                     thoiGianStr += t + ' ';
                 } else if (state === 'DON_VI') {
-                    // Nếu dòng tháng/năm của Kết thúc bị lệch xuống dưới chữ Đơn vị đề nghị thì trả về cho Thời gian
                     if (/th[áa]ng\s*\d+\s*n[ăa]m\s*\d{4}/i.test(t)) {
                         thoiGianStr += t + ' ';
                         const cleanDv = t.replace(/.*?n[ăa]m\s*\d{4}\s*/i, '').trim();
@@ -2173,25 +2179,23 @@ Lưu ý quan trọng:
                     } else {
                         data.donVi.push(t);
                     }
-                } else if (state === 'DIEU_KIEN') {
+                } else if (state === 'DIEU_KIEN' || state === 'LUU_Y') {
+                    const targetArr = (state === 'DIEU_KIEN') ? data.dieuKien : data.luuY;
+                    if (/^\s*\d+[\.\)]\s*$/.test(t)) continue; // Bỏ qua dòng chỉ có "1." hoặc "2." trống
+
                     const numMatch = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/);
+                    const subBulletMatch = t.match(/^\s*([\*\-\+])\s*(.+)$/);
+
                     if (numMatch) {
-                        data.dieuKien.push(numMatch[2].trim());
-                    } else if (data.dieuKien.length > 0) {
-                        const lastIdx = sub(data.dieuKien.length, 1);
-                        data.dieuKien[lastIdx] += ' ' + t;
+                        targetArr.push({ num: parseInt(numMatch[1], 10), text: numMatch[2].trim() });
+                    } else if (subBulletMatch) {
+                        // Giữ các ý phụ (* Phạm vi..., - Văn bản...) thành dòng riêng để trình bày đẹp và dễ ngắt trang
+                        targetArr.push({ num: null, text: subBulletMatch[1] + ' ' + subBulletMatch[2].trim() });
+                    } else if (targetArr.length > 0) {
+                        const lastIdx = sub(targetArr.length, 1);
+                        targetArr[lastIdx].text += ' ' + t;
                     } else {
-                        data.dieuKien.push(t);
-                    }
-                } else if (state === 'LUU_Y') {
-                    const numMatch = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/);
-                    if (numMatch) {
-                        data.luuY.push(numMatch[2].trim());
-                    } else if (data.luuY.length > 0) {
-                        const lastIdx = sub(data.luuY.length, 1);
-                        data.luuY[lastIdx] += ' ' + t;
-                    } else {
-                        data.luuY.push(t);
+                        targetArr.push({ num: 1, text: t });
                     }
                 } else if (state === 'GIAO_NHAN') {
                     if (/Th[ờơ]i\s*gian/i.test(t) && (/[ĐD][ơo]n\s*v[ịi]/i.test(t) || /N[ộôo]i\s*dung/i.test(t))) {
@@ -2204,26 +2208,61 @@ Lưu ý quan trọng:
             data.batDau = parseDateTimeFull(thoiGianStr, 'B[ắăấâa]t\\s*[đd][ầâa]u');
             data.ketThuc = parseDateTimeFull(thoiGianStr, 'K[ếêe]t\\s*th[úu]c');
 
+            // TÁCH THÔNG MINH NHIỀU DÒNG TRONG BẢNG GIAO NHẬN TRƯỚC (VD: Dòng B01 và Dòng HĐNT)
             if (giaoNhanLines.length > 0) {
-                const rowObj = { thoiGian: [], donVi: [], hoTen: [], noiDung: [] };
-                giaoNhanLines.forEach(vl => {
+                const parsedLines = giaoNhanLines.map(vl => {
+                    const lObj = { yc: vl.yc, tg: [], dv: [], ht: [], nd: [] };
                     vl.chunks.forEach(ch => {
                         const txt = ch.text.trim();
                         if (!txt) return;
-                        if (ch.x0 < 145) rowObj.thoiGian.push(txt);
-                        else if (ch.x0 < 220) rowObj.donVi.push(txt);
-                        else if (ch.x0 < 300) rowObj.hoTen.push(txt);
-                        else rowObj.noiDung.push(txt);
+                        if (ch.x0 < 135) lObj.tg.push(txt);
+                        else if (ch.x0 < 205) lObj.dv.push(txt);
+                        else if (ch.x0 < 278) lObj.ht.push(txt);
+                        else lObj.nd.push(txt);
                     });
+                    return {
+                        yc: vl.yc,
+                        tg: lObj.tg.join(' ').trim(),
+                        dv: lObj.dv.join(' ').trim(),
+                        ht: lObj.ht.join(' ').trim(),
+                        nd: lObj.nd.join(' ').trim()
+                    };
                 });
 
-                const tg = rowObj.thoiGian.join(' ').replace(/\s+/g, ' ').trim();
-                const dv = rowObj.donVi.join(' ').replace(/\s+/g, ' ').trim();
-                const ht = rowObj.hoTen.join(' ').replace(/\s+/g, ' ').trim();
-                const nd = fixElectricalOcrText(rowObj.noiDung.join(' ').replace(/\s+/g, ' ').trim());
-                if (tg || dv || ht || nd) {
-                    data.giaoNhanTruoc.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
+                let curRow = { thoiGian: [], donVi: [], hoTen: [], noiDung: [] };
+                const pushCurRow = () => {
+                    const tg = curRow.thoiGian.join(' ').replace(/\s+/g, ' ').trim();
+                    const dv = curRow.donVi.join(' ').replace(/\s+/g, ' ').trim();
+                    const ht = curRow.hoTen.join(' ').replace(/\s+/g, ' ').trim();
+                    const nd = fixElectricalOcrText(curRow.noiDung.join(' ').replace(/\s+/g, ' ').trim());
+                    if (tg || dv || ht || nd) {
+                        data.giaoNhanTruoc.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
+                    }
+                    curRow = { thoiGian: [], donVi: [], hoTen: [], noiDung: [] };
+                };
+
+                for (let idx = 0; idx < parsedLines.length; idx++) {
+                    const pl = parsedLines[idx];
+                    const curNdText = curRow.noiDung.join(' ').trim();
+                    const hasMoreDvAhead = parsedLines.slice(idx).some(item => item.dv !== '');
+
+                    // Ngắt sang dòng mới nếu dòng hiện tại đã có Đơn vị (vd: B01), Nội dung đã kết thúc câu bằng dấu chấm (.) và phía dưới còn Đơn vị khác (vd: HĐNT)
+                    const isNewRowStart = (
+                        curRow.donVi.length > 0 &&
+                        /\.$/.test(curNdText) &&
+                        (hasMoreDvAhead || (curRow.hoTen.length === 0 && pl.ht !== ''))
+                    );
+
+                    if (isNewRowStart) {
+                        pushCurRow();
+                    }
+
+                    if (pl.tg) curRow.thoiGian.push(pl.tg);
+                    if (pl.dv) curRow.donVi.push(pl.dv);
+                    if (pl.ht) curRow.hoTen.push(pl.ht);
+                    if (pl.nd) curRow.noiDung.push(pl.nd);
                 }
+                pushCurRow();
             }
 
             return data;
