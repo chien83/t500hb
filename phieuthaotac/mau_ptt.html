@@ -2283,10 +2283,22 @@ Lưu ý quan trọng:
         }
 
 
-        // --- HÀM ĐỔ DỮ LIỆU VÀO TRANG 1 & TRANG 4 ---
+        let initialPage1TemplateHTML = null;
+
+        // --- HÀM ĐỔ DỮ LIỆU VÀO TRANG 1 (TỰ ĐỘNG TÁCH SANG TRANG 2 NẾU QUÁ DÀI NHƯ PHIẾU 852) ---
         function populatePage1(data) {
-            const page1 = document.querySelector('#document-container .page:first-child');
+            const container = document.getElementById('document-container');
+            const page1 = document.getElementById('page-1') || container.querySelector('.page:first-child');
             if (!page1) return;
+
+            // Lưu lại mẫu HTML gốc của Trang 1 ở lần chạy đầu tiên và xóa các trang phụ cũ (nếu nhập lại file khác)
+            if (!initialPage1TemplateHTML) {
+                initialPage1TemplateHTML = page1.innerHTML;
+            } else {
+                container.querySelectorAll('.page-1-cont').forEach(p => p.remove());
+                page1.innerHTML = initialPage1TemplateHTML;
+                page1.style.fontSize = '';
+            }
 
             if (data.soPhieu) {
                 const soPhieuFields = document.querySelectorAll('.header-right .editable-field:not(.page-number-display), .header-right-page2 .editable-field:not(.page-number-display)');
@@ -2295,16 +2307,24 @@ Lưu ý quan trọng:
 
             const formRows = Array.from(page1.querySelectorAll('.form-row'));
 
-            // Tự động điền Tên phiếu thao tác vào Trang 1
+            // Điền Tên phiếu thao tác
             const tenPhieuRow = formRows.find(r => r.innerText.includes('Tên phiếu thao tác'));
             if (tenPhieuRow && data.tenPhieu) {
+                tenPhieuRow.style.alignItems = 'flex-start';
                 const field = tenPhieuRow.querySelector('.editable-field');
                 if (field) {
                     field.innerText = data.tenPhieu;
                     field.style.fontWeight = 'bold';
+                    field.style.paddingLeft = '6px';
+                    field.style.lineHeight = '1.35';
+                }
+                const nextRow = tenPhieuRow.nextElementSibling;
+                if (nextRow && nextRow.classList.contains('form-row') && !nextRow.querySelector('.form-label')) {
+                    nextRow.style.display = 'none';
                 }
             }
 
+            // Điền Mục đích thao tác
             const mucDichText = data.mucDich.join(' ').replace(/\s+/g, ' ').trim();
             const mucDichRow = formRows.find(r => r.innerText.includes('Mục đích thao tác'));
             if (mucDichRow && mucDichText) {
@@ -2355,31 +2375,35 @@ Lưu ý quan trọng:
                 }
             }
 
+            // Hàm tạo phần tử <li> hỗ trợ cả mục đánh số (1, 2, 3, 4) và dòng ý phụ (*, -)
+            const renderListItems = (olElement, itemsArray) => {
+                olElement.innerHTML = '';
+                olElement.style.lineHeight = '1.35';
+                itemsArray.forEach((item, idx) => {
+                    const isObj = typeof item === 'object' && item !== null;
+                    const itemTxt = isObj ? item.text : String(item);
+                    const itemNum = isObj ? item.num : (/^[\*\-\+]/.test(itemTxt.trim()) ? null : (idx + 1));
+
+                    const li = document.createElement('li');
+                    li.style.marginBottom = '2px';
+                    if (itemNum === null) {
+                        li.style.listStyleType = 'none';
+                        li.style.marginLeft = '-12px';
+                    } else {
+                        li.setAttribute('value', itemNum);
+                    }
+                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
+                    li.querySelector('.editable-field').innerText = itemTxt;
+                    olElement.appendChild(li);
+                });
+            };
+
             const olLists = page1.querySelectorAll('ol.numbered-list');
             if (olLists.length >= 1 && data.dieuKien.length > 0) {
-                const olDieuKien = olLists[0];
-                olDieuKien.innerHTML = '';
-                olDieuKien.style.lineHeight = '1.35';
-                data.dieuKien.forEach(itemTxt => {
-                    const li = document.createElement('li');
-                    li.style.marginBottom = '2px';
-                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
-                    li.querySelector('.editable-field').innerText = itemTxt;
-                    olDieuKien.appendChild(li);
-                });
+                renderListItems(olLists[0], data.dieuKien);
             }
-
             if (olLists.length >= 2 && data.luuY.length > 0) {
-                const olLuuY = olLists[1];
-                olLuuY.innerHTML = '';
-                olLuuY.style.lineHeight = '1.35';
-                data.luuY.forEach(itemTxt => {
-                    const li = document.createElement('li');
-                    li.style.marginBottom = '2px';
-                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
-                    li.querySelector('.editable-field').innerText = itemTxt;
-                    olLuuY.appendChild(li);
-                });
+                renderListItems(olLists[1], data.luuY);
             }
 
             const table = page1.querySelector('#table-giao-nhan-truoc') || page1.querySelector('table');
@@ -2394,7 +2418,7 @@ Lưu ý quan trọng:
                         <td class="editable-field" contenteditable="${isEditing}" style="height: 32px;"></td>
                         <td class="editable-field" contenteditable="${isEditing}" style="font-weight: bold;"></td>
                         <td class="editable-field" contenteditable="${isEditing}"></td>
-                        <td class="editable-field" contenteditable="${isEditing}" style="text-align: left; padding-left: 8px;"></td>
+                        <td class="editable-field" contenteditable="${isEditing}" style="text-align: justify; padding: 5px 8px;"></td>
                     `;
                     const tds = tr.querySelectorAll('td');
                     tds[0].innerText = row.thoiGian; tds[1].innerText = row.donVi;
@@ -2411,15 +2435,67 @@ Lưu ý quan trọng:
                 sigGrid.style.marginBottom = '6px';
             }
 
-            // TỰ ĐỘNG THU NHỎ FONT TRANG 1 NẾU NỘI DUNG QUÁ DÀI
-            let fontSize = 13; 
-            while (page1.scrollHeight > page1.clientHeight && fontSize > 9) {
+            // 1. Thử giảm nhẹ cỡ chữ xuống tối đa 11.5pt cho các phiếu chỉ hơi dài một chút
+            let fontSize = 13;
+            while (page1.scrollHeight > page1.clientHeight && fontSize > 11.5) {
                 fontSize -= 0.5;
                 page1.style.fontSize = fontSize + 'pt';
                 page1.querySelectorAll('.editable-field, .form-label, th, td').forEach(el => {
                     el.style.fontSize = fontSize + 'pt';
                 });
             }
+
+            // 2. NẾU VẪN TRÀN KHỔ A4 (Như phiếu 852 có nội dung dài sang cả Trang 2) -> TỰ ĐỘNG TÁCH SANG TRANG 2
+            if (page1.scrollHeight > page1.clientHeight) {
+                // Trả lại cỡ chữ chuẩn 12.5pt để in ra đẹp và rõ nét
+                page1.style.fontSize = '12.5pt';
+                page1.querySelectorAll('.editable-field, .form-label, th, td').forEach(el => {
+                    el.style.fontSize = '12.5pt';
+                });
+
+                const contPage = document.createElement('div');
+                contPage.className = 'page page-1-cont';
+                contPage.style.fontSize = '12.5pt';
+                contPage.innerHTML = `
+                    <div class="header-right-page2">
+                        <div>Số phiếu: <span class="editable-field" contenteditable="${isEditing}" style="width: 160px;">${data.soPhieu || '...../....../...../T500HB'}</span><br>Trang số : <span class="page-number-display editable-field" contenteditable="${isEditing}" oninput="this.dataset.edited=1" style="width: 160px;">02/04</span></div>
+                    </div>
+                    <div class="cont-body"></div>
+                `;
+                container.insertBefore(contPage, page1.nextSibling);
+                const contBody = contPage.querySelector('.cont-body');
+
+                const tblGNT = page1.querySelector('#table-giao-nhan-truoc');
+                const lblGNT = tblGNT ? tblGNT.previousElementSibling : null;
+                const olLuuY = olLists[1];
+                const lblLuuY = olLuuY ? olLuuY.previousElementSibling : null;
+                const olDieuKien = olLists[0];
+
+                // Đẩy Bảng Giao nhận trước sang Trang 2 trước tiên
+                if (lblGNT && tblGNT) {
+                    contBody.insertBefore(tblGNT, contBody.firstChild);
+                    contBody.insertBefore(lblGNT, contBody.firstChild);
+                }
+
+                // Nếu Trang 1 vẫn tràn -> Đẩy tiếp mục Lưu ý sang Trang 2
+                if (page1.scrollHeight > page1.clientHeight && lblLuuY && olLuuY) {
+                    contBody.insertBefore(olLuuY, contBody.firstChild);
+                    contBody.insertBefore(lblLuuY, contBody.firstChild);
+                }
+
+                // Nếu Trang 1 vẫn tràn -> Cắt các dòng Điều kiện ở cuối Trang 1 sang đầu Trang 2
+                if (page1.scrollHeight > page1.clientHeight && olDieuKien) {
+                    const contOl = document.createElement('ol');
+                    contOl.className = 'numbered-list';
+                    contOl.style.lineHeight = '1.35';
+                    contBody.insertBefore(contOl, contBody.firstChild);
+
+                    while (page1.scrollHeight > page1.clientHeight && olDieuKien.children.length > 1) {
+                        contOl.insertBefore(olDieuKien.lastElementChild, contOl.firstChild);
+                    }
+                }
+            }
+            updatePageNumbers();
         }
 
         // Tự động điền bảng Giao nhận sau (Trang cuối)
