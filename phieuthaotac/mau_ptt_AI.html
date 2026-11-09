@@ -152,42 +152,44 @@
             display: none !important;
         }
 
-        /* === THANH CÔNG CỤ BÊN PHẢI (THU GỌN VÀ BÁM SÁT LỀ) === */
+        /* === THANH CÔNG CỤ BÊN PHẢI (PHONG CÁCH CHUYÊN NGHIỆP) === */
         .control-panel {
             position: fixed;
             top: 20px;
-            right: 5px; /* Sát mép phải màn hình */
-            background: #2c3e50;
-            padding: 8px; 
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            right: 8px;
+            background: #1e293b; /* Xám than chì hiện đại */
+            padding: 10px 8px; 
+            border-radius: 10px;
+            border: 1px solid #334155;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.45);
             z-index: 1000;
             display: flex;
             flex-direction: column; 
             gap: 8px; 
-            width: 145px; /* Cố định chiều ngang gọn gàng */
+            width: 148px;
         }
         .btn {
             cursor: pointer;
             padding: 8px 10px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 10.5pt;
-            color: white;
-            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 10pt;
+            color: #f8fafc;
+            transition: all 0.2s ease;
             text-align: center;
-            white-space: normal; /* Cho phép chữ tự động xuống dòng khi chật */
+            white-space: normal;
             line-height: 1.3;
         }
-        .btn-edit { background-color: #3498db; }
-        .btn-edit.active { background-color: #e67e22; }
-        .btn-print { background-color: #2ecc71; }
-        .btn-save { background-color: #9b59b6; display: none; }
-        .btn-merge { background-color: #f39c12; display: none; }
-        .btn-merge:hover { background-color: #d68910; }
-        .btn-split { background-color: #e74c3c; display: none; }
-        .btn-split:hover { background-color: #c0392b; }
+        .btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+
+        .btn-edit { background-color: #2563eb; } /* Xanh Navy chuẩn */
+        .btn-edit.active { background-color: #d97706; border-color: #fbbf24; } /* Cam hổ phách khi mở khóa */
+        .btn-print { background-color: #be123c; } /* Đỏ đô chuẩn xuất PDF */
+        .btn-save { background-color: #0284c7; display: none; }
+        .btn-merge { background-color: #475569; display: none; } /* Xám thép đồng bộ */
+        .btn-split { background-color: #991b1b; display: none; } /* Đỏ trầm cho tác vụ tách/xóa */
 
         /* === NÚT ĐIỀU KHIỂN TRANG (THÊM / XÓA TRANG) === */
         .page-controls {
@@ -301,14 +303,14 @@
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
         
         <!-- NÚT TẢI FILE PDF / WORD / EXCEL LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
-        <button id="btnImport" class="btn btn-edit" style="background-color: #16a085;" onclick="document.getElementById('fileUpload').click()" title="Tải file PDF, Word hoặc Excel">📂 Nhập PDF/Word<br>/Excel</button>
+        <button id="btnImport" class="btn" style="background-color: #334155;" onclick="document.getElementById('fileUpload').click()" title="Tải file PDF, Word hoặc Excel">📂 Nhập PDF/Word<br>/Excel</button>
         <input type="file" id="fileUpload" accept=".pdf,.docx,.xlsx,.xls" style="display: none;" onchange="handleFileImport(event)">
-        <button id="btnAiKey" class="btn btn-edit" style="background-color: #8e44ad;" onclick="setupGeminiApiKey()" title="Cài đặt mã Gemini API Key để đọc PDF Scan bằng AI chính xác 100%">🔑 Cài đặt AI</button>
-        <button id="btnUndo" class="btn btn-edit" style="background-color: #95a5a6; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
+        <button id="btnAiKey" class="btn" style="background-color: #3b0764;" onclick="setupGeminiApiKey()" title="Cài đặt mã Gemini API Key để đọc PDF Scan bằng AI">🔑 Cài đặt AI</button>
+        <button id="btnUndo" class="btn" style="background-color: #475569; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
         <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
         <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()" title="Click vào ô đã gộp rồi bấm để tách ra">✂️ Tách ô</button>
-        <button id="btnAddRow" class="btn btn-merge" style="background-color: #34495e; display: none;" onclick="addRow()" title="Chèn thêm 1 dòng ngay bên dưới dòng đang đặt con trỏ chuột">⬇️ Thêm dòng</button>
-        <button id="btnDelRow" class="btn btn-split" style="background-color: #7f8c8d; display: none;" onclick="removeRow()" title="Xóa dòng đang đặt con trỏ chuột">⬆️ Xóa dòng</button>
+        <button id="btnAddRow" class="btn btn-merge" onclick="addRow()" title="Chèn thêm 1 dòng ngay bên dưới dòng đang đặt con trỏ chuột">⬇️ Thêm dòng</button>
+        <button id="btnDelRow" class="btn btn-split" onclick="removeRow()" title="Xóa dòng đang đặt con trỏ chuột">⬆️ Xóa dòng</button>
         <button id="btnSave" class="btn btn-save" onclick="alert('Tính năng lưu đang phát triển')">💾 Lưu Phiếu</button>
         <button class="btn btn-print" onclick="window.print()">🖨️ In / Xuất PDF</button>
     </div>
@@ -1224,18 +1226,20 @@
         // =========================================================
         let ocrWorker = null;
 
-// Cập nhật giao diện nút bấm theo trạng thái Đăng nhập / Đăng xuất AI
+        // Cập nhật giao diện nút bấm theo trạng thái Đăng nhập / Đăng xuất AI
         function updateAiButtonState() {
             const btnAi = document.getElementById('btnAiKey');
             if (!btnAi) return;
             const hasKey = !!localStorage.getItem('GEMINI_API_KEY');
             if (hasKey) {
-                btnAi.innerHTML = '🟢 AI Đã bật<br><span style="font-size:8.5pt; font-weight:normal;">(Bấm để thoát)</span>';
-                btnAi.style.backgroundColor = '#27ae60';
+                btnAi.innerHTML = '🟢 AI Đã bật<br><span style="font-size:8.5pt; font-weight:normal; color:#cbd5e1;">(Bấm để thoát)</span>';
+                btnAi.style.backgroundColor = '#115e59'; // Xanh ngọc trầm tối chuyên nghiệp
+                btnAi.style.borderColor = '#14b8a6';
                 btnAi.title = 'AI đang kích hoạt (Mã Key đã được ẩn bảo mật). Bấm vào đây để Đăng xuất / Xóa Key.';
             } else {
                 btnAi.innerHTML = '🔑 Cài đặt AI';
-                btnAi.style.backgroundColor = '#8e44ad';
+                btnAi.style.backgroundColor = '#3b0764'; // Tím than trầm khi chưa bật
+                btnAi.style.borderColor = 'rgba(255,255,255,0.08)';
                 btnAi.title = 'Bấm để nhập Gemini API Key kích hoạt AI đọc PDF Scan';
             }
         }
@@ -1396,12 +1400,18 @@ Lưu ý quan trọng:
             }
 
             if (parsed.steps && parsed.steps.length > 0) {
+                let lastMuc = '';
+                let lastDiaDiem = '';
+
                 const pageRows = parsed.steps.map(st => {
                     const isSec = st.isSection || (!st.buoc && st.noiDung);
                     if (isSec) {
+                        // Khi gặp dòng tiêu đề gộp ngang (Vd: Cô lập MC...), reset lại bộ nhớ Mục
+                        lastMuc = '';
+                        lastDiaDiem = '';
                         return [
-                            { text: st.muc || '', colspan: 1, vMerge: null },
-                            { text: st.diaDiem || '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
                             { text: st.noiDung || '', colspan: 3, vMerge: null },
                             { text: '', colspan: 1, vMerge: null },
                             { text: '', colspan: 1, vMerge: null },
@@ -1409,9 +1419,26 @@ Lưu ý quan trọng:
                             { text: '', colspan: 1, vMerge: null }
                         ];
                     }
+
+                    const rawMuc = String(st.muc || '').trim();
+                    const rawDiaDiem = String(st.diaDiem || '').trim();
+                    let displayMuc = rawMuc;
+                    let displayDiaDiem = rawDiaDiem;
+
+                    // NẾU MỤC LA MÃ HOẶC ĐỊA ĐIỂM BỊ AI LẶP LẠI GIỐNG DÒNG TRÊN -> TỰ ĐỘNG ĐỂ TRỐNG
+                    if (rawMuc && rawMuc === lastMuc) {
+                        displayMuc = '';
+                        displayDiaDiem = '';
+                    } else if (!rawMuc && rawDiaDiem && rawDiaDiem === lastDiaDiem) {
+                        displayDiaDiem = '';
+                    }
+
+                    if (rawMuc) lastMuc = rawMuc;
+                    if (rawDiaDiem) lastDiaDiem = rawDiaDiem;
+
                     return [
-                        { text: st.muc || '', colspan: 1, vMerge: null },
-                        { text: st.diaDiem || '', colspan: 1, vMerge: null },
+                        { text: displayMuc, colspan: 1, vMerge: null },
+                        { text: displayDiaDiem, colspan: 1, vMerge: null },
                         { text: String(st.buoc || '').replace(/[\.\)]$/, ''), colspan: 1, vMerge: null },
                         { text: st.noiDung || '', colspan: 1, vMerge: null },
                         { text: '', colspan: 1, vMerge: null },
