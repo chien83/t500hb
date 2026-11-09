@@ -1226,18 +1226,20 @@
         // =========================================================
         let ocrWorker = null;
 
-// Cập nhật giao diện nút bấm theo trạng thái Đăng nhập / Đăng xuất AI
+        // Cập nhật giao diện nút bấm theo trạng thái Đăng nhập / Đăng xuất AI
         function updateAiButtonState() {
             const btnAi = document.getElementById('btnAiKey');
             if (!btnAi) return;
             const hasKey = !!localStorage.getItem('GEMINI_API_KEY');
             if (hasKey) {
-                btnAi.innerHTML = '🟢 AI Đã bật<br><span style="font-size:8.5pt; font-weight:normal;">(Bấm để thoát)</span>';
-                btnAi.style.backgroundColor = '#27ae60';
+                btnAi.innerHTML = '🟢 AI Đã bật<br><span style="font-size:8.5pt; font-weight:normal; color:#cbd5e1;">(Bấm để thoát)</span>';
+                btnAi.style.backgroundColor = '#115e59'; // Xanh ngọc trầm tối chuyên nghiệp
+                btnAi.style.borderColor = '#14b8a6';
                 btnAi.title = 'AI đang kích hoạt (Mã Key đã được ẩn bảo mật). Bấm vào đây để Đăng xuất / Xóa Key.';
             } else {
                 btnAi.innerHTML = '🔑 Cài đặt AI';
-                btnAi.style.backgroundColor = '#8e44ad';
+                btnAi.style.backgroundColor = '#3b0764'; // Tím than trầm khi chưa bật
+                btnAi.style.borderColor = 'rgba(255,255,255,0.08)';
                 btnAi.title = 'Bấm để nhập Gemini API Key kích hoạt AI đọc PDF Scan';
             }
         }
