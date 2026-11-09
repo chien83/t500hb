@@ -1698,12 +1698,24 @@ Lưu ý quan trọng:
 
                 const fullPageText = rawChunks.map(c => c.text).join(' ');
 
-                // A. KIỂM TRA KHUNG ĐỎ TRANG 1 ("Mục đích thao tác" & "Thời gian dự kiến")
-                if (!page1Extracted && /[MМ][ụu]c\s*[đd][íi]ch\s*thao\s*t[áa]c/i.test(fullPageText) && /Th[ờơ]i\s*gian\s*d[ựư]\s*ki[ếê]n/i.test(fullPageText)) {
-                    const p1Data = extractPage1RedBoxFromChunks(rawChunks);
-                    if (p1Data) {
-                        populatePage1(p1Data);
-                        page1Extracted = true;
+                // A. THU THẬP DỮ LIỆU PHẦN MỞ ĐẦU (Tự động nối tiếp nếu tràn sang Trang 2 như phiếu 852)
+                const isStartOfPage1 = /[MМ][ụu]c\s*[đd][íi]ch\s*thao\s*t[áa]c/i.test(fullPageText) && /Th[ờơ]i\s*gian\s*d[ựư]\s*ki[ếê]n/i.test(fullPageText);
+                const hasStepTableOnThisPage = /Tr[ìi]nh\s*t[ựư]\s*(h[ạa]ng\s*m[ụu]c|thao\s*t[áa]c)/i.test(fullPageText) ||
+                    (/[ĐD][ịi]a\s*[đd]i[ểêe]m/i.test(fullPageText) && /(Nh[ậa]n\s*l[ệêe]nh|Ra\s*l[ệêe]nh)/i.test(fullPageText));
+
+                if (!page1Done) {
+                    if (isStartOfPage1) isCollectingPage1 = true;
+                    if (isCollectingPage1) {
+                        // Dịch tọa độ yc theo số trang (-p * 1000) để các trang sau nối tiếp đúng thứ tự xuống dưới trang trước
+                        rawChunks.forEach(ch => {
+                            page1CombinedChunks.push({
+                                x0: ch.x0,
+                                x1: ch.x1,
+                                yc: sub(ch.yc, p * 1000),
+                                text: ch.text
+                            });
+                        });
+                        if (hasStepTableOnThisPage) page1Done = true;
                     }
                 }
 
