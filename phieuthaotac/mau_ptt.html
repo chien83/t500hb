@@ -534,6 +534,10 @@
 
         <!-- ================= TRANG 4 ================= -->
         <div class="page" id="page-last">
+            <div class="page-controls">
+                <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang này phía dưới">➕</button>
+                <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang này">🗑️</button>
+            </div>
              <div class="header-right-page2">
                  <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br>Trang số : <span class="page-number-display editable-field" oninput="this.dataset.edited=1" style="width: 160px;">04/04</span></div>
             </div>
@@ -2562,6 +2566,10 @@ Trả về JSON thuần túy theo cấu trúc:
                     cp.className = 'page page-1-cont';
                     cp.style.fontSize = '12.5pt';
                     cp.innerHTML = `
+                        <div class="page-controls" style="display: ${isEditing ? 'flex' : 'none'};">
+                            <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang này phía dưới">➕</button>
+                            <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang này">🗑️</button>
+                        </div>
                         <div class="header-right-page2">
                             <div>Số phiếu: <span class="editable-field" contenteditable="${isEditing}" style="width: 160px;">${data.soPhieu || '...../....../...../T500HB'}</span><br>Trang số : <span class="page-number-display editable-field" contenteditable="${isEditing}" oninput="this.dataset.edited=1" style="width: 160px;">02/04</span></div>
                         </div>
