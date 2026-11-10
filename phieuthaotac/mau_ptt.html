@@ -2074,16 +2074,13 @@ Trả về JSON thuần túy theo cấu trúc:
             }
             // Kết thúc vòng lặp for duyệt qua các trang PDF
             hideOcrProgress();
-            // Đổ toàn bộ dữ liệu phần mở đầu (gồm cả Trang 1 + Trang 2 nối tiếp nếu có)
+
+            // 1. Bóc tách bằng Thuật toán tọa độ trước (Đảm bảo luôn có dữ liệu chuẩn tức thì)
+            let p1Data = null;
             if (page1CombinedChunks.length > 0) {
-                const p1Data = extractPage1RedBoxFromChunks(page1CombinedChunks);
-                if (p1Data) {
-                    populatePage1(p1Data);
-                    page1Extracted = true;
-                }
+                p1Data = extractPage1RedBoxFromChunks(page1CombinedChunks);
             }
 
-            // Xử lý và điền Bảng Giao nhận sau (Trang 4)
             const dataTrang4 = { giaoNhanSau: [] };
             if (giaoNhanSauRaw.length > 0) {
                 const rObj = { tg: [], dv: [], ht: [], nd: [] };
@@ -2103,9 +2100,41 @@ Trả về JSON thuần túy theo cấu trúc:
                 if (tg || dv || ht || nd) {
                     dataTrang4.giaoNhanSau.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
                 }
+            }
+
+            // 2. KẾT HỢP AI HYBRID (Nếu đã bật AI Key, dùng AI kiểm tra và chuẩn hóa lại bảng Giao nhận trước/sau)
+            if (geminiKey && ((p1Data && p1Data._rawGntLines && p1Data._rawGntLines.length > 0) || giaoNhanSauRaw.length > 0)) {
+                const aiRefined = await refineHandoverTablesWithAI(
+                    geminiKey,
+                    p1Data ? p1Data._rawGntLines : [],
+                    giaoNhanSauRaw
+                );
+                hideOcrProgress();
+
+                if (aiRefined) {
+                    if (p1Data && Array.isArray(aiRefined.giaoNhanTruoc) && aiRefined.giaoNhanTruoc.length > 0) {
+                        p1Data.giaoNhanTruoc = aiRefined.giaoNhanTruoc;
+                    }
+                    if (Array.isArray(aiRefined.giaoNhanSau) && aiRefined.giaoNhanSau.length > 0) {
+                        dataTrang4.giaoNhanSau = aiRefined.giaoNhanSau;
+                    }
+                }
+            }
+
+            // 3. Đổ dữ liệu đã chuẩn hóa vào các trang A4
+            if (p1Data) {
+                populatePage1(p1Data);
+                page1Extracted = true;
+            }
+            if (dataTrang4.giaoNhanSau.length > 0) {
                 populatePage4(dataTrang4);
             }
 
+            // Nếu gặp file PDF có bố cục bảng lạ mà thuật toán không lấy được bước nào nhưng có AI Key -> Chuyển sang AI Vision đọc trọn gói
+            if (pagesData.length === 0 && !page1Extracted && geminiKey) {
+                await importScannedPdfWithGeminiAI(pdf, geminiKey);
+                return;
+            }
 
             if (pagesData.length > 0) {
                 setTimeout(() => renderImportedStepPages(pagesData), 50);
