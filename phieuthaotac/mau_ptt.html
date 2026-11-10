@@ -1448,7 +1448,7 @@ Lưu ý quan trọng:
             let lastErrorMsg = '';
 
             for (const modelName of modelList) {
-                showOcrProgress(`🤖 <b>AI (${modelName})</b> đang đọc Phiếu Thao Tác & Bảng 9 cột...<br><span style="font-size:10pt; color:#ccc;">(Thời gian xử lý khoảng 3 - 5 giây)</span>`);
+                showOcrProgress(`🤖 <b>AI (${modelName})</b> đang đọc Phiếu Thao Tác & Bảng 9 cột...<br><span style="font-size:10pt; color:#ccc;">(Vui lòng đợi)</span>`);
                 
                 response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
                     method: 'POST',
