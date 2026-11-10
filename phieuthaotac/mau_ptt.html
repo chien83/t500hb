@@ -1401,7 +1401,7 @@
                 });
             }
 
-            showOcrProgress(`🤖 <b>AI</b> đang đọc Phiếu Thao Tác & Bảng 9 cột...<br><span style="font-size:10pt; color:#ccc;">(Thời gian xử lý khoảng 3 - 6 giây)</span>`);
+            showOcrProgress(`🤖 <b>AI</b> đang đọc Phiếu Thao Tác...<br><span style="font-size:10pt; color:#ccc;">(Vui lòng đợi)</span>`);
 
             const promptText = `Bạn là chuyên gia vận hành lưới điện cao áp 500kV/220kV. Hãy đọc toàn bộ các trang ảnh Phiếu Thao Tác đính kèm và trích xuất chính xác 100% nội dung sang định dạng JSON thuần túy (không bọc trong markdown) theo cấu trúc sau:
 {
@@ -1448,7 +1448,7 @@ Lưu ý quan trọng:
             let lastErrorMsg = '';
 
             for (const modelName of modelList) {
-                showOcrProgress(`🤖 <b>AI (${modelName})</b> đang đọc Phiếu Thao Tác & Bảng 9 cột...<br><span style="font-size:10pt; color:#ccc;">(Vui lòng đợi)</span>`);
+                showOcrProgress(`🤖 <b>AI (${modelName})</b> đang đọc Phiếu Thao Tác...<br><span style="font-size:10pt; color:#ccc;">(Vui lòng đợi)</span>`);
                 
                 response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
                     method: 'POST',
