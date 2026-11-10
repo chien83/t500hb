@@ -298,7 +298,7 @@
     </style>
 </head>
 <body>
-    <div class="version-label" style="position: fixed; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: lime; padding: 2px 5px; font-size: 10pt; z-index: 2000; border-radius: 3px;">Ver 2.3</div>
+    <!-- <div class="version-label" style="position: fixed; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: lime; padding: 2px 5px; font-size: 10pt; z-index: 2000; border-radius: 3px;">Ver 2.3</div> -->
     <div class="control-panel">
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
         
@@ -1896,30 +1896,40 @@ Lưu ý quan trọng:
                     if (isStepNum) return false; // Trả lại cho otherItems để nhét vào mảng Bước (c2)
                     return it.x0 >= col1_x && it.x0 < 365 && (it.x0 >= sub(col2_x, 4) || it.x1 > col2_x + 8);
                 });
-                contentLines.sort((a, b) => sub(b.yc, a.yc));
+                contentLines.sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
 
-                // BÓC TÁCH KHỐI DÒNG THÔNG MINH BẰNG NGỮ NGHĨA (Số thứ tự / Số La Mã) ĐỂ TRÁNH DÍNH BƯỚC
+                // BÓC TÁCH KHỐI DÒNG THÔNG MINH (Chống cắt đôi các bước nhiều dòng có số Bước căn giữa ô như Bước 26, 28, 29)
                 const blocks = [];
                 contentLines.forEach(cl => {
                     const isSpanLine = (cl.x0 < sub(col2_x, 2) && cl.x0 > col1_x + 5);
                     
                     const hasStepNum = bodyItems.some(it => Math.abs(sub(it.yc, cl.yc)) <= 5.5 && it.x0 >= sub(col1_x, 15) && it.x0 < col2_x + 15 && /^\d+[\.\)]?$/.test(it.text.trim()));
                     const hasRoman = bodyItems.some(it => Math.abs(sub(it.yc, cl.yc)) <= 5.5 && it.x0 < col0_x + 15 && /^([IVXLCDM\u2160-\u216F]+)$/i.test(it.text.trim()));
-                    const isNewSection = isSpanLine && cl.text.toLowerCase().includes('cô lập');
+                    const isNewSection = isSpanLine || /^(cô\s*lập|khôi\s*phục)\b/i.test(cl.text.trim());
 
                     if (blocks.length === 0) {
-                        blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpanLine });
+                        blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpanLine, hasStep: hasStepNum, hasRoman: hasRoman });
                     } else {
                         const prev = blocks[sub(blocks.length, 1)];
                         const dy = sub(prev.yBot, cl.yc);
-                        
-                        // Buộc ngắt block khi có số đếm bước mới hoặc mục La Mã mới
-                        if (hasStepNum || hasRoman || isNewSection || dy > 16.5) {
-                            blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpanLine });
+
+                        // Nếu dòng trên chưa có số bước (do số bước căn giữa ô rơi xuống dòng 2) và khoảng cách dòng sát nhau (<= 15.5pt) -> Gộp vào dòng trên
+                        const isContinuationOfMultiLineStep = (
+                            dy <= 15.5 &&
+                            !prev.hasStep &&
+                            !prev.isSpan &&
+                            !isSpanLine &&
+                            !/^(cô\s*lập|khôi\s*phục)\b/i.test(prev.lines[0].text.trim())
+                        );
+
+                        if (!isContinuationOfMultiLineStep && (hasStepNum || hasRoman || isNewSection || prev.isSpan || dy > 16.5)) {
+                            blocks.push({ yTop: cl.yc, yBot: cl.yc, lines: [cl], isSpan: isSpanLine, hasStep: hasStepNum, hasRoman: hasRoman });
                         } else {
                             prev.yBot = cl.yc;
                             prev.lines.push(cl);
                             if (isSpanLine) prev.isSpan = true;
+                            if (hasStepNum) prev.hasStep = true;
+                            if (hasRoman) prev.hasRoman = true;
                         }
                     }
                 });
@@ -1982,16 +1992,11 @@ Lưu ý quan trọng:
                         const kqIdx = lineTexts.findIndex(t => t.includes('Kết quả kiểm tra'));
                         if (kqIdx > 0) {
                             const mainContent = lineTexts.slice(0, kqIdx).join(' ');
-                            const subContent = lineTexts.slice(kqIdx).join(' ');
+                            const subContent = lineTexts.slice(kqIdx).join(' ')
+                                .replace(/Đúng\s+Sai/i, 'Đúng\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Sai');
                             pageRows.push([
                                 { text: c0, colspan: 1, vMerge: null }, { text: c1, colspan: 1, vMerge: null },
-                                { text: c2, colspan: 1, vMerge: 'restart' }, { text: mainContent, colspan: 1, vMerge: null },
-                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null },
-                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
-                            ]);
-                            pageRows.push([
-                                { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null },
-                                { text: '', colspan: 1, vMerge: 'continue' }, { text: subContent, colspan: 1, vMerge: null },
+                                { text: c2, colspan: 1, vMerge: null }, { text: mainContent + '\n' + subContent, colspan: 1, vMerge: null },
                                 { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null },
                                 { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }, { text: '', colspan: 1, vMerge: null }
                             ]);
@@ -2215,9 +2220,10 @@ Lưu ý quan trọng:
                     vl.chunks.forEach(ch => {
                         const txt = ch.text.trim();
                         if (!txt) return;
-                        if (ch.x0 < 135) lObj.tg.push(txt);
-                        else if (ch.x0 < 205) lObj.dv.push(txt);
-                        else if (ch.x0 < 278) lObj.ht.push(txt);
+                        const xc = (ch.x0 + ch.x1) / 2;
+                        if (ch.x0 < 128 && xc < 132) lObj.tg.push(txt);
+                        else if (ch.x0 < 185 && xc < 188) lObj.dv.push(txt);
+                        else if (ch.x0 < 280 && xc < 285) lObj.ht.push(txt);
                         else lObj.nd.push(txt);
                     });
                     return {
