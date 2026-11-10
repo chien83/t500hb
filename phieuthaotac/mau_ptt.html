@@ -1536,6 +1536,63 @@ Lưu ý quan trọng:
             }
         }
 
+        // HÀM HYBRID: DÙNG AI TEXT PHÂN TÁCH CHUẨN CỘT BẢNG GIAO NHẬN TRƯỚC & SAU CHO PDF THƯỜNG (CÓ DỰ PHÒNG AN TOÀN)
+        async function refineHandoverTablesWithAI(apiKey, rawGntLines, rawGnsLines) {
+            if (!apiKey) return null;
+            const hasGnt = rawGntLines && rawGntLines.length > 0;
+            const hasGns = rawGnsLines && rawGnsLines.length > 0;
+            if (!hasGnt && !hasGns) return null;
+
+            const formatLinesWithCoord = (lines) => lines.map(vl => {
+                return vl.chunks.map(c => `[x=${Math.round(c.x0)}]${c.text.trim()}`).join(' ');
+            }).join('\n');
+
+            const gntText = hasGnt ? formatLinesWithCoord(rawGntLines) : 'Không có';
+            const gnsText = hasGns ? formatLinesWithCoord(rawGnsLines) : 'Không có';
+
+            const prompt = `Bạn là chuyên gia vận hành lưới điện 500kV. Dưới đây là các dòng văn bản thô (kèm tọa độ ngang [x=...]) trích xuất từ bảng "Giao nhận trước khi thao tác" và "Giao nhận sau khi thao tác" của Phiếu thao tác điện tử.
+Hãy phân tích ngữ nghĩa Tiếng Việt để tách chính xác vào 4 cột:
+- "thoiGian": Giờ/ngày giao nhận (thường để trống hoặc ở x < 130).
+- "donVi": Tên đơn vị (ví dụ: B01, A0, HĐNT, HĐNT PTC1, HĐNT NPT, HĐNT CPMB...). Tuyệt đối không lẫn chữ của cột Họ tên vào cột Đơn vị.
+- "hoTen": Họ tên, chức vụ, đơn vị công tác, ủy viên HĐNT, số điện thoại của người giao/nhận (ví dụ: Ông Đặng Hồng Quân - Phó Trưởng phòng..., ĐT: 0966...).
+- "noiDung": Nội dung trả thiết bị, đề nghị đóng/cắt điện, bàn giao đường dây...
+Nếu có nhiều đơn vị giao nhận (ví dụ B01, HĐNT PTC1, HĐNT NPT, HĐNT CPMB), hãy tách thành các phần tử (dòng) riêng biệt theo đúng thứ tự.
+
+Dữ liệu Giao nhận trước:
+${gntText}
+
+Dữ liệu Giao nhận sau:
+${gnsText}
+
+Trả về JSON thuần túy theo cấu trúc:
+{
+  "giaoNhanTruoc": [{ "thoiGian": "", "donVi": "", "hoTen": "", "noiDung": "" }],
+  "giaoNhanSau": [{ "thoiGian": "", "donVi": "", "hoTen": "", "noiDung": "" }]
+}`;
+
+            const models = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite'];
+            for (const modelName of models) {
+                try {
+                    showOcrProgress(`🤖 <b>AI Hybrid</b> đang kiểm tra & chuẩn hóa bảng Giao nhận...`);
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            generationConfig: { response_mime_type: 'application/json' }
+                        })
+                    });
+                    if (!res.ok) continue;
+                    const json = await res.json();
+                    const rawText = json.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+                    return JSON.parse(rawText);
+                } catch (e) {
+                    console.warn('AI Hybrid chuyển sang dùng kết quả tọa độ:', e);
+                }
+            }
+            return null;
+        }
+
         // Tự động sửa các lỗi nhận diện chữ (OCR) phổ biến khi không dùng AI
         function fixElectricalOcrText(str) {
             if (!str) return '';
