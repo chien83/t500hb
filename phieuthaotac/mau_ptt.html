@@ -121,6 +121,7 @@
             text-align: center;
             word-wrap: break-word;
         }
+        tbody td { height: 30px; }
         th { font-weight: bold; }
 
         /* === CSS CHẾ ĐỘ CHỈNH SỬA (WYSIWYG) === */
@@ -686,6 +687,7 @@
                 pageControls.forEach(ctrl => ctrl.style.display = "none");
                 clearCellSelection();
             }
+            fitAllStepPages();
         }
 
         // TẠO 1 DÒNG TRỐNG CHUẨN 9 CỘT
