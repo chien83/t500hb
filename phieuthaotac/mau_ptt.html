@@ -2215,9 +2215,10 @@ Lưu ý quan trọng:
                     vl.chunks.forEach(ch => {
                         const txt = ch.text.trim();
                         if (!txt) return;
-                        if (ch.x0 < 135) lObj.tg.push(txt);
-                        else if (ch.x0 < 205) lObj.dv.push(txt);
-                        else if (ch.x0 < 278) lObj.ht.push(txt);
+                        const xc = (ch.x0 + ch.x1) / 2;
+                        if (ch.x0 < 128 && xc < 132) lObj.tg.push(txt);
+                        else if (ch.x0 < 185 && xc < 188) lObj.dv.push(txt);
+                        else if (ch.x0 < 280 && xc < 285) lObj.ht.push(txt);
                         else lObj.nd.push(txt);
                     });
                     return {

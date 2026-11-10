@@ -1668,6 +1668,9 @@ Lưu ý quan trọng:
             }
             const pagesData = [];
             let page1Extracted = false;
+            let isCollectingPage1 = false;
+            let page1Done = false;
+            let page1CombinedChunks = [];
             let isParsingGNS = false;
             let giaoNhanSauRaw = []; 
 
@@ -1695,12 +1698,24 @@ Lưu ý quan trọng:
 
                 const fullPageText = rawChunks.map(c => c.text).join(' ');
 
-                // A. KIỂM TRA KHUNG ĐỎ TRANG 1 ("Mục đích thao tác" & "Thời gian dự kiến")
-                if (!page1Extracted && /[MМ][ụu]c\s*[đd][íi]ch\s*thao\s*t[áa]c/i.test(fullPageText) && /Th[ờơ]i\s*gian\s*d[ựư]\s*ki[ếê]n/i.test(fullPageText)) {
-                    const p1Data = extractPage1RedBoxFromChunks(rawChunks);
-                    if (p1Data) {
-                        populatePage1(p1Data);
-                        page1Extracted = true;
+                // A. THU THẬP DỮ LIỆU PHẦN MỞ ĐẦU (Tự động nối tiếp nếu tràn sang Trang 2 như phiếu 852)
+                const isStartOfPage1 = /[MМ][ụu]c\s*[đd][íi]ch\s*thao\s*t[áa]c/i.test(fullPageText) && /Th[ờơ]i\s*gian\s*d[ựư]\s*ki[ếê]n/i.test(fullPageText);
+                const hasStepTableOnThisPage = /Tr[ìi]nh\s*t[ựư]\s*(h[ạa]ng\s*m[ụu]c|thao\s*t[áa]c)/i.test(fullPageText) ||
+                    (/[ĐD][ịi]a\s*[đd]i[ểêe]m/i.test(fullPageText) && /(Nh[ậa]n\s*l[ệêe]nh|Ra\s*l[ệêe]nh)/i.test(fullPageText));
+
+                if (!page1Done) {
+                    if (isStartOfPage1) isCollectingPage1 = true;
+                    if (isCollectingPage1) {
+                        // Dịch tọa độ yc theo số trang (-p * 1000) để các trang sau nối tiếp đúng thứ tự xuống dưới trang trước
+                        rawChunks.forEach(ch => {
+                            page1CombinedChunks.push({
+                                x0: ch.x0,
+                                x1: ch.x1,
+                                yc: sub(ch.yc, p * 1000),
+                                text: ch.text
+                            });
+                        });
+                        if (hasStepTableOnThisPage) page1Done = true;
                     }
                 }
 
@@ -1995,6 +2010,14 @@ Lưu ý quan trọng:
             }
             // Kết thúc vòng lặp for duyệt qua các trang PDF
             hideOcrProgress();
+            // Đổ toàn bộ dữ liệu phần mở đầu (gồm cả Trang 1 + Trang 2 nối tiếp nếu có)
+            if (page1CombinedChunks.length > 0) {
+                const p1Data = extractPage1RedBoxFromChunks(page1CombinedChunks);
+                if (p1Data) {
+                    populatePage1(p1Data);
+                    page1Extracted = true;
+                }
+            }
 
             // Xử lý và điền Bảng Giao nhận sau (Trang 4)
             const dataTrang4 = { giaoNhanSau: [] };
@@ -2029,7 +2052,7 @@ Lưu ý quan trọng:
             }
         }
 
-        // --- HÀM BÓC TÁCH NỘI DUNG TRONG KHUNG ĐỎ TRANG 1 TỪ TỌA ĐỘ PDF (VER 2.4) ---
+        // --- HÀM BÓC TÁCH NỘI DUNG TRANG 1 & TRANG PHỤ NỐI TIẾP TỪ TỌA ĐỘ PDF ---
         function extractPage1RedBoxFromChunks(rawChunks) {
             const sorted = rawChunks.slice().sort((a, b) => sub(b.yc, a.yc) || sub(a.x0, b.x0));
             const visualLines = [];
@@ -2074,8 +2097,14 @@ Lưu ý quan trọng:
             const spMatch = fullText.match(/S[ốôo]\s*phi[ếêe]u\s*:\s*([A-Za-z0-9\/\-]+)/i);
             if (spMatch) data.soPhieu = spMatch[1];
             
-            const tpMatch = fullText.match(/T[êe]n\s*phi[ếêe]u\s*thao\s*t[áa]c\s*:\s*([^\|]+)/i);
-            if (tpMatch) data.tenPhieu = tpMatch[1].trim();
+            // Lấy trọn vẹn Tên phiếu thao tác kể cả khi bị ngắt xuống 2 dòng
+            const tpMatch = fullText.match(/T[êe]n\s*phi[ếêe]u\s*thao\s*t[áa]c\s*:\s*(.+?)(?=\s*\|\s*(?:Ng[ưự][ờơ]i\s*(?:vi[ếêe]t|duy[ệêe]t)|Ch[ứự]c\s*v[ụu]|M[ụu]c\s*[đd][íi]ch)|$)/i);
+            if (tpMatch) {
+                data.tenPhieu = tpMatch[1]
+                    .replace(/\s*\|\s*Ng[ưự][ờơ]i\s*vi[ếêe]t.*$/i, '')
+                    .replace(/\s*\|\s*/g, ' ')
+                    .trim();
+            }
             
             let state = 'NONE';
             let thoiGianStr = '';
@@ -2086,8 +2115,9 @@ Lưu ý quan trọng:
                 const t = vl.text;
                 if (!t) continue;
 
+                // Bỏ qua dòng Số phiếu / Trang số ở đầu trang nối tiếp (Trang 02/04)
                 if (/^(S[ốôo]\s*phi[ếêe]u|Trang\s*s[ốôo])\s*:/i.test(t)) continue;
-                if (/Tr[ìi]nh\s*t[ựư]\s*h[ạa]ng\s*m[ụu]c/i.test(t) || (/[ĐD][ịi]a\s*[đd]i/i.test(t) && /Tr[ìi]nh\s*t[ựư]/i.test(t))) {
+                if (/Tr[ìi]nh\s*t[ựư]\s*h[ạa]ng\s*m[ụu]c/i.test(t) || (/[ĐD][ịi]a\s*[đd]i[ểêe]m/i.test(t) && /Tr[ìi]nh\s*t[ựư]/i.test(t))) {
                     break;
                 }
 
@@ -2116,8 +2146,8 @@ Lưu ý quan trọng:
                     state = 'DIEU_KIEN';
                     const rem = t.replace(/^.*?[ĐD]i[ềêe]u\s*ki[ệêe]n\s*c[ầâa]n\s*c[óo].*?hi[ệêe]n\s*:?\s*/i, '').trim();
                     if (rem && !/[ĐD]i[ềêe]u\s*ki[ệêe]n/i.test(rem)) {
-                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
-                        if (cleanRem) data.dieuKien.push(cleanRem);
+                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '').trim();
+                        if (cleanRem) data.dieuKien.push({ num: 1, text: cleanRem });
                     }
                     continue;
                 }
@@ -2126,8 +2156,8 @@ Lưu ý quan trọng:
                     state = 'LUU_Y';
                     const rem = t.replace(/^L[ưu]u\s*[ýy]\s*:?\s*/i, '').trim();
                     if (rem) {
-                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '');
-                        if (cleanRem) data.luuY.push(cleanRem);
+                        const cleanRem = rem.replace(/^\d+[\.\)]\s*/, '').trim();
+                        if (cleanRem) data.luuY.push({ num: 1, text: cleanRem });
                     }
                     continue;
                 }
@@ -2142,7 +2172,6 @@ Lưu ý quan trọng:
                 } else if (state === 'THOI_GIAN') {
                     thoiGianStr += t + ' ';
                 } else if (state === 'DON_VI') {
-                    // Nếu dòng tháng/năm của Kết thúc bị lệch xuống dưới chữ Đơn vị đề nghị thì trả về cho Thời gian
                     if (/th[áa]ng\s*\d+\s*n[ăa]m\s*\d{4}/i.test(t)) {
                         thoiGianStr += t + ' ';
                         const cleanDv = t.replace(/.*?n[ăa]m\s*\d{4}\s*/i, '').trim();
@@ -2150,25 +2179,23 @@ Lưu ý quan trọng:
                     } else {
                         data.donVi.push(t);
                     }
-                } else if (state === 'DIEU_KIEN') {
+                } else if (state === 'DIEU_KIEN' || state === 'LUU_Y') {
+                    const targetArr = (state === 'DIEU_KIEN') ? data.dieuKien : data.luuY;
+                    if (/^\s*\d+[\.\)]\s*$/.test(t)) continue; // Bỏ qua dòng chỉ có "1." hoặc "2." trống
+
                     const numMatch = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/);
+                    const subBulletMatch = t.match(/^\s*([\*\-\+])\s*(.+)$/);
+
                     if (numMatch) {
-                        data.dieuKien.push(numMatch[2].trim());
-                    } else if (data.dieuKien.length > 0) {
-                        const lastIdx = sub(data.dieuKien.length, 1);
-                        data.dieuKien[lastIdx] += ' ' + t;
+                        targetArr.push({ num: parseInt(numMatch[1], 10), text: numMatch[2].trim() });
+                    } else if (subBulletMatch) {
+                        // Giữ các ý phụ (* Phạm vi..., - Văn bản...) thành dòng riêng để trình bày đẹp và dễ ngắt trang
+                        targetArr.push({ num: null, text: subBulletMatch[1] + ' ' + subBulletMatch[2].trim() });
+                    } else if (targetArr.length > 0) {
+                        const lastIdx = sub(targetArr.length, 1);
+                        targetArr[lastIdx].text += ' ' + t;
                     } else {
-                        data.dieuKien.push(t);
-                    }
-                } else if (state === 'LUU_Y') {
-                    const numMatch = t.match(/^\s*(\d+)[\.\)]\s*(.+)$/);
-                    if (numMatch) {
-                        data.luuY.push(numMatch[2].trim());
-                    } else if (data.luuY.length > 0) {
-                        const lastIdx = sub(data.luuY.length, 1);
-                        data.luuY[lastIdx] += ' ' + t;
-                    } else {
-                        data.luuY.push(t);
+                        targetArr.push({ num: 1, text: t });
                     }
                 } else if (state === 'GIAO_NHAN') {
                     if (/Th[ờơ]i\s*gian/i.test(t) && (/[ĐD][ơo]n\s*v[ịi]/i.test(t) || /N[ộôo]i\s*dung/i.test(t))) {
@@ -2181,26 +2208,61 @@ Lưu ý quan trọng:
             data.batDau = parseDateTimeFull(thoiGianStr, 'B[ắăấâa]t\\s*[đd][ầâa]u');
             data.ketThuc = parseDateTimeFull(thoiGianStr, 'K[ếêe]t\\s*th[úu]c');
 
+            // TÁCH THÔNG MINH NHIỀU DÒNG TRONG BẢNG GIAO NHẬN TRƯỚC (VD: Dòng B01 và Dòng HĐNT)
             if (giaoNhanLines.length > 0) {
-                const rowObj = { thoiGian: [], donVi: [], hoTen: [], noiDung: [] };
-                giaoNhanLines.forEach(vl => {
+                const parsedLines = giaoNhanLines.map(vl => {
+                    const lObj = { yc: vl.yc, tg: [], dv: [], ht: [], nd: [] };
                     vl.chunks.forEach(ch => {
                         const txt = ch.text.trim();
                         if (!txt) return;
-                        if (ch.x0 < 145) rowObj.thoiGian.push(txt);
-                        else if (ch.x0 < 220) rowObj.donVi.push(txt);
-                        else if (ch.x0 < 300) rowObj.hoTen.push(txt);
-                        else rowObj.noiDung.push(txt);
+                        if (ch.x0 < 135) lObj.tg.push(txt);
+                        else if (ch.x0 < 205) lObj.dv.push(txt);
+                        else if (ch.x0 < 278) lObj.ht.push(txt);
+                        else lObj.nd.push(txt);
                     });
+                    return {
+                        yc: vl.yc,
+                        tg: lObj.tg.join(' ').trim(),
+                        dv: lObj.dv.join(' ').trim(),
+                        ht: lObj.ht.join(' ').trim(),
+                        nd: lObj.nd.join(' ').trim()
+                    };
                 });
 
-                const tg = rowObj.thoiGian.join(' ').replace(/\s+/g, ' ').trim();
-                const dv = rowObj.donVi.join(' ').replace(/\s+/g, ' ').trim();
-                const ht = rowObj.hoTen.join(' ').replace(/\s+/g, ' ').trim();
-                const nd = fixElectricalOcrText(rowObj.noiDung.join(' ').replace(/\s+/g, ' ').trim());
-                if (tg || dv || ht || nd) {
-                    data.giaoNhanTruoc.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
+                let curRow = { thoiGian: [], donVi: [], hoTen: [], noiDung: [] };
+                const pushCurRow = () => {
+                    const tg = curRow.thoiGian.join(' ').replace(/\s+/g, ' ').trim();
+                    const dv = curRow.donVi.join(' ').replace(/\s+/g, ' ').trim();
+                    const ht = curRow.hoTen.join(' ').replace(/\s+/g, ' ').trim();
+                    const nd = fixElectricalOcrText(curRow.noiDung.join(' ').replace(/\s+/g, ' ').trim());
+                    if (tg || dv || ht || nd) {
+                        data.giaoNhanTruoc.push({ thoiGian: tg, donVi: dv, hoTen: ht, noiDung: nd });
+                    }
+                    curRow = { thoiGian: [], donVi: [], hoTen: [], noiDung: [] };
+                };
+
+                for (let idx = 0; idx < parsedLines.length; idx++) {
+                    const pl = parsedLines[idx];
+                    const curNdText = curRow.noiDung.join(' ').trim();
+                    const hasMoreDvAhead = parsedLines.slice(idx).some(item => item.dv !== '');
+
+                    // Ngắt sang dòng mới nếu dòng hiện tại đã có Đơn vị (vd: B01), Nội dung đã kết thúc câu bằng dấu chấm (.) và phía dưới còn Đơn vị khác (vd: HĐNT)
+                    const isNewRowStart = (
+                        curRow.donVi.length > 0 &&
+                        /\.$/.test(curNdText) &&
+                        (hasMoreDvAhead || (curRow.hoTen.length === 0 && pl.ht !== ''))
+                    );
+
+                    if (isNewRowStart) {
+                        pushCurRow();
+                    }
+
+                    if (pl.tg) curRow.thoiGian.push(pl.tg);
+                    if (pl.dv) curRow.donVi.push(pl.dv);
+                    if (pl.ht) curRow.hoTen.push(pl.ht);
+                    if (pl.nd) curRow.noiDung.push(pl.nd);
                 }
+                pushCurRow();
             }
 
             return data;
@@ -2221,10 +2283,22 @@ Lưu ý quan trọng:
         }
 
 
-        // --- HÀM ĐỔ DỮ LIỆU VÀO TRANG 1 & TRANG 4 ---
+        let initialPage1TemplateHTML = null;
+
+        // -- HÀM ĐỔ DỮ LIỆU VÀO TRANG 1 (TỰ ĐỘNG TÁCH SANG TRANG 2 NẾU QUÁ DÀI NHƯ PHIẾU 852) --
         function populatePage1(data) {
-            const page1 = document.querySelector('#document-container .page:first-child');
+            const container = document.getElementById('document-container');
+            const page1 = document.getElementById('page-1') || container.querySelector('.page:first-child');
             if (!page1) return;
+
+            // Lưu lại mẫu HTML gốc của Trang 1 ở lần chạy đầu tiên và xóa các trang phụ cũ (nếu nhập lại file khác)
+            if (!initialPage1TemplateHTML) {
+                initialPage1TemplateHTML = page1.innerHTML;
+            } else {
+                container.querySelectorAll('.page-1-cont').forEach(p => p.remove());
+                page1.innerHTML = initialPage1TemplateHTML;
+                page1.style.fontSize = '';
+            }
 
             if (data.soPhieu) {
                 const soPhieuFields = document.querySelectorAll('.header-right .editable-field:not(.page-number-display), .header-right-page2 .editable-field:not(.page-number-display)');
@@ -2233,16 +2307,24 @@ Lưu ý quan trọng:
 
             const formRows = Array.from(page1.querySelectorAll('.form-row'));
 
-            // Tự động điền Tên phiếu thao tác vào Trang 1
+            // Điền Tên phiếu thao tác
             const tenPhieuRow = formRows.find(r => r.innerText.includes('Tên phiếu thao tác'));
             if (tenPhieuRow && data.tenPhieu) {
+                tenPhieuRow.style.alignItems = 'flex-start';
                 const field = tenPhieuRow.querySelector('.editable-field');
                 if (field) {
                     field.innerText = data.tenPhieu;
                     field.style.fontWeight = 'bold';
+                    field.style.paddingLeft = '6px';
+                    field.style.lineHeight = '1.35';
+                }
+                const nextRow = tenPhieuRow.nextElementSibling;
+                if (nextRow && nextRow.classList.contains('form-row') && !nextRow.querySelector('.form-label')) {
+                    nextRow.style.display = 'none';
                 }
             }
 
+            // Điền Mục đích thao tác
             const mucDichText = data.mucDich.join(' ').replace(/\s+/g, ' ').trim();
             const mucDichRow = formRows.find(r => r.innerText.includes('Mục đích thao tác'));
             if (mucDichRow && mucDichText) {
@@ -2293,31 +2375,35 @@ Lưu ý quan trọng:
                 }
             }
 
+            // Hàm tạo phần tử <li> hỗ trợ cả mục đánh số (1, 2, 3, 4) và dòng ý phụ (*, -)
+            const renderListItems = (olElement, itemsArray) => {
+                olElement.innerHTML = '';
+                olElement.style.lineHeight = '1.35';
+                itemsArray.forEach((item, idx) => {
+                    const isObj = typeof item === 'object' && item !== null;
+                    const itemTxt = isObj ? item.text : String(item);
+                    const itemNum = isObj ? item.num : (/^[\*\-\+]/.test(itemTxt.trim()) ? null : (idx + 1));
+
+                    const li = document.createElement('li');
+                    li.style.marginBottom = '2px';
+                    if (itemNum === null) {
+                        li.style.listStyleType = 'none';
+                        li.style.marginLeft = '-12px';
+                    } else {
+                        li.setAttribute('value', itemNum);
+                    }
+                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
+                    li.querySelector('.editable-field').innerText = itemTxt;
+                    olElement.appendChild(li);
+                });
+            };
+
             const olLists = page1.querySelectorAll('ol.numbered-list');
             if (olLists.length >= 1 && data.dieuKien.length > 0) {
-                const olDieuKien = olLists[0];
-                olDieuKien.innerHTML = '';
-                olDieuKien.style.lineHeight = '1.35';
-                data.dieuKien.forEach(itemTxt => {
-                    const li = document.createElement('li');
-                    li.style.marginBottom = '2px';
-                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
-                    li.querySelector('.editable-field').innerText = itemTxt;
-                    olDieuKien.appendChild(li);
-                });
+                renderListItems(olLists[0], data.dieuKien);
             }
-
             if (olLists.length >= 2 && data.luuY.length > 0) {
-                const olLuuY = olLists[1];
-                olLuuY.innerHTML = '';
-                olLuuY.style.lineHeight = '1.35';
-                data.luuY.forEach(itemTxt => {
-                    const li = document.createElement('li');
-                    li.style.marginBottom = '2px';
-                    li.innerHTML = `<div class="dotted-line"><span class="editable-field" contenteditable="${isEditing}" style="text-align: justify;"></span></div>`;
-                    li.querySelector('.editable-field').innerText = itemTxt;
-                    olLuuY.appendChild(li);
-                });
+                renderListItems(olLists[1], data.luuY);
             }
 
             const table = page1.querySelector('#table-giao-nhan-truoc') || page1.querySelector('table');
@@ -2332,7 +2418,7 @@ Lưu ý quan trọng:
                         <td class="editable-field" contenteditable="${isEditing}" style="height: 32px;"></td>
                         <td class="editable-field" contenteditable="${isEditing}" style="font-weight: bold;"></td>
                         <td class="editable-field" contenteditable="${isEditing}"></td>
-                        <td class="editable-field" contenteditable="${isEditing}" style="text-align: left; padding-left: 8px;"></td>
+                        <td class="editable-field" contenteditable="${isEditing}" style="text-align: justify; padding: 5px 8px;"></td>
                     `;
                     const tds = tr.querySelectorAll('td');
                     tds[0].innerText = row.thoiGian; tds[1].innerText = row.donVi;
@@ -2349,15 +2435,67 @@ Lưu ý quan trọng:
                 sigGrid.style.marginBottom = '6px';
             }
 
-            // TỰ ĐỘNG THU NHỎ FONT TRANG 1 NẾU NỘI DUNG QUÁ DÀI
-            let fontSize = 13; 
-            while (page1.scrollHeight > page1.clientHeight && fontSize > 9) {
+            // 1. Thử giảm nhẹ cỡ chữ xuống tối đa 11.5pt cho các phiếu chỉ hơi dài một chút
+            let fontSize = 13;
+            while (page1.scrollHeight > page1.clientHeight && fontSize > 11.5) {
                 fontSize -= 0.5;
                 page1.style.fontSize = fontSize + 'pt';
                 page1.querySelectorAll('.editable-field, .form-label, th, td').forEach(el => {
                     el.style.fontSize = fontSize + 'pt';
                 });
             }
+
+            // 2. NẾU VẪN TRÀN KHỔ A4 (Như phiếu 852 có nội dung dài sang cả Trang 2) -> TỰ ĐỘNG TÁCH SANG TRANG 2
+            if (page1.scrollHeight > page1.clientHeight) {
+                // Trả lại cỡ chữ chuẩn 12.5pt để in ra đẹp và rõ nét
+                page1.style.fontSize = '12.5pt';
+                page1.querySelectorAll('.editable-field, .form-label, th, td').forEach(el => {
+                    el.style.fontSize = '12.5pt';
+                });
+
+                const contPage = document.createElement('div');
+                contPage.className = 'page page-1-cont';
+                contPage.style.fontSize = '12.5pt';
+                contPage.innerHTML = `
+                    <div class="header-right-page2">
+                        <div>Số phiếu: <span class="editable-field" contenteditable="${isEditing}" style="width: 160px;">${data.soPhieu || '...../....../...../T500HB'}</span><br>Trang số : <span class="page-number-display editable-field" contenteditable="${isEditing}" oninput="this.dataset.edited=1" style="width: 160px;">02/04</span></div>
+                    </div>
+                    <div class="cont-body"></div>
+                `;
+                container.insertBefore(contPage, page1.nextSibling);
+                const contBody = contPage.querySelector('.cont-body');
+
+                const tblGNT = page1.querySelector('#table-giao-nhan-truoc');
+                const lblGNT = tblGNT ? tblGNT.previousElementSibling : null;
+                const olLuuY = olLists[1];
+                const lblLuuY = olLuuY ? olLuuY.previousElementSibling : null;
+                const olDieuKien = olLists[0];
+
+                // Đẩy Bảng Giao nhận trước sang Trang 2 trước tiên
+                if (lblGNT && tblGNT) {
+                    contBody.insertBefore(tblGNT, contBody.firstChild);
+                    contBody.insertBefore(lblGNT, contBody.firstChild);
+                }
+
+                // Nếu Trang 1 vẫn tràn -> Đẩy tiếp mục Lưu ý sang Trang 2
+                if (page1.scrollHeight > page1.clientHeight && lblLuuY && olLuuY) {
+                    contBody.insertBefore(olLuuY, contBody.firstChild);
+                    contBody.insertBefore(lblLuuY, contBody.firstChild);
+                }
+
+                // Nếu Trang 1 vẫn tràn -> Cắt các dòng Điều kiện ở cuối Trang 1 sang đầu Trang 2
+                if (page1.scrollHeight > page1.clientHeight && olDieuKien) {
+                    const contOl = document.createElement('ol');
+                    contOl.className = 'numbered-list';
+                    contOl.style.lineHeight = '1.35';
+                    contBody.insertBefore(contOl, contBody.firstChild);
+
+                    while (page1.scrollHeight > page1.clientHeight && olDieuKien.children.length > 1) {
+                        contOl.insertBefore(olDieuKien.lastElementChild, contOl.firstChild);
+                    }
+                }
+            }
+            updatePageNumbers();
         }
 
         // Tự động điền bảng Giao nhận sau (Trang cuối)
