@@ -303,9 +303,9 @@
     <div class="control-panel">
         <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode()">🔒 Edit</button>
         
-        <!-- NÚT TẢI FILE PDF / WORD / EXCEL LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
-        <button id="btnImport" class="btn" style="background-color: #334155;" onclick="document.getElementById('fileUpload').click()" title="Tải file PDF, Word hoặc Excel">📂 Nhập PDF/Word<br>/Excel</button>
-        <input type="file" id="fileUpload" accept=".pdf,.docx,.xlsx,.xls" style="display: none;" onchange="handleFileImport(event)">
+        <!-- NÚT TẢI FILE PDF / WORD / EXCEL / ẢNH LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
+        <button id="btnImport" class="btn" style="background-color: #334155;" onclick="document.getElementById('fileUpload').click()" title="Tải file PDF, Word, Excel hoặc Ảnh chụp">📂 Nhập PDF/Word<br>/Excel/Ảnh</button>
+        <input type="file" id="fileUpload" accept=".pdf,.docx,.xlsx,.xls,.png,.jpg,.jpeg,.webp" multiple style="display: none;" onchange="handleFileImport(event)">
         <button id="btnAiKey" class="btn" style="background-color: #3b0764;" onclick="setupGeminiApiKey()" title="Cài đặt mã Gemini API Key để đọc PDF Scan bằng AI">🔑 Bật AI</button>
         <button id="btnUndo" class="btn" style="background-color: #475569; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
         <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
