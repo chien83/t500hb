@@ -1261,21 +1261,35 @@
         }
 
         async function handleFileImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const files = Array.from(event.target.files || []);
+            if (files.length === 0) return;
 
             if (isEditing) saveState();
 
-            const fileName = file.name.toLowerCase();
+            const firstFile = files[0];
+            const fileName = firstFile.name.toLowerCase();
+            const isImageFile = /\.(png|jpe?g|webp)$/i.test(fileName);
+
             try {
-                if (fileName.endsWith('.pdf')) {
-                    await importFromPdf(file);
+                if (isImageFile) {
+                    const geminiKey = localStorage.getItem('GEMINI_API_KEY');
+                    if (!geminiKey) {
+                        alert('Hãy bật AI lên để được hỗ trợ');
+                        setupGeminiApiKey();
+                        event.target.value = '';
+                        return;
+                    }
+                    // Lọc lấy tất cả các file ảnh được chọn cùng lúc
+                    const imageFiles = files.filter(f => /\.(png|jpe?g|webp)$/i.test(f.name));
+                    await importImagesWithGeminiAI(imageFiles, geminiKey);
+                } else if (fileName.endsWith('.pdf')) {
+                    await importFromPdf(firstFile);
                 } else if (fileName.endsWith('.docx')) {
-                    await importFromDocx(file);
+                    await importFromDocx(firstFile);
                 } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
-                    await importFromExcel(file);
+                    await importFromExcel(firstFile);
                 } else {
-                    alert('Vui lòng chọn file định dạng .pdf, .docx hoặc .xlsx!');
+                    alert('Vui lòng chọn file định dạng .pdf, .docx, .xlsx hoặc ảnh (.png, .jpg)!');
                 }
             } catch (err) {
                 hideOcrProgress();
