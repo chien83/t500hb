@@ -306,7 +306,7 @@
         <!-- NÚT TẢI FILE PDF / WORD / EXCEL LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
         <button id="btnImport" class="btn" style="background-color: #334155;" onclick="document.getElementById('fileUpload').click()" title="Tải file PDF, Word hoặc Excel">📂 Nhập PDF/Word<br>/Excel</button>
         <input type="file" id="fileUpload" accept=".pdf,.docx,.xlsx,.xls" style="display: none;" onchange="handleFileImport(event)">
-        <button id="btnAiKey" class="btn" style="background-color: #3b0764;" onclick="setupGeminiApiKey()" title="Cài đặt mã Gemini API Key để đọc PDF Scan bằng AI">🔑 Cài đặt AI</button>
+        <button id="btnAiKey" class="btn" style="background-color: #3b0764;" onclick="setupGeminiApiKey()" title="Cài đặt mã Gemini API Key để đọc PDF Scan bằng AI">🔑 Bật AI</button>
         <button id="btnUndo" class="btn" style="background-color: #475569; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
         <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
         <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()" title="Click vào ô đã gộp rồi bấm để tách ra">✂️ Tách ô</button>
@@ -534,6 +534,10 @@
 
         <!-- ================= TRANG 4 ================= -->
         <div class="page" id="page-last">
+            <div class="page-controls">
+                <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang này phía dưới">➕</button>
+                <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang này">🗑️</button>
+            </div>
              <div class="header-right-page2">
                  <div>Số phiếu: <span class="editable-field" style="width: 160px;">...../....../...../T500HB</span><br>Trang số : <span class="page-number-display editable-field" oninput="this.dataset.edited=1" style="width: 160px;">04/04</span></div>
             </div>
@@ -1292,12 +1296,12 @@
             if (!btnAi) return;
             const hasKey = !!localStorage.getItem('GEMINI_API_KEY');
             if (hasKey) {
-                btnAi.innerHTML = '🟢 AI Đã bật<br><span style="font-size:8.5pt; font-weight:normal; color:#cbd5e1;">(Bấm để thoát)</span>';
+                btnAi.innerHTML = '🟢 AI-ON<br><span style="font-size:8.5pt; font-weight:normal; color:#cbd5e1;">(Bấm để thoát)</span>';
                 btnAi.style.backgroundColor = '#115e59'; // Xanh ngọc trầm tối chuyên nghiệp
                 btnAi.style.borderColor = '#14b8a6';
                 btnAi.title = 'AI đang kích hoạt (Mã Key đã được ẩn bảo mật). Bấm vào đây để Đăng xuất / Xóa Key.';
             } else {
-                btnAi.innerHTML = '🔑 Cài đặt AI';
+                btnAi.innerHTML = '🔑 AI-OFF';
                 btnAi.style.backgroundColor = '#3b0764'; // Tím than trầm khi chưa bật
                 btnAi.style.borderColor = 'rgba(255,255,255,0.08)';
                 btnAi.title = 'Bấm để nhập Gemini API Key kích hoạt AI đọc PDF Scan';
@@ -1369,7 +1373,7 @@
                 document.body.appendChild(box);
             }
             box.style.display = 'block';
-            box.innerHTML = msg;
+            box.innerHTML = 'Hệ thống đang nhận dạng, vui lòng đợi...';
         }
 
         function hideOcrProgress() {
@@ -1397,7 +1401,7 @@
                 });
             }
 
-            showOcrProgress(`🤖 <b>AI Gemini</b> đang đọc Phiếu Thao Tác & Bảng 9 cột...<br><span style="font-size:10pt; color:#ccc;">(Thời gian xử lý khoảng 3 - 6 giây)</span>`);
+            showOcrProgress(`🤖 <b>AI</b> đang đọc Phiếu Thao Tác...<br><span style="font-size:10pt; color:#ccc;">(Vui lòng đợi)</span>`);
 
             const promptText = `Bạn là chuyên gia vận hành lưới điện cao áp 500kV/220kV. Hãy đọc toàn bộ các trang ảnh Phiếu Thao Tác đính kèm và trích xuất chính xác 100% nội dung sang định dạng JSON thuần túy (không bọc trong markdown) theo cấu trúc sau:
 {
@@ -1436,7 +1440,6 @@ Lưu ý quan trọng:
             // Danh sách mô hình ưu tiên: Chạy 3.5-flash-lite trước, nếu máy chủ bận tự động chuyển sang bản dự phòng
             const modelList = [
                 'gemini-3.5-flash-lite',
-                'gemini-3.1-flash-lite',
                 'gemini-3.6-flash',
                 'gemini-3.8-flash'
             ];
@@ -1445,7 +1448,7 @@ Lưu ý quan trọng:
             let lastErrorMsg = '';
 
             for (const modelName of modelList) {
-                showOcrProgress(`🤖 <b>AI (${modelName})</b> đang đọc Phiếu Thao Tác & Bảng 9 cột...<br><span style="font-size:10pt; color:#ccc;">(Thời gian xử lý khoảng 3 - 5 giây)</span>`);
+                showOcrProgress(`🤖 <b>AI (${modelName})</b> đang đọc Phiếu Thao Tác...<br><span style="font-size:10pt; color:#ccc;">(Vui lòng đợi)</span>`);
                 
                 response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
                     method: 'POST',
@@ -1573,7 +1576,7 @@ Trả về JSON thuần túy theo cấu trúc:
             const models = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite'];
             for (const modelName of models) {
                 try {
-                    showOcrProgress(`🤖 <b>AI Hybrid</b> đang kiểm tra & chuẩn hóa bảng Giao nhận...`);
+                    showOcrProgress(`🤖 <b>AI</b> đang kiểm tra & chuẩn hóa bảng Giao nhận...`);
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -1719,9 +1722,15 @@ Trả về JSON thuần túy theo cấu trúc:
             const firstText = await firstPage.getTextContent();
             const validItems = firstText.items.filter(it => it.str && it.str.trim());
 
-            // Nếu là PDF Scan (< 15 mảnh chữ) và đã cài đặt Gemini API Key -> Dùng AI đọc chính xác 100%
             const geminiKey = localStorage.getItem('GEMINI_API_KEY');
-            if (validItems.length < 15 && geminiKey) {
+
+            // Nếu là PDF dạng ảnh Scan (< 15 mảnh chữ)
+            if (validItems.length < 15) {
+                if (!geminiKey) {
+                    alert('Hãy bật AI lên để được hỗ trợ với phiếu dạng ảnh scan');
+                    setupGeminiApiKey(); // Tự động mở luôn bảng nhập Key cho tiện (có thể xóa dòng này nếu không muốn tự mở)
+                    return;
+                }
                 await importScannedPdfWithGeminiAI(pdf, geminiKey);
                 return;
             }
@@ -1750,9 +1759,13 @@ Trả về JSON thuần túy theo cấu trúc:
             
                 let isScannedPage = false;
                 if (rawChunks.length < 15) {
-                    isScannedPage = true;
-                    const scannedChunks = await ocrPdfPageToChunks(page, p, pdf.numPages);
-                    rawChunks.push(...scannedChunks);
+                    if (!geminiKey) {
+                        alert('Hãy bật AI lên để được hỗ trợ');
+                        setupGeminiApiKey();
+                        return;
+                    }
+                    await importScannedPdfWithGeminiAI(pdf, geminiKey);
+                    return;
                 }
 
                 const fullPageText = rawChunks.map(c => c.text).join(' ');
@@ -2562,6 +2575,10 @@ Trả về JSON thuần túy theo cấu trúc:
                     cp.className = 'page page-1-cont';
                     cp.style.fontSize = '12.5pt';
                     cp.innerHTML = `
+                        <div class="page-controls" style="display: ${isEditing ? 'flex' : 'none'};">
+                            <button class="btn-page btn-add-page" onclick="duplicatePage(this)" title="Nhân bản thêm trang này phía dưới">➕</button>
+                            <button class="btn-page btn-del-page" onclick="deletePage(this)" title="Xóa trang này">🗑️</button>
+                        </div>
                         <div class="header-right-page2">
                             <div>Số phiếu: <span class="editable-field" contenteditable="${isEditing}" style="width: 160px;">${data.soPhieu || '...../....../...../T500HB'}</span><br>Trang số : <span class="page-number-display editable-field" contenteditable="${isEditing}" oninput="this.dataset.edited=1" style="width: 160px;">02/04</span></div>
                         </div>
