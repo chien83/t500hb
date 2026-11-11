@@ -1759,9 +1759,13 @@ Trả về JSON thuần túy theo cấu trúc:
             
                 let isScannedPage = false;
                 if (rawChunks.length < 15) {
-                    isScannedPage = true;
-                    const scannedChunks = await ocrPdfPageToChunks(page, p, pdf.numPages);
-                    rawChunks.push(...scannedChunks);
+                    if (!geminiKey) {
+                        alert('Hãy bật AI lên để được hỗ trợ');
+                        setupGeminiApiKey();
+                        return;
+                    }
+                    await importScannedPdfWithGeminiAI(pdf, geminiKey);
+                    return;
                 }
 
                 const fullPageText = rawChunks.map(c => c.text).join(' ');
