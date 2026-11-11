@@ -1553,6 +1553,157 @@ Lưu ý quan trọng:
             }
         }
 
+        // HÀM ĐỌC TRỰC TIẾP 1 HOẶC NHIỀU FILE ẢNH CHỤP PHIẾU THAO TÁC BẰNG AI GEMINI
+        async function importImagesWithGeminiAI(files, apiKey) {
+            showOcrProgress('Hệ thống đang nhận dạng, vui lòng đợi...');
+            const imageParts = [];
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const base64Data = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.onerror = err => reject(err);
+                    reader.readAsDataURL(file);
+                });
+                imageParts.push({
+                    inline_data: {
+                        mime_type: file.type || 'image/jpeg',
+                        data: base64Data
+                    }
+                });
+            }
+
+            const promptText = `Bạn là chuyên gia vận hành lưới điện cao áp 500kV/220kV. Hãy đọc toàn bộ các trang ảnh Phiếu Thao Tác đính kèm và trích xuất chính xác 100% nội dung sang định dạng JSON thuần túy (không bọc trong markdown) theo cấu trúc sau:
+{
+  "page1": {
+    "soPhieu": "chuỗi số phiếu, vd: 993/2026/KH/A0",
+    "tenPhieu": "tên phiếu thao tác",
+    "mucDich": ["nội dung mục đích thao tác"],
+    "batDau": { "gio": "", "phut": "", "ngay": "", "thang": "", "nam": "" },
+    "ketThuc": { "gio": "", "phut": "", "ngay": "", "thang": "", "nam": "" },
+    "donVi": ["đơn vị đề nghị thao tác, vd: B01"],
+    "dieuKien": ["điều kiện 1 (bỏ số thứ tự đầu dòng)", "điều kiện 2..."],
+    "luuY": ["lưu ý 1 (bỏ số thứ tự đầu dòng)", "lưu ý 2..."],
+    "giaoNhanTruoc": [
+      { "thoiGian": "", "donVi": "", "hoTen": "", "noiDung": "" }
+    ]
+  },
+  "steps": [
+    {
+      "isSection": false,
+      "muc": "I, II, III... hoặc để trống",
+      "diaDiem": "T500 SL, T500 HB... hoặc để trống",
+      "buoc": "1, 2, 3... (bỏ dấu chấm sau số, để trống nếu là dòng tiêu đề gộp ngang như Cô lập...)",
+      "noiDung": "Nội dung thao tác chuẩn xác (sửa đúng các từ chuyên ngành: 500kV, MC, DCL, DTĐ, TU, TI, KH500, KKT500, B01, A0)"
+    }
+  ],
+  "page4": {
+    "giaoNhanSau": [
+      { "thoiGian": "", "donVi": "", "hoTen": "", "noiDung": "" }
+    ]
+  }
+}
+Lưu ý quan trọng:
+- Nếu một dòng trong bảng Trình tự thao tác không có số Bước và là dòng tiêu đề hạng mục (ví dụ: "Cô lập MC 573, 574 T500 Hòa Bình", "Cô lập kháng KH504..."), hãy đặt "isSection": true, "buoc": "".
+- Giữ nguyên thứ tự tất cả các bước từ đầu đến cuối phiếu.`;
+
+            const modelList = [
+                'gemini-3.5-flash-lite',
+                'gemini-3.1-flash-lite',
+                'gemini-3.6-flash',
+                'gemini-3.8-flash'
+            ];
+
+            let response = null;
+            let lastErrorMsg = '';
+
+            for (const modelName of modelList) {
+                showOcrProgress('Hệ thống đang nhận dạng, vui lòng đợi...');
+                response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }, ...imageParts] }],
+                        generationConfig: { response_mime_type: 'application/json' }
+                    })
+                });
+
+                if (response.ok) break;
+
+                const errorData = await response.json().catch(() => ({}));
+                lastErrorMsg = errorData.error ? errorData.error.message : response.statusText;
+                if (response.status === 400 || response.status === 403) break;
+            }
+
+            if (!response || !response.ok) {
+                throw new Error(`Google API từ chối: ${lastErrorMsg}`);
+            }
+
+            const result = await response.json();
+            const rawJson = result.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+            const parsed = JSON.parse(rawJson);
+
+            hideOcrProgress();
+
+            if (parsed.page1) {
+                populatePage1(parsed.page1);
+            }
+
+            if (parsed.page4 && parsed.page4.giaoNhanSau) {
+                populatePage4(parsed.page4);
+            }
+
+            if (parsed.steps && parsed.steps.length > 0) {
+                let lastMuc = '';
+                let lastDiaDiem = '';
+
+                const pageRows = parsed.steps.map(st => {
+                    const isSec = st.isSection || (!st.buoc && st.noiDung);
+                    if (isSec) {
+                        lastMuc = '';
+                        lastDiaDiem = '';
+                        return [
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: st.noiDung || '', colspan: 3, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null },
+                            { text: '', colspan: 1, vMerge: null }
+                        ];
+                    }
+
+                    const rawMuc = String(st.muc || '').trim();
+                    const rawDiaDiem = String(st.diaDiem || '').trim();
+                    let displayMuc = rawMuc;
+                    let displayDiaDiem = rawDiaDiem;
+
+                    if (rawMuc && rawMuc === lastMuc) {
+                        displayMuc = '';
+                        displayDiaDiem = '';
+                    } else if (!rawMuc && rawDiaDiem && rawDiaDiem === lastDiaDiem) {
+                        displayDiaDiem = '';
+                    }
+
+                    if (rawMuc) lastMuc = rawMuc;
+                    if (rawDiaDiem) lastDiaDiem = rawDiaDiem;
+
+                    return [
+                        { text: displayMuc, colspan: 1, vMerge: null },
+                        { text: displayDiaDiem, colspan: 1, vMerge: null },
+                        { text: String(st.buoc || '').replace(/[\.\)]$/, ''), colspan: 1, vMerge: null },
+                        { text: st.noiDung || '', colspan: 1, vMerge: null },
+                        { text: '', colspan: 1, vMerge: null },
+                        { text: '', colspan: 1, vMerge: null },
+                        { text: '', colspan: 1, vMerge: null },
+                        { text: '', colspan: 1, vMerge: null },
+                        { text: '', colspan: 1, vMerge: null }
+                    ];
+                });
+                setTimeout(() => renderImportedStepPages([pageRows]), 50);
+            }
+        }
         // HÀM HYBRID: DÙNG AI TEXT PHÂN TÁCH CHUẨN CỘT BẢNG GIAO NHẬN TRƯỚC & SAU CHO PDF THƯỜNG (CÓ DỰ PHÒNG AN TOÀN)
         async function refineHandoverTablesWithAI(apiKey, rawGntLines, rawGnsLines) {
             if (!apiKey) return null;
