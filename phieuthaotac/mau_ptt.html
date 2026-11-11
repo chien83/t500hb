@@ -306,7 +306,7 @@
         <!-- NÚT TẢI FILE PDF / WORD / EXCEL LÊN ĐỂ TỰ ĐỘNG TẠO PHIẾU -->
         <button id="btnImport" class="btn" style="background-color: #334155;" onclick="document.getElementById('fileUpload').click()" title="Tải file PDF, Word hoặc Excel">📂 Nhập PDF/Word<br>/Excel</button>
         <input type="file" id="fileUpload" accept=".pdf,.docx,.xlsx,.xls" style="display: none;" onchange="handleFileImport(event)">
-        <button id="btnAiKey" class="btn" style="background-color: #3b0764;" onclick="setupGeminiApiKey()" title="Cài đặt mã Gemini API Key để đọc PDF Scan bằng AI">🔑 Cài đặt AI</button>
+        <button id="btnAiKey" class="btn" style="background-color: #3b0764;" onclick="setupGeminiApiKey()" title="Cài đặt mã Gemini API Key để đọc PDF Scan bằng AI">🔑 Bật AI</button>
         <button id="btnUndo" class="btn" style="background-color: #475569; display: none;" onclick="undoAction()" title="Hoàn tác thao tác gần nhất (Ctrl + Z)">↩️ Undo</button>
         <button id="btnMerge" class="btn btn-merge" onclick="mergeSelectedCells()" title="Kéo chuột chọn các ô cùng cột rồi bấm để gộp">🔗 Gộp ô</button>
         <button id="btnSplit" class="btn btn-split" onclick="splitSelectedCell()" title="Click vào ô đã gộp rồi bấm để tách ra">✂️ Tách ô</button>
@@ -1296,7 +1296,7 @@
             if (!btnAi) return;
             const hasKey = !!localStorage.getItem('GEMINI_API_KEY');
             if (hasKey) {
-                btnAi.innerHTML = '🟢 AI Đã bật<br><span style="font-size:8.5pt; font-weight:normal; color:#cbd5e1;">(Bấm để thoát)</span>';
+                btnAi.innerHTML = '🟢 AI-ON<br><span style="font-size:8.5pt; font-weight:normal; color:#cbd5e1;">(Bấm để thoát)</span>';
                 btnAi.style.backgroundColor = '#115e59'; // Xanh ngọc trầm tối chuyên nghiệp
                 btnAi.style.borderColor = '#14b8a6';
                 btnAi.title = 'AI đang kích hoạt (Mã Key đã được ẩn bảo mật). Bấm vào đây để Đăng xuất / Xóa Key.';
