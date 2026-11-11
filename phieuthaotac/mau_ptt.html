@@ -1722,9 +1722,15 @@ Trả về JSON thuần túy theo cấu trúc:
             const firstText = await firstPage.getTextContent();
             const validItems = firstText.items.filter(it => it.str && it.str.trim());
 
-            // Nếu là PDF Scan (< 15 mảnh chữ) và đã cài đặt Gemini API Key -> Dùng AI đọc chính xác 100%
             const geminiKey = localStorage.getItem('GEMINI_API_KEY');
-            if (validItems.length < 15 && geminiKey) {
+
+            // Nếu là PDF dạng ảnh Scan (< 15 mảnh chữ)
+            if (validItems.length < 15) {
+                if (!geminiKey) {
+                    alert('Hãy bật AI lên để được hỗ trợ');
+                    setupGeminiApiKey(); // Tự động mở luôn bảng nhập Key cho tiện (có thể xóa dòng này nếu không muốn tự mở)
+                    return;
+                }
                 await importScannedPdfWithGeminiAI(pdf, geminiKey);
                 return;
             }
