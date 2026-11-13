@@ -238,8 +238,10 @@
                     <div class="form-row" style="margin-top: 15px;"><span class="form-label">Mục đích thao tác:</span><span class="dotted-line"></span></div>
                     <div class="form-row" style="margin-top: 15px;"><span class="dotted-line"></span></div>
                     <div style="margin-top: 15px;">Thời gian dự kiến:</div>
-                    <div class="form-row" style="margin-left: 20px;"><span class="form-label">- Bắt đầu: ........ h ........</span><span class="form-label" style="margin-left: 30px;">ngày ........ tháng ........ năm ............</span></div>
-                    <div class="form-row" style="margin-left: 20px;"><span class="form-label">- Kết thúc: ........ h ........</span><span class="form-label" style="margin-left: 30px;">ngày ........ tháng ........ năm ............</span></div>
+                    <div class="form-row" style="margin-left: 20px;"><span class="form-label">Bắt đầu: ........ h ........
+</span><span class="form-label" style="margin-left: 30px;">ngày ........ tháng ........ năm ............</span></div>
+                    <div class="form-row" style="margin-left: 20px;"><span class="form-label">Kết thúc: ........ h ........
+</span><span class="form-label" style="margin-left: 30px;">ngày ........ tháng ........ năm ............</span></div>
                     <div class="form-row" style="margin-top: 15px;"><span class="form-label">Đơn vị đề nghị thao tác:</span><span class="dotted-line"></span></div>
                     <div style="margin-top: 15px; font-weight: bold;">Điều kiện cần có để thực hiện:</div>
                     <ol class="numbered-list"><li><div class="dotted-line" style="margin-top: 15px;"></div></li><li><div class="dotted-line" style="margin-top: 15px;"></div></li><li><div class="dotted-line" style="margin-top: 15px;"></div></li><li><div class="dotted-line" style="margin-top: 15px;"></div></li><li><div class="dotted-line" style="margin-top: 15px;"></div></li></ol>
@@ -257,34 +259,39 @@
                         <thead>
                             <tr><th rowspan="2" style="width: 5%;">Mục</th><th rowspan="2" style="width: 10%;">Địa điểm</th><th colspan="2" style="width: 45%;">Trình tự thao tác</th><th rowspan="2" style="width: 8%;">Đã thực hiện</th><th colspan="2" style="width: 16%;">Thời gian</th><th colspan="2" style="width: 16%;">Người</th></tr>
                             <tr><th style="width: 5%;">Bước</th><th>Nội dung</th><th style="width: 8%;">Bắt đầu</th><th style="width: 8%;">Kết thúc</th><th style="width: 8%;">Ra lệnh</th><th style="width: 8%;">Nhận lệnh</th></tr>
+                            <tr style="background-color: #e0e0e0; text-align: center;">
+                                <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            <tr><td rowspan="26"><strong>I</strong></td><td>HMI</td><td>1</td><td>Kiểm tra trào lưu công suất qua AT1,2</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td rowspan="3">Tủ AS4</td><td>2</td><td>Cắt MC 01</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>3</td><td>Đóng MC LL</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>4</td><td>Kiểm tra PĐ 01-0.4kV có điện</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td rowspan="9">HMI</td><td>5</td><td>Cắt MC 341</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>6</td><td>Cắt MC 571</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>7</td><td>Cắt MC 574</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>8</td><td>Cắt MC 200</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>9</td><td>Cắt MC 221</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>10</td><td>Kiểm tra AT1, TCC51, TCC21, TD31 mất điện</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>11</td><td>Cắt DCL 341-3</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>12</td><td>Cắt DCL 531-3</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>13</td><td>Cắt DCL 221-3</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>Tại chỗ</td><td>14</td><td>Đóng DTĐ 221-38</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>Tại chỗ</td><td>15</td><td>Kiểm tra DTĐ 221-38 đóng tốt 3 pha</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>HMI</td><td>16</td><td>Đóng DTĐ 531-38</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>Tại chỗ</td><td>17</td><td>Kiểm tra DTĐ 531-38 đóng tốt 3 pha</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>Tại chỗ</td><td>18</td><td>Đóng DTĐ 341-35</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>Tại chỗ</td><td>19</td><td>Kiểm tra DTĐ 341-35 đóng tốt 3 pha</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td rowspan="4">HMI</td><td>20</td><td>Đóng MC 221</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>21</td><td>Đóng MC 200</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>22</td><td>Đóng MC 571 ( khép vòng)</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>23</td><td>Đóng MC 574 ( khép vòng)</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>Tủ TU</td><td>24</td><td>Cắt TU 3AT1</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>Tủ TU</td><td>25</td><td>Cắt TU 2AT1</td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr><td>Tủ AS2</td><td>26</td><td>Cắt nguồn cấp AC/DC cho AT1</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">1</td><td>Kiểm tra trào lưu công suất</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">2</td><td>Chuyển nguồn tự dùng sang nhận từ AT2</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">3</td><td>Khoá OLTC nếu đang đặt tự động</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">4</td><td>Cắt MC 341</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">5</td><td>Cắt MC 571</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">6</td><td>Cắt MC 574</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">7</td><td>Cắt MC 200</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">8</td><td>Cắt MC 221</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">9</td><td>Kiểm tra máy biến áp AT1 không còn điện</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">10</td><td>Cắt DCL 341-3</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">11</td><td>Cắt DCL 221-3</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">12</td><td>Cắt DCL 531-3</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">13</td><td>Đóng DTĐ 341-35</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">14</td><td>Kiểm tra DTĐ 341-35 đóng tốt 3 pha</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">15</td><td>Cắt AB TU 3AT1</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">16</td><td>Đóng DTĐ 531-38</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">17</td><td>Kiểm tra DTĐ 531-38 đóng tốt 3 pha</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">18</td><td>Đóng DTĐ 221-38</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">19</td><td>Kiểm tra DTĐ 221-38 đóng tốt 3 pha</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">20</td><td>Đóng MC 221</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">21</td><td>Đóng MC 200</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">22</td><td>Cắt AB TU 2AT1</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">23</td><td>Đóng MC 574</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td style="text-align: center;">24</td><td>Đóng MC 571 ( điều kiện khép vòng)</td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <!-- Các dòng trống bên dưới để form giống y hệt ảnh chụp -->
+                            <tr><td style="height: 30px;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td style="height: 30px;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td style="height: 30px;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                         </tbody>
                     </table>
                 </div>
